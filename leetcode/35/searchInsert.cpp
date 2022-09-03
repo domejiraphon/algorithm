@@ -13,7 +13,6 @@ public:
     }
     int pos=(int) nums.size()/2;
     int median=nums[pos];
-    cout << median << endl;
     if (median < target) {
       vector<int> subvector = {nums.begin() + pos, nums.end()};
       return pos + searchInsert(subvector, target);
