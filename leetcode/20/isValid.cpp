@@ -13,7 +13,7 @@ public:
   while (cur !=""){
     string first(1, cur[0]);
     string next(1, cur[1]);
-    string last(1, cur[-1]);
+    string last(1, cur[cur.size()-1]);
     if (first == ")" ||first == "]" || first == "}"){
       return false;
     }
@@ -42,6 +42,6 @@ int main()
   cout << sol.isValid("()[]{}") << endl;
   cout << sol.isValid("(]") << endl;
   cout << sol.isValid("((]") << endl;
-  cout << sol.isValid("[[[[[[[[[[]]]]]]]]]]") << endl;
+  cout << sol.isValid("(([]){})") << endl;
   return 0;
 }
