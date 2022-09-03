@@ -28,15 +28,17 @@ public:
         sum += l2 -> val;
       }
       sum += carry;
-      carry = sum / 10;
+      carry = (int) sum / 10;
       
       out2 -> next = new ListNode(sum % 10);
       out2 = out2 -> next;
+
       if (l1 -> next){
         l1 = l1 -> next;
       }
       else
         l1 = nullptr;
+
       if (l2 -> next){
         l2 = l2 -> next;
       }
