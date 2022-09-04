@@ -30,7 +30,7 @@ public:
       int cur = out[out.size()-1] + out[out.size()-2];
       out.push_back(cur);
     }
-    print_vector(out);
+    
     return out[out.size()-1];
   }
 };
