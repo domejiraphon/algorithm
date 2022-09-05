@@ -25,7 +25,7 @@ struct TreeNode {
 
 class Solution {
 public:
-  vector<int> inorderTraversal(TreeNode* root) {
+  vector<int> postorderTraversal(TreeNode* root) {
     if (!root){
       vector<int> out {};
       return out;
@@ -34,17 +34,17 @@ public:
     
     TreeNode* left = root -> left ? root -> left : nullptr;
     TreeNode* right = root -> right ? root -> right : nullptr;
+    if (right){
+      vector<int> out_right;
+      out_right = postorderTraversal(right);
+      out.insert(out.begin(), out_right.begin(), out_right.end());
+    }
     if (left){
       vector<int> out_left;
-      out_left = inorderTraversal(left);
+      out_left = postorderTraversal(left);
       out.insert(out.begin(), out_left.begin(), out_left.end());
     }
     out.push_back(root -> val);
-    if (right){
-      vector<int> out_right;
-      out_right = inorderTraversal(right);
-      out.insert(out.end(), out_right.begin(), out_right.end());
-    }
     
     return out;
   }
@@ -59,11 +59,11 @@ int main()
   TreeNode* root = &elem;
 
   vector<int> out;
-  out = sol.inorderTraversal(root);
+  out = sol.postorderTraversal(root);
   print_vector(out);
   
   root = {};
-  out = sol.inorderTraversal(root);
+  out = sol.postorderTraversal(root);
   print_vector(out);
 
   return 0;

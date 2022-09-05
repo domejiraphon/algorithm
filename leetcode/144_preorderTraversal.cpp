@@ -31,21 +31,19 @@ public:
       return out;
     }
     vector<int> out;
-    
     TreeNode* left = root -> left ? root -> left : nullptr;
     TreeNode* right = root -> right ? root -> right : nullptr;
     if (left){
       vector<int> out_left;
       out_left = inorderTraversal(left);
-      out.insert(out.begin(), out_left.begin(), out_left.end());
+      out.insert(out.end(), out_left.begin(), out_left.end());
     }
-    out.push_back(root -> val);
     if (right){
       vector<int> out_right;
       out_right = inorderTraversal(right);
       out.insert(out.end(), out_right.begin(), out_right.end());
     }
-    
+    out.push_back(root -> val);
     return out;
   }
 };
