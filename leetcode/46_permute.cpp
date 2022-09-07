@@ -27,43 +27,35 @@ void print_1d(const vector<int> matrix){
 class Solution {
 public:
   vector<vector<int>> permute(vector<int>& nums) {
-    int n=nums.size();
-    vector<vector<int>> out;
-    
-    int sel;
-    
-    for (int i=0; i != n; i++){
-      i = 2;
-      sel = nums[i];
-      /*
-      vector<int> first_nums{nums.begin(), nums.begin()+i};
-      vector<int> second_nums{nums.begin()+i+1, nums.end()};
-      
-      first_nums.insert(first_nums.end(), second_nums.begin(), second_nums.end());*/
-      vector<int> first_nums{1, 2};
-      for (int j=n-1; j != i-1; j--){
-        vector<int> tmp;
-        vector<int> first_vector{first_nums.begin(), first_nums.begin()+j};
-        vector<int> second_vector{first_nums.begin()+j, first_nums.end()};
-       
-        tmp.insert(tmp.end(), first_vector.begin(), first_vector.end());
-        tmp.push_back(sel);
-        tmp.insert(tmp.end(), second_vector.begin(), second_vector.end());
-        print_1d(tmp);
-        out.push_back(tmp);
-       
-      }
-      exit(0);
-    
+    vector<vector<int>> out{{nums[0]}};
    
+    int sel;
+    for (int i=1; i != nums.size(); i++){
+      sel = nums[i];
+      int n=out.size();
+      vector<vector<int>> tmp =out;
+      out.clear();
+      for (int j=0; j != n; j++){
+        for (int k=0; k != tmp[j].size()+1; k++){
+          vector<int> first={tmp[j].begin(), tmp[j].begin()+k};
+          vector<int> second={tmp[j].begin()+k, tmp[j].end()};
+          vector<int> tmp2;
+          tmp2.insert(tmp2.end(), first.begin(), first.end());
+          tmp2.push_back(sel);
+          tmp2.insert(tmp2.end(), second.begin(), second.end());
+
+          out.push_back(tmp2);
+        }
+      }
+      
     }
-     exit(0);
     return out;
     }
 };
+
 int main()
 { 
-  vector<int> nums{1,2,3};
+  vector<int> nums{1,2,3, 40};
   Solution sol;
   vector<vector<int>>out = sol.permute(nums);
   print(out);
