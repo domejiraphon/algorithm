@@ -1,47 +1,56 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <stack>
 #include <vector>
 using namespace std;
 
-class Solution {
+class Solution2 {
 public:
   bool isValid(string s) {
-  string cur=s;
-  if (cur == "")
-    return false;
-  while (cur !=""){
-    string first(1, cur[0]);
-    string next(1, cur[1]);
-    string last(1, cur[cur.size()-1]);
-    if (first == ")" ||first == "]" || first == "}"){
-      return false;
-    }
-    map <string, string> symbol;
-    symbol["("] = ")"; symbol[")"] = "(";
-    symbol["["] = "]"; symbol["]"] = "[";
-    symbol["{"] = "}"; symbol["}"] = "{";
-    if (symbol[first] == next){
-      cur = cur.substr(2);
-    }
-    else if (symbol[first] == last){
-      cur = cur.substr(1, cur.size() - 2);
-    }
-    else{
-      return false;
-    }
+  map<char, int> iterator;
+  iterator['('] = 0; iterator[')'] = 0; 
+  iterator['['] = 0; iterator[']'] = 0; 
+  iterator['{'] = 0; iterator['}'] = 0; 
+
+  for (auto tmp:s){
+    iterator[tmp]++;
+    if (iterator[')'] > iterator['('] ||
+        iterator[']'] > iterator['['] ||
+        iterator['}'] > iterator['{']){
+          return false;
+        }
+  
   }
   return true;
   }
 };
-
+class Solution {
+public:
+  bool isValid(string s) {
+    stack<char> S;
+    for (auto tmp: s){
+      if (tmp == '(' || tmp == '[' || tmp == '{'){
+        S.push(tmp);
+      }
+      else if ((tmp == ')' && !S.empty() && S.top() == '(') ||
+              (tmp == ']' && !S.empty() && S.top() == '[') ||
+              (tmp == '}' && !S.empty() && S.top() == '{'))
+      {
+        S.pop();
+      }
+      else {return false;};
+    }
+    return (S.empty()) ? true: false;
+  }
+};
 int main()
 {
   Solution sol;
-  cout << sol.isValid("()") << endl;
+  cout << sol.isValid("]") << endl;
   cout << sol.isValid("()[]{}") << endl;
   cout << sol.isValid("(]") << endl;
-  cout << sol.isValid("((]") << endl;
+  cout << sol.isValid("([)]") << endl;
   cout << sol.isValid("(([]){})") << endl;
   return 0;
 }
