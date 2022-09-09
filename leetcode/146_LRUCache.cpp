@@ -13,7 +13,6 @@ public:
   LRUCache(int capacity) {
     map<int, int> cache;
     int cap = capacity;
-   
   }
   
   int get(int key) {
@@ -29,8 +28,7 @@ public:
       cache[key] = value;
     }
     else {
-      int least_used = Q.front();
-      cache.erase(key);
+      cache.erase(Q.front());
       Q.pop();
       cache[key] = value;
     }
