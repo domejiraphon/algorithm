@@ -5,30 +5,47 @@
 #include <vector>
 using namespace std;
 
+
 class Solution {
+private:
+  void DFS(vector<vector<char>>& grid, int i, int j){
+    grid[i][j] = 0;
+    int row = grid.size(); int col = grid[0].size();
+    if (i-1 >= 0 && grid[i-1][j] == '1'){DFS(grid, i-1, j);}
+    if (j-1 >=0 && grid[i][j-1] == '1'){DFS(grid, i, j-1);}
+    if (i+1 < row && grid[i+1][j] == '1'){DFS(grid, i+1, j);}
+    if (j+1 < col && grid[i][j+1] == '1'){DFS(grid, i, j+1);}
+  }
+
+  void BFS(vector<vector<char>>& grid, int i, int j){
+    int row = grid.size(); int col = grid[0].size();
+    queue<tuple<int, int>> Q;
+    Q.push({i, j});
+
+    while(!Q.empty()){
+      tie(i, j) = Q.front();
+      grid[i][j] = '0';
+      Q.pop();
+      if (i-1 >= 0 && grid[i-1][j] == '1'){Q.push({i-1, j});}
+      if (j-1 >=0 && grid[i][j-1] == '1'){Q.push({i, j-1});}
+      if (i+1 < row && grid[i+1][j] == '1'){Q.push({i+1, j});}
+      if (j+1 < col && grid[i][j+1] == '1'){Q.push({i, j+1});}
+    }
+   
+  }
 public:
-  int numIslands(const vector<vector<char>>& grid) {
-    
+  int numIslands(vector<vector<char>>& grid) {
     int count(0);
-    for (int i=0; i != grid.size(); i++){
-      for (int j=0; j != grid[0].size(); j++){
-        if (i ==0 && j==0 && grid[i][j] == '1'){count++;}
-        else if (i ==0) {
-          if (grid[i][j] == '1' && grid[i][j-1] == '0'){count++;}
-        }
-        else if (j ==0) {
-          if (grid[i][j] == '1' && grid[i-1][j] == '0'){count++;}
-        }
-        else {
-          if (grid[i][j] == '1' && grid[i-1][j] == '0' && grid[i][j-1] == '0'){count++;}
-          if (grid[i][j] == '1' && grid[i-1][j] == '1' && grid[i][j-1] == '1'){count--;}
-        }
+    for (int i =0; i != grid.size(); i++){
+      for (int j =0; j != grid[0].size(); j++){
+        //if (grid[i][j] == '1'){DFS(grid, i, j); count++;}
+        if (grid[i][j] == '1'){BFS(grid, i, j); count++;}
+       
       }
     }
     return count;
-
-   
   }
+
 };
 
 int main()
@@ -38,11 +55,11 @@ int main()
                              {'1', '1', '1',}};
   
   Solution sol;
-  cout << sol.numIslands(grid2);
-  vector<vector<char>> grid {{'1', '1', '0', '0', '0'},
+  cout << sol.numIslands(grid2)<<endl;
+  vector<vector<char>> grid {{'1', '1', '0', '0', '1'},
                              {'1', '1', '0', '0', '0'},
                              {'0', '0', '1', '0', '0'},
-                             {'0', '0', '0', '1', '1'}};
+                             {'1', '0', '0', '1', '1'}};
   cout << sol.numIslands(grid);
   
   return 0;
