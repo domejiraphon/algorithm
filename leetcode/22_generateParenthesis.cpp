@@ -15,7 +15,6 @@ public:
   vector<string> generateParenthesis(int n) {
     vector<string> res;
     backtrack(res, "", 0, 0, n);
-    //backtrace(res, "", 0, 0, n);
     return res;
   }
 private:
@@ -26,14 +25,14 @@ private:
         return;
       }  
       if (numOpen < n){
-        backtrack(res, s+"(", numOpen+1, numClose, n);
+        backtrack(res, "("+s, numOpen+1, numClose, n);
       }     
       if (numClose < numOpen){
         backtrack(res, s+ ")", numOpen, numClose+1, n);
       }    
     }
-  
 };
+
 int main()
 {
   
