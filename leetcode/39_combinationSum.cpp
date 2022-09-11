@@ -63,8 +63,8 @@ int main()
   out = sol.combinationSum(candidates, 8);
   print(out);
 
-  candidates = vector<int> {2};
-  out = sol.combinationSum(candidates, 1);
+  candidates = vector<int> {100,200,4,12};
+  out = sol.combinationSum(candidates, 400);
   print(out);
   return 0;
 }
