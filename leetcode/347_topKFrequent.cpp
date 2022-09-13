@@ -29,6 +29,7 @@ public:
   int operator() (tuple<int, int> p1, tuple<int, int> p2){
     return get<1>(p1) < get<1>(p2);}
 };
+
 class Solution {
 public:
   vector<int> topKFrequent(vector<int>& nums, int k) {
