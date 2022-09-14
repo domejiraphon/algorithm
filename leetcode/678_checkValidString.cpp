@@ -17,47 +17,28 @@ void print(vector<int> cur){
 class Solution {
 public:
   bool checkValidString(string str) {
-    stack<int> S;
-    vector<int> deleteList;
-
-    for (int i=0; i != str.size(); i++){
-      if (str[i] == '('){
-        S.push(i);
-      }
-      else if (str[i] == ')' && !S.empty()){
-        deleteList.push_back(S.top());
-        deleteList.push_back(i);
-        S.pop();
-      }
-    }
-
-    sort(deleteList.begin(), deleteList.end());
-    for (int i=0; i !=deleteList.size(); i++){
-      str.erase(deleteList[i] - i, 1);}
-    
-    S = stack<int> {};
-    for (int i=0; i != str.size(); i++){
-      if (str[i] == '(' || str[i] == ')'){
-        S.push(i);
-      }
-      else if (str[i] == '*' && !S.empty()){
-        S.pop();
-      }
+    int count(0);
+    int star(0);
+    for (auto i=0; i != str.size(); i++){
+      if (str[i] == '('){count++;}
+      else if (str[i] == ')'){count--;}
+      else if (str[i] == '*'){star++;}
+     
     }
     
-    return (check['*'] >= check['('] + check[')']) ? true : false;
+    return (- count < star) ? true : false;
   }
 };
 
 int main()
 {
-  string s = "()";
+  string s = "(*))";
   
   Solution sol;
-  //cout << sol.checkValidString(s)<<endl;
-
-  s = "()(**)";
-  //cout << sol.checkValidString(s)<<endl;
+  cout << sol.checkValidString(s)<<endl;
+ 
+  s = "(*)";
+  cout << sol.checkValidString(s)<<endl;
 
   s = "(((((*(()((((*((**(((()()*)()()()*((((**)())*)*)))))))(())(()))())((*()()(((()((()*(())*(()**)()(())";
   cout << sol.checkValidString(s)<<endl;
