@@ -37,22 +37,27 @@ public:
     } 
     int count(0);
     for (int i=0; i != arr.size(); i++){
-      helper(set, arr[i], count);
+      count += helper(set, arr[i]);
     } 
+   
     count += arr.size();
     return count;
   }
-  void helper(unordered_set<int> set, int head, int& count){
+private:
+  int helper(unordered_set<int> set, int head){
+    int count(0);
     for (auto it=set.begin(); it != set.end(); it++){
       if (*it == head){continue;}
       if (head % *it == 0 && 
-        (int) head / *it != *it &&
         set.find((int) head / *it) != set.end()){
           count++;
-          helper(set, (int) head / *it, count);
+          //cout << "HEAD:"<<head << ", "<< *it << ", "<< (int) head / *it<< endl;
+          count += helper(set, (int) head / *it);
+          count += helper(set, *it);
         }
     }
-    return;
+    
+    return count;
   }
 };
 
@@ -62,7 +67,10 @@ int main()
   Solution* sol;
   cout << sol -> numFactoredBinaryTrees(arr)<<endl;
 
-  arr = vector<int> {2, 4, 5, 10};
+  arr = vector<int> {18,3,6,2};
+  cout << sol -> numFactoredBinaryTrees(arr)<<endl;
+
+  arr = vector<int> {2,4,5,10};
   cout << sol -> numFactoredBinaryTrees(arr)<<endl;
   
   return 0;
