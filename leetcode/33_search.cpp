@@ -15,15 +15,15 @@ void print(vector<int> x){
 class Solution {
 public:
   int search(vector<int>& nums, int target) {
+    if(nums.size() == 1){return (nums[0] == target) ? 0:-1;}
     int pivot = getIdx(nums);
     int prev = nums[nums.size() - 1];
-   
-    rotate(nums, pivot);
-    int idx = helper(nums, target);
     
+    int idx = helper(nums, target);
+    cout << idx << ", "<< pivot << endl;
     if (idx < 0){return -1;}
     else if (target <= prev) {return idx + pivot;}
-    else {return idx - pivot + 1;}
+    else {return idx - (nums.size() - pivot);}
   }
 private:
   int helper(vector<int>& nums, int target){
@@ -74,12 +74,12 @@ int main()
   
   Solution* sol;
   
-  cout << sol -> search(nums, 0)<< endl;
-  cout << sol -> search(nums, 7)<< endl;
-  cout << sol -> search(nums, 2)<< endl;
-  cout << sol -> search(nums, 3)<< endl;
+  //cout << sol -> search(nums, 0)<< endl;
+  //cout << sol -> search(nums, 7)<< endl;
+  //cout << sol -> search(nums, 2)<< endl;
+  //cout << sol -> search(nums, 3)<< endl;
 
-  nums = {1};
-  cout << sol -> search(nums, 0)<< endl;
+  nums = {3,4,5,6,7,8,1,2};
+  cout << sol -> search(nums, 7)<< endl;
   return 0;
 }

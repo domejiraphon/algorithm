@@ -9,18 +9,14 @@ using namespace std;
 class Solution {
 public:
   int numTrees(int n) {
-  if (n == 1){return 1;}
-  else if (n == 2){return 2;}
-  int tmp=2;
-  for (int i=3; i != n+1; i++){
-    if (i %2 == 0){
-      tmp = 2*tmp+4;  
+    vector<int> memo(n + 1, 0);
+    memo[0] = 1; memo[1] = 1; 
+    for (int i=2; i < n+1; i++){
+      for (int j = 0; j != i+1; j++){
+        memo[i] += memo[j] * memo[i - j - 1];
+      }
     }
-    else {
-      tmp = 2*tmp +1;
-    }
-  }
-  return tmp;
+    return memo[n];
   }
 };
 
@@ -29,7 +25,7 @@ int main()
   
   Solution sol;
 
-  cout << sol.numTrees(5)<< endl;
+  cout << sol.numTrees(4)<< endl;
 
   return 0;
 }
