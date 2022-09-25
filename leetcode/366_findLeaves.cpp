@@ -1,29 +1,12 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <queue>
 #include <stack>
 
 using namespace std;
-
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
-
-void print(vector<int> x){
- 
-    for (auto elem: x){
-      cout << elem <<", ";}
-    cout << endl;
-
-  
-}
 struct TreeNode {
   int val;
   TreeNode *left;
@@ -32,56 +15,72 @@ struct TreeNode {
   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
   TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
+void print(unordered_map<TreeNode*, bool> x){
+  for(auto it= x.begin(); it != x.end(); it++){
+    cout << it -> first<< ",  "<<it -> second << endl;
+  }
+}
+
+void print(vector<int> x){
+ 
+    for (auto elem: x){
+      cout << elem <<", ";}
+    cout << endl;
+
+}
+void print(vector<vector<int>> in){
+  for (auto x: in){
+    for (auto elem: x){
+      cout << elem <<", ";}
+    cout << endl;
+  }
+    
+
+}
+
 class Solution {
 public:
   vector<vector<int>> findLeaves(TreeNode* root) {
     vector<vector<int>> out;
-
-    vector<int> res;
-    //cout <<(!root)<<endl; 
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-    DFS(root, root, res);
-     exit(0);
-    cout <<(!root)<<endl; 
-    cout <<(!root -> left)<<endl; 
-    exit(0);
-    out.push_back(res);
-
-    cout <<(!root)<<endl; 
-  
-    exit(0);
-    /*
+    if (!root){return out;}
+    unordered_map<TreeNode*, bool> seen;
     while (root){
       vector<int> res;
-      DFS(root, res);
-      print(res);
+      DFS(root, res, seen);
+
+      exit(0);
       out.push_back(res);
-    }*/
+      bool allSeen=true;
+      for(auto it= seen.begin(); it != seen.end(); it++){
+        if (!it -> first) {continue;}
+        allSeen = allSeen && it -> second;
+      }
+      if (allSeen){break;}
+      
+    }
+    //out.push_back(vector<int> {root -> val});
     return out;
   }
   
 
-  void DFS(TreeNode* head, TreeNode*& parent, vector<int>& res){
+  void DFS(TreeNode* head, vector<int>& res, unordered_map<TreeNode*, bool>& seen){
     if (!head) {return;}
+    if (head && seen.find(head) == seen.end()){seen[head] = false;}
+    if (seen[head]) {return;}
     TreeNode* leftChild = head -> left ? head -> left : nullptr;
     TreeNode* rightChild = head -> right ? head -> right : nullptr;
-    if (!leftChild && !rightChild){
+    if ((seen[leftChild] && seen[rightChild]) 
+        || (!leftChild && !rightChild)){
       res.push_back(head -> val);
-      parent -> left = nullptr; parent -> right = nullptr;}
-    DFS(leftChild, parent, res); DFS(rightChild, parent, res);
-    //cout <<(!head)<< endl;
-    if (parent){
-      cout << parent -> val << endl;
-      cout << !parent -> left<< endl;
-    }
+      seen[head] = true; return;}
+    DFS(leftChild, res, seen); 
+    DFS(rightChild, res, seen);
+    print(seen); exit(0);
+
+  
   }
 };
+
 int main()
 { 
   TreeNode* root = new TreeNode(10);
@@ -97,8 +96,15 @@ int main()
  
   vector<vector<int>> out;
  
-  out = sol.findLeaves(root);
+  //out = sol.findLeaves(root);
+  
   print(out);
 
+  TreeNode* r = new TreeNode(1);
+  TreeNode* r2 = new TreeNode(2);
+  r -> left = r2;
+  out = sol.findLeaves(r);
+  
+  print(out);
   return 0;
 }

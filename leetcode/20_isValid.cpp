@@ -25,6 +25,7 @@ public:
   return true;
   }
 };
+
 class Solution {
 public:
   bool isValid(string s) {
@@ -44,6 +45,7 @@ public:
     return (S.empty()) ? true: false;
   }
 };
+
 int main()
 {
   Solution sol;

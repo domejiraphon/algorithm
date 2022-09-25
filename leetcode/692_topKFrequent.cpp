@@ -30,12 +30,11 @@ void print(vector<tuple<int, string>> vec)
 class myComparator{
 public:
   int operator() (tuple<int, string> p1, tuple<int, string> p2){
-    return get<0>(p1) < get<0>(p2);}
+    if (get<0>(p1) != get<0>(p2)) {return get<0>(p1) < get<0>(p2);}
+    else {return get<1>(p1) > get<1>(p2);}
+    }
 };
-bool sortby (const tuple<int, string>& a, const tuple<int, string>& b){
-  if (get<0>(a) != get<0>(b)){return get<0>(a) > get<0>(b);}
-  else {return get<1>(a) < get<1>(b);}
-}
+
 class Solution {
 public:
   vector<string> topKFrequent(vector<string>& words, int k) {
@@ -53,17 +52,14 @@ public:
 
     int counter(0);
     words.clear();
-    vector<tuple<int, string>> out;
     while (!maxHeap.empty()){
-      out.push_back(maxHeap.top());
+      tuple<int, string> p = maxHeap.top();
+      words.push_back(get<1>(p));
       maxHeap.pop();
       counter++;
       if (counter==k){break;}
     }
-    sort(out.begin(), out.end(), sortby);
-    for (auto ele: out){
-      words.push_back(get<1>(ele));
-    }
+   
     return words;
   }
 };
@@ -75,7 +71,7 @@ int main()
   vector<string> out = sol -> topKFrequent(words, 2);
   print(out);
 
- 
+  words = {"the","day","is","sunny","the","the","the","sunny","is","is"};
   out = sol -> topKFrequent(words, 4);
   print(out);
   return 0;

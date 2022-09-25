@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Solution {
+class SolutionNaive {
 public:
   bool isValidSudoku(vector<vector<char>>& board) {
     return checkCol(board) && checkRow(board) && checkSub(board);
@@ -58,6 +58,22 @@ private:
     }
 
     return true;
+  }
+};
+
+
+class Solution{
+public:
+  bool isValidSudoku(vector<vector<char>>& board) {
+    for (int i=0; i < board.size(); i++){
+      unordered_set<int> setRow, setCol, setgrid;
+      for (int j=0; j < board[0].size(); j++){
+        if (board[i][j] == '.') {continue;}
+        if (setRow.find(board[i][j]) != setRow.end()){return false;}
+        else {setRow.insert(board[i][j]);}
+        
+      }
+    }
   }
 };
 
