@@ -1,9 +1,11 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <tuple>
-
+#include <queue>
 using namespace std;
 
 class Node {
@@ -24,36 +26,23 @@ public:
   }
 };
 
-map<int, bool> visited;
+
 
 class Solution {
+private:
+  unordered_map<Node*, Node*> visited;
 public:
   Node* cloneGraph(Node* node) {
-    if (!node){
-      return nullptr;
+    if(!node){return node;}
+    if (visited.find(node) != visited.end()){
+      return visited[node];
     }
-    Node* new_node = new Node(node -> val);
-    
-    vector <Node*> ptr_neighbors;
-    if (visited.find(new_node -> val) == visited.end()){
-      visited[new_node -> val] = false;
+    Node* cloneNode = new Node(node -> val);
+    visited[node] = cloneNode;
+    for (auto ele: node -> neighbors){
+      (cloneNode -> neighbors).push_back(cloneGraph(ele));
     }
-    for (Node* neighb : node -> neighbors){  
-      if (visited.find(neighb -> val) == visited.end()){
-        visited[neighb -> val] = false;
-      } 
-      if (!visited[neighb -> val]){
-        ptr_neighbors.push_back(cloneGraph(neighb));
-      }
-
-    }
-    if (visited.find(new_node -> val) == visited.end()){
-      visited[new_node -> val] = true;
-    }
-   
-   
-    new_node -> neighbors = ptr_neighbors;
-    return new_node;
+    return cloneNode;
   }
 };
 
@@ -72,8 +61,8 @@ int main()
 
   Solution sol;
   Node* out = sol.cloneGraph(node1);
-  cout<< out << endl;
-  cout<< out -> neighbors[0] << endl;
-  cout<< out -> neighbors[1] << endl;
+  cout << out -> val << endl;
+  cout << out -> neighbors[0] -> val << endl;
+  cout << out -> neighbors[1] -> val << endl;
   return 0;
 }
