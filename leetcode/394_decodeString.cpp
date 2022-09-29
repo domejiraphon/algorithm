@@ -3,72 +3,66 @@
 #include <map>
 #include <vector>
 #include <tuple>
+#include <stack>
 
 using namespace std;
+
 class Solution {
 public:
   string decodeString(string s) {
-    string out="";
-    if (s.substr(2).find("[") >= s.substr(2).size()){
-      string rep = s.substr(1, s.size()-1);
-      int rev = stoi(string(1, s[0]));
-      for (int i=0; i != rev; i++){
-        out += rep.substr(1, rep.size()-2);}
-      return out;
-    }
-    else {
-      decodeHelperComposit(s);
-
-        
-        
-      return out;
-      }
-
-  }
-
-  string decodeHelperConcat(string s){
-    string out="";
-    while (s.find("]") < s.size()){
-      string cur="";
-      cur = s.substr(0, s.find("]")+1);
-
-      s = s.substr(s.find("]")+1);
+    stack<string> S;
+    string out;
     
-      out += decodeString(cur);
-
-    }
-  }
-
-  string decodeHelperComposit(string s){
-    string out="";
-    if (isdigit(s[2])){
-      string rep = s.substr(1, s.size()-1);
-      int rev = stoi(string(1, s[0]));
-      for (int i=0; i != rev; i++){
-        out += decodeString(rep);}
-      return out;
-    }
-    else {
-      string first = ""; string second = "";
-      for (int i=2; i!=s.size(); i++){
-        if (isdigit(s[i])){second = s.substr(i, s.size()-1); break;}
-        else {first += s[i];}
+    for (int i=0; i < s.size(); i++){
+      if (s[i] != ']'){
+        S.push(string(1, s[i]));
       }
-      int rev = stoi(string(1, s[0]));
-      string rec = decodeString(second);
-      for (int i=0; i != rev; i++){out += first+rec;}
-    }
-    return out;
-    }
+      else {
+        string cur;
+        while (S.top() != "["){
+          cur = S.top() + cur;
+          S.pop();
+        }
 
+        S.pop();
+        int base=1;
+        int rep = 0;
+        // get the number k
+        while (!S.empty() && isdigit(S.top()[0])) {
+            rep += (S.top()[0] - '0') * base;
+            S.pop();
+            base *= 10;
+        }
+       
+
+        string repeat;
+        for (int j=0; j < rep; j++){
+          repeat += cur;
+        }
+        if (S.empty()){
+          out += repeat;
+        }
+        else {
+          S.push(repeat);
+        }
+      }
+    }
+    string res="";
+    while (!S.empty()){
+      res = S.top() + res;
+      S.pop();
+    }
+    return out + res;
+  }
 };
+
 int main()
 { 
   Solution sol;
-  //cout<< sol.decodeString("3[ac]")<<endl;
-  //cout<< sol.decodeString("3[a]2[bc]")<< endl;
+  cout<< sol.decodeString("3[ac]")<<endl;
+  cout<< sol.decodeString("3[a]2[bc]")<< endl;
   cout<< sol.decodeString("3[a2[c]]")<< endl;
-  //cout<< sol.decodeString("2[abc]3[cd]ef")<< endl;
+  cout<< sol.decodeString("ef10[leetcode]")<< endl;
  
   return 0;
 }
