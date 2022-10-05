@@ -2,6 +2,7 @@
 #include <iterator>
 #include <map>
 #include <queue>
+#include <unordered_map>
 #include <vector>
 #include <algorithm>
 using namespace std;
@@ -19,31 +20,25 @@ class Solution {
 public:
   vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
     vector<vector<int>> res;
-    vector<int> subset{};
-    map<vector<int>, bool> duplicate;
-    backtracking(res, subset, candidates, target, duplicate);
+    vector<int> subset;
+    backtracking(res, subset, candidates, target, 0);
     return res;
   }
 
 private:
   void backtracking(vector<vector<int>>& res, vector<int> subset,
-        const vector<int>& candidates, int target, 
-        map<vector<int>, bool>& duplicate){
+        const vector<int>& candidates, int target, int start){
     if (target == 0){
       sort(subset.begin(), subset.end());
-      if (duplicate.find(subset) == duplicate.end()){
-        res.push_back(subset);
-        duplicate[subset] = true;
-      }
+      res.push_back(subset);
       return;
     }
     else if (target < 0){return;}
     else {
-      for (auto sel : candidates){
+      for (int i=start; i < candidates.size(); i++){
         vector<int> cur{subset};
-        cur.push_back(sel);
-
-        backtracking(res, cur, candidates, target - sel, duplicate);
+        cur.push_back(candidates[i]);
+        backtracking(res, cur, candidates, target - candidates[i], i);
       }
     }
 
@@ -58,7 +53,7 @@ int main()
   vector<vector<int>> out;
   out = sol.combinationSum(candidates, 7);
   print(out);
-
+  cout << endl;
   candidates = vector<int> {2,3,5};
   out = sol.combinationSum(candidates, 8);
   print(out);
