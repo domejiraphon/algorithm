@@ -23,8 +23,9 @@ void print(unordered_set<T> x){
 
 void print(unordered_map<char, int> x){
   for (auto it=x.begin(); it != x.end(); it++){
-    cout << it -> first <<": "<< it -> second << endl;
+    cout << it -> first <<": "<< it -> second << ", ";
   }
+  cout << endl;
 }
 
 class Solution2 {
@@ -61,17 +62,21 @@ public:
     unordered_map<char, int> hashP =  getHash(p);
     int n = s.size();
     int m = p.size();
+    unordered_map<char, int> hashS = getHash(s.substr(0, m));
     vector<int> out;
     for (int i=0; i <= n - m; i++){
-      unordered_map<char, int> hashS = getHash(s.substr(i, m));
       bool yes(true);
+      
+      if (i != 0) {hashS[s[i+m - 1]]++;}
+      print(hashS);
       for (auto it=hashS.begin(); it != hashS.end(); it++){
         //cout << it -> first <<": "<< hashP[it -> first] << ", " << it -> second << endl;
-        if (hashP.find(it -> first) == hashP.end() || hashP[it -> first] != it -> second){
+        if (hashP[it -> first] != it -> second){
           yes = false;
           break;
         }
       }
+      hashS[s[i]]--;
       if (yes){out.push_back(i);}
     }
     return out;
@@ -91,13 +96,14 @@ int main()
 {
   Solution* sol;
   vector<int> out;
+  /*
   out = sol -> findAnagrams("abcba", "abc");
   print(out);
   
   
   out = sol -> findAnagrams("abab", "ab");
-  print(out);
-  out = sol -> findAnagrams("abab", "yqrbgjdwtcaxzsnifvhmou");
+  print(out);*/
+  out = sol -> findAnagrams("cbaebabacd", "abc");
   print(out);
 
   return 0;
