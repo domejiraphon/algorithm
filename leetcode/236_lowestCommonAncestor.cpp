@@ -13,36 +13,23 @@ struct TreeNode {
   TreeNode *right;
   TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
-void print(stack<TreeNode*> path){
-  while (!path.empty()){
-    cout << path.top() -> val << ", ";
-    path.pop();
-  }
-  cout << endl;
-}
+
 class Solution {
 public:
-  TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-    stack<TreeNode*> path;
-    bool found(false);
-    DFS(root, q, path, found);
-    print(path);
-    exit(0);
-    return nullptr;
-  }
-private:
-  void DFS(TreeNode* root, TreeNode* target, stack<TreeNode*>& path, bool& found){
-    if (!root){return;}
-    if (target == root){path.push(target); found = true; return;}
-    path.push(root);
-    DFS(root -> left, target, path, found);
-    if (!found){
-      
-      DFS(root -> right, target, path, found);
-      path.pop();
-      //if (!found){path.pop();}
+  TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q){
+    if (!root){return nullptr;}
+    if (root == p || root == q){
+      return root;
     }
-
+  
+    TreeNode* left = lowestCommonAncestor(root -> left, p, q);
+    TreeNode* right =lowestCommonAncestor(root -> right, p, q);
+    if (left && right){
+      return root;
+    }
+    if (!left){return right;}
+    else {return left;}
+   
   }
 };
 
@@ -70,5 +57,6 @@ int main()
 
   TreeNode* out;
   out = sol -> lowestCommonAncestor(node1_1, node4_1, node4_2);
+  cout << out -> val << endl;
   return 0;
 }
