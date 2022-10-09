@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <cmath>
 #include <vector>
 #include <list>
 
@@ -12,64 +13,58 @@ struct ListNode {
   ListNode(int x) : val(x), next(nullptr) {}
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
+void print(ListNode* x){
+  while(x){
+    cout << x -> val <<", ";
+    x = x -> next;
+  }
+}
 
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    int out1 = extract(l1);
+    int out2 = extract(l2);
+    out1 += out2;
     ListNode* out = new ListNode();
-    ListNode* out2 = out;
-    int carry = 0;
-    while (l1 != nullptr || l2 != nullptr){
-      int sum=0;
-      if (l1){
-        sum += l1 -> val;
-      }
-      if (l2){
-        sum += l2 -> val;
-      }
-      sum += carry;
-      carry = (int) sum / 10;
-      
-      out2 -> next = new ListNode(sum % 10);
-      out2 = out2 -> next;
-
-      if (l1 -> next){
-        l1 = l1 -> next;
-      }
-      else
-        l1 = nullptr;
-
-      if (l2 -> next){
-        l2 = l2 -> next;
-      }
-      else 
-        l2 = nullptr;
-    
-    };
+    ListNode* cur = out;
+    while (out1 > 0){
+      cur -> next = new ListNode(out1 % 10);
+      cur = cur-> next;
+      out1 = out1 / 10;
+    }
     return out -> next;
   }
-  void visualize(const ListNode* l1_ptr){
-    while (l1_ptr != nullptr){
-        cout << l1_ptr -> val << endl;
-        l1_ptr = l1_ptr -> next;
-  };
-  };
+private:
+  int extract(ListNode* head){
+    int out(0);
+    int digit(0);
+    while (head){
+      out = pow(10, digit) * head -> val + out;
+      head = head -> next;
+      digit++;
+    }
+    return out;
+  }
 };
+
 
 int main()
 {
-  ListNode l1_1 = {3};
-  ListNode l1_2 = {4, &l1_1};
-  ListNode l1_3 = {2, &l1_2};
-  ListNode* l1_ptr = &l1_3;
+  ListNode* node1 = new ListNode(2);
+  ListNode* node2 = new ListNode(4);
+  ListNode* node3 = new ListNode(3);
 
-  ListNode l2_1 = {4};
-  ListNode l2_2 = {6, &l2_1};
-  ListNode l2_3 = {5, &l2_2};
-  ListNode* l2_ptr = &l2_3;
-  
-  Solution sol;
+  node1 -> next = node2; node2 -> next = node3;
+
+  ListNode* node4 = new ListNode(5);
+  ListNode* node5 = new ListNode(6);
+  ListNode* node6 = new ListNode(4);
+
+  node4 -> next = node5; node5 -> next = node6;
+  Solution* sol;
   ListNode* out;
-  out = sol.addTwoNumbers(l1_ptr, l2_ptr);
-  sol.visualize(out);
+  
+  out = sol -> addTwoNumbers(node1, node4);
+  print(out);
 }
