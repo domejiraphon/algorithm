@@ -4,7 +4,7 @@
 #include <cmath>
 #include <vector>
 #include <list>
-
+#include <algorithm>
 using namespace std;
 void print(vector<vector<int>> x){
   for (auto row: x){
@@ -22,26 +22,24 @@ void print(vector<int> x){
 class Solution {
 public:
   vector<vector<int>> permuteUnique(vector<int>& nums) {
-     vector<vector<int>> res;
-     vector<int> cur;
-     backtrack(nums, res, cur, nums.size());
-     //print(res); exit(0);
-     exit(0);
-     return res;
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> res;
+    vector<int> cur;
+    backtrack(nums, res, cur, 0, nums.size());
+    return res;
   }
 private:
   void backtrack(vector<int> nums, vector<vector<int>>& res, 
-        vector<int> cur, int n){
+        vector<int> cur, int round, int n){
+    if (round == n){res.push_back(cur); return;}
     
-    if (nums.size() == 0){res.push_back(cur); return;}
-    if (nums.size() == 1){cur.push_back(nums[0]); res.push_back(cur); return;}
-    for (int i=0; i < n; i++){
+    for (int i=0; i < nums.size(); i++){
+      if (i >= 1 && nums[i] == nums[i-1]){continue;}
       vector<int> tmp=nums;
       tmp.erase(tmp.begin() +i);
-      print(tmp);
-      vector<int> cur;
       cur.push_back(nums[i]);
-      backtrack(tmp, res, cur, n);
+      backtrack(tmp, res, cur, round +1, n);
+      cur.pop_back();
     }
   }
 };
@@ -53,4 +51,6 @@ int main()
 
   nums = {1,1,2};
   out = sol -> permuteUnique(nums);
+  print(out);
+
 }
