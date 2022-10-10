@@ -18,39 +18,52 @@ void print(ListNode* x){
     cout << x -> val <<", ";
     x = x -> next;
   }
+  cout << endl;
 }
 
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    int out1 = extract(l1);
-    int out2 = extract(l2);
-    out1 += out2;
-    ListNode* out = new ListNode();
-    ListNode* cur = out;
-    if (out1 == 0){
-      return out;
+    ListNode* cur1 = l1;
+    ListNode* cur2 = l2;
+    ListNode* head = new ListNode(0);
+    ListNode* cur = head;
+    int carry(0);
+    int val;
+    while (cur1 && cur2){
+      val = carry + cur1 -> val + cur2 -> val;
+      carry = (int) val / 10;
+      val %= 10;
+
+      cur1 = cur1 -> next; cur2 = cur2 -> next;
+      cur -> next = new ListNode(val);
+      cur = cur -> next;
     }
-    while (out1 > 0){
-      cur -> next = new ListNode(out1 % 10);
-      cur = cur-> next;
-      out1 = out1 / 10;
-    }
-    return out -> next;
+    addItself(cur1, cur, carry);
+    addItself(cur2, cur, carry);
+    if (carry == 1){cur -> next = new ListNode(1);}
+    return head -> next;
   }
 private:
-  int extract(ListNode* head){
-    int out(0);
-    int digit(0);
-    while (head){
-      out = pow(10, digit) * head -> val + out;
-      head = head -> next;
-      digit++;
+  void addItself(ListNode* cur1, ListNode*& cur, int& carry){
+    if (!cur1){return;}
+    int val;
+    while (cur1){
+      val = carry + cur1 -> val;
+      cur1 = cur1 -> next;
+      
+      carry = (int) val / 10;
+      val %= 10;
+      
+      cur -> next = new ListNode(val);
+      cur = cur -> next;
+      if (carry == 0){
+        cur -> next = cur1; break;
+      }
     }
-    return out;
+    
   }
 };
-
 
 int main()
 {
@@ -60,14 +73,17 @@ int main()
 
   node1 -> next = node2; node2 -> next = node3;
 
-  ListNode* node4 = new ListNode(5);
-  ListNode* node5 = new ListNode(6);
-  ListNode* node6 = new ListNode(4);
+  ListNode* node4 = new ListNode(9);
+  ListNode* node5 = new ListNode(9);
+  ListNode* node6 = new ListNode(1);
+  ListNode* node7 = new ListNode(1);
+ 
 
   node4 -> next = node5; node5 -> next = node6;
+  
   Solution* sol;
   ListNode* out;
   
-  out = sol -> addTwoNumbers(node1, node4);
+  out = sol -> addTwoNumbers(node4, node7);
   print(out);
 }

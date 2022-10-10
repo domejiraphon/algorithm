@@ -10,42 +10,25 @@
 using namespace std;
 
 class Solution {
-public:
+public: 
   bool isRobotBounded(string instructions) {
-    pair<int, int> dir = {1, 0};
-    pair<int, int> end = {0, 0};
-    map<pair<int, int>, pair<int, int>> dirLTable, dirRTable;
-    dirLTable[{1, 0}] = {0, -1}; dirLTable[{0, -1}] = {-1, 0}; 
-    dirLTable[{-1, 0}] = {0, 1}; dirLTable[{0, 1}] = {1, 0}; 
-
-    dirRTable[{1, 0}] = {0, 1}; dirRTable[{0, 1}] = {-1, 0}; 
-    dirRTable[{-1, 0}] = {0, -1}; dirRTable[{0, -1}] = {1, 0}; 
-    for (auto ele: instructions){
-      if (ele == 'G'){
-        end.first += dir.first;
-        end.second += dir.second;
+    vector<vector<int>> dir = {{0,1}, {-1, 0}, {0, -1}, {1,0}};
+    int i = 0;
+    int x = 0;
+    int y = 0;
+    for(auto ele: instructions){
+      if(ele == 'L'){
+        i = (i + 1) % 4;
       }
-      else if (ele == 'L'){
-        dir = dirLTable[dir];
+      else if(ele== 'R'){
+        i = (i + 3) % 4;
       }
-      else if (ele == 'R'){
-        dir = dirRTable[dir];
+      else{
+        x = x + dir[i][0];
+        y = y + dir[i][1];
       }
     }
-    if (end.first == 0 && end.second == 0){
-      return true;
-    }
-    else if (check(end, dir)){
-        return true;
-      }
-    return false;
-  }
-private:
-  bool check(pair<int, int> end, pair<int, int> dir){
-    float norm = pow(pow(end.first, 2) + pow(end.second, 2), 0.5);
-    float dot = (end.first * dir.first + end.second * dir.second) / norm;
-
-    return (dot != 1.0);
+    return x == 0 && y == 0 || i != 0;
   }
 };
 
