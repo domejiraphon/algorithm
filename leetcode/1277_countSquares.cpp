@@ -13,38 +13,26 @@ void print(vector<vector<int>> x){
     cout << endl;
   }
 }
-
 class Solution {
 public:
-  int findLength(vector<int>& nums1, vector<int>& nums2) {
-    vector<vector<int>> memo(nums1.size() + 1, vector<int> (nums2.size() + 1, 0));
-    int out(0);
-    for (int i=0; i < nums1.size(); i++){
-      for (int j=0;j < nums2.size(); j++){
-        if (nums1[i] == nums2[j]){
-          memo[i + 1][j + 1] = 1 + memo[i][j];
-          out = max(out, memo[i + 1][j + 1]);
-        }
+  int countSquares(vector<vector<int>>& matrix) {
+    vector<vector<int>> memo (matrix.size(), vector<int> (0, matrix[0].size()));
+    for (int i=0; i < min(matrix.size(), matrix[0].size()); i++){
+      for (int square=0; square < i; square++){
+        
       }
     }
-    print(memo); 
-    return out;
   }
-
 };
 
 int main()
 { 
   
   Solution* sol;
-  vector<int> nums1 = {3,2,1};
-  vector<int> nums2 = {3,2,1,4,7};
+  vector<vector<int>> matrix = {{0,1,1,1},
+                                {1,1,1,1},
+                                {0,1,1,1}};
 
-  cout << sol -> findLength(nums1, nums2)<< endl;
-
-  nums1 = {0,0,0,0,0,0,1,0,0,0};
-  nums2 = {0,0,0,0,0,0,0,1,0,0};
-
-  cout << sol -> findLength(nums1, nums2)<< endl;
+  cout << sol -> countSquares(matrix) << endl;
   return 0;
 }

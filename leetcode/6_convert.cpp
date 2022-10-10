@@ -11,11 +11,11 @@ void print(vector<string> x){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   string convert(string s, int numRows) {
     vector<string> out(numRows);
-    
     int every=2*numRows - 2;
     int row_used(0);
     for (int i = 0; i < s.size(); i+= every){
@@ -49,6 +49,7 @@ public:
     return tmp2;
   }
 };
+
 int main()
 { 
   string s="PAYPALISHIRING";

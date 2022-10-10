@@ -34,10 +34,8 @@ public:
     for (int i=1; i != nums.size(); i++){
       int tmp = max(nums[i],  max(_max * nums[i], _min * nums[i]));
       _min = min(nums[i],  min(_max * nums[i], _min * nums[i]));
-
       _max = tmp;
       out = max(out, max(_max, _min));
-
     }
     return out;
   }

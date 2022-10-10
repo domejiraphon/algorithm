@@ -20,6 +20,7 @@ void print(vector<vector<int>> x){
   }
   
 }
+
 bool sortby(const tuple<char, int> &a,
               const tuple<char, int> &b){
   if (get<1>(a) < get<1>(b)){return true;}
@@ -58,6 +59,7 @@ public:
     return intervals;
   }
 };
+
 int main()
 {
   vector<vector<int>> intervals = {{1, 3}, {2, 6}, {8, 10}, {15, 18}}, out;

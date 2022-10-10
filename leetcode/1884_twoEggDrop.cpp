@@ -11,6 +11,7 @@ void print(vector<int> x){
     cout << elem <<", ";}
  
 }
+
 class Solution {
 public:
   int twoEggDrop(int n) {

@@ -15,6 +15,7 @@ void print(vector<int> x){
 class Solution {
 public:
   int findKthLargest(vector<int>& nums, int k){return helper(nums, nums.size()-k);}
+private:
   int helper(vector<int>& nums, int k) {
     int pivot = nums[0];
     int idx = partition(nums, nums[nums.size()-1]);

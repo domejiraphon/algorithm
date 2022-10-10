@@ -2,21 +2,25 @@
 #include <iterator>
 #include <map>
 #include <vector>
+#include <set>
+#include <unordered_map>
 #include <unordered_set>
+#include <queue>
 #include <stack>
 #include <tuple>
 
 using namespace std;
 
-void print(vector<int> x){
-  for (auto elem: x){
-    cout << elem <<', ';}
-  cout << endl;
-}
 class Solution {
 public:
   int leastInterval(vector<char>& tasks, int n) {
-      
+   
+    unordered_set<char> Set;
+    Set.insert(tasks[0]);
+    int i(0), n(tasks.size());
+    while (i < n){
+      if ()
+    }
   }
 };
 int main()

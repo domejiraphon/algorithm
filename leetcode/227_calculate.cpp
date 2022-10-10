@@ -16,15 +16,15 @@ public:
     stack<char> S;
     stack<string> prior;
     bool priority(false);
-    char ch = '1';
-	  cout << stoi(string(1, ch)); exit(0);
+    int right(0);
+    int digitRight(0);
     for (auto ele: s){
       if (ele == ' '){continue;}
       else if (ele == '*' || ele == '/'){
         int left(0);
         int digit(0);
         while (!S.empty() && isdigit(S.top())){
-          left += pow(10, digit) * S.top();
+          left += pow(10, digit) * stoi(string(1, S.top()));
           S.pop();
           digit++;
         }
@@ -33,9 +33,18 @@ public:
         priority = true;
       }
       else {
-        if (priority){
-          //int right = atoi(string(1, ele));
-          cout << endl;
+        if (priority && isdigit(ele)){
+          right += pow(10, digitRight) * stoi(string(1, ele));
+          digitRight++;
+          
+        }
+        else if (priority && !isdigit(ele)){
+          string mark = prior.top(); prior.pop();
+          int left = stoi(prior.top()); prior.pop();
+          if (mark == "*"){left *= right;}
+          else {left /= right;}
+          S.push(to_string(left)); 
+          S.push(ele); right = 0; digitRight = 0;
         }
         else {
           priority = true;

@@ -13,7 +13,7 @@ public:
   }
 private:
   int helper(int start, int end){
-    if (end == start) {return isBadVersion(start);}
+    if (end == start) {return isBadVersion(start) ? end : -1;}
     if (end - start == 1 &&
         isBadVersion(start) ==  false &&
         isBadVersion(end) == true){

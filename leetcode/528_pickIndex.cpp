@@ -20,48 +20,22 @@ void print(set<vector<int>> x){
     cout << endl;
   }
 }
-
 class Solution {
+  vector<int> weight;
 public:
-  void nextPermutation(vector<int>& nums) {
-    set<vector<int>> res;
-    getPermutation(res, nums, 0, nums.size());
-   
-    vector<vector<int>> out = {res.begin(), res.end()};
-    for (int i = 0; i < out.size(); i++){
-      if (i == out.size() - 1){nums = out[0]; break;}
-      if (out[i] == nums){nums = out[i + 1]; break;}
-    }
-  }
-private:
-  void getPermutation(set<vector<int>>& res, vector<int> nums, int low, int high){
-    if (low == high){
-      res.insert(nums); return;
+    Solution(vector<int>& w) {
+      weight = w;
     }
     
-    for (int i=low; i != high; i++){
-      swap(nums[low], nums[i]);
-      getPermutation(res, nums, low+1, high);
-      
+    int pickIndex() {
+        
     }
-  }
 };
 
 int main()
 {
-  
-  Solution* sol;
-  vector<int> nums={3, 2, 1};
-  
-  //sol -> nextPermutation(nums);
-  //print(nums);
-  
-  nums = {1, 2, 3};
-  //sol -> nextPermutation(nums);
-  //print(nums);
-
-  nums = {1};
-  sol -> nextPermutation(nums);
-  print(nums);
+  vector<int> w ={1, 3};
+  Solution* obj = new Solution(w);
+  int param_1 = obj->pickIndex();
   return 0;
 }

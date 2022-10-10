@@ -20,6 +20,7 @@ void print(vector<int> x){
  
 }
 
+
 class Solution {
 public:
   int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
@@ -30,6 +31,7 @@ public:
 private:
   int helper(int m, int n, int maxMove, int startRow, int startColumn, 
             vector<vector<vector<int>>>& memo){
+    int mod = pow(10, 9) + 7;
     if (startRow < 0 || startRow == m || startColumn < 0 || startColumn == n){
       return 1;
     }
@@ -37,10 +39,10 @@ private:
     if (memo[startRow][startColumn][maxMove] != -INT_MAX){return memo[startRow][startColumn][maxMove];}
     
     memo[startRow][startColumn][maxMove] = 
-        helper(m, n, maxMove - 1, startRow - 1, startColumn, memo) + 
-        helper(m, n, maxMove - 1, startRow, startColumn - 1, memo) +
-        helper(m, n, maxMove - 1, startRow + 1, startColumn, memo) +
-        helper(m, n, maxMove - 1, startRow, startColumn + 1, memo);
+        helper(m, n, maxMove - 1, startRow - 1, startColumn, memo) % mod + 
+        helper(m, n, maxMove - 1, startRow, startColumn - 1, memo) % mod +
+        helper(m, n, maxMove - 1, startRow + 1, startColumn, memo) % mod +
+        helper(m, n, maxMove - 1, startRow, startColumn + 1, memo) % mod;
     return memo[startRow][startColumn][maxMove];
   }
 };

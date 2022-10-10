@@ -35,7 +35,7 @@ public:
     if (!root){return;}
     queue<TreeNode*> Q;
     helper(root, Q);
-    cout <<"d";
+   
     root = Q.front();
     Q.pop();
     while (!Q.empty()){

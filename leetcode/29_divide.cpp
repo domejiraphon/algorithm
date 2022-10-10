@@ -15,7 +15,7 @@ void print(const vector<vector<int>> matrix){
     }
     cout << endl;
   }
-};
+}
 class Solution {
 public:
   int divide(int dividend, int divisor) {

@@ -24,6 +24,7 @@ void print(vector<vector<int>> x){
   }
   
 }
+
 class Solution {
 public:
   vector<vector<int>> levelOrder(TreeNode* root) {
@@ -42,11 +43,9 @@ public:
         TreeNode* rightChild = head -> right ? head -> right : nullptr;
         if (leftChild){
           Q.push(leftChild);
-          
         }
         if (rightChild){
           Q.push(rightChild);
-
         }
       }
       out.push_back(cur);

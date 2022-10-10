@@ -12,10 +12,10 @@ void print(vector<int> x){
   for (auto row: x){cout << row <<", ";}
   cout << endl;
 }
+
 class Solution {
 public:
   int search(vector<int>& nums, int target) {
-    
     if (nums.size() == 1){
       return (nums[0] ==  target) ? 0 : -1;
     }
@@ -36,6 +36,7 @@ public:
 
   }
 };
+
 int main()
 { 
   

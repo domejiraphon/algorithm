@@ -45,6 +45,7 @@ private:
 
   }
 };
+
 int main()
 {
   Solution* sol;

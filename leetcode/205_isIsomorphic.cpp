@@ -15,16 +15,15 @@ void print(vector<int> x){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   bool isIsomorphic(string s, string t) {
     int n = s.size();
     int m = t.size();
     if (n != m) {return false;}
-
     unordered_map<char, char> hash;
     unordered_set<char> Set;
-
     for (int i = 0; i < n; i++){
       if (hash.find(s[i]) == hash.end()){
         if (Set.find(t[i]) == Set.end()){

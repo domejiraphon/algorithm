@@ -13,6 +13,7 @@ void print(vector<int>& nums){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   void wiggleSort(vector<int>& nums) {
@@ -24,9 +25,9 @@ public:
         swap(nums[i], nums[i+1]); 
       }
     }
-    
   }
 };
+
 int main()
 { 
   

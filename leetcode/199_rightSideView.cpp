@@ -40,7 +40,6 @@ public:
     if (!root){return vector<int> {};}
     vector<int> cur;
     BFS(root, cur);
-    
     return cur;
   }
 private:

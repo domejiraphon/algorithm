@@ -14,6 +14,7 @@ void print_1d(const vector<bool> matrix){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   bool canJump(vector<int>& nums) {
@@ -34,6 +35,7 @@ public:
     return can_jump[0];
   }
 };
+
 int main()
 { 
   vector<int> nums{2,3,1,1,4};

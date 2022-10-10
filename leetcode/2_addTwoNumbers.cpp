@@ -28,6 +28,9 @@ public:
     out1 += out2;
     ListNode* out = new ListNode();
     ListNode* cur = out;
+    if (out1 == 0){
+      return out;
+    }
     while (out1 > 0){
       cur -> next = new ListNode(out1 % 10);
       cur = cur-> next;

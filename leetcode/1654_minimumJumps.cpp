@@ -23,17 +23,17 @@ class Solution {
 public:
   int minimumJumps(vector<int>& forbidden, int a, int b, int x) {
     unordered_set<int> forb(forbidden.begin(), forbidden.end());
-    set<int> memo;
+    map<int, set<int>> memo;
     helper(forb, a, b, x, 0, 0, memo);
-    print(memo); 
+ 
     if (memo.empty()){return -1;}
-    else {return *memo.begin();}
+    else {return memo.begin() -> second;}
   
   }
 private:
-  void helper(unordered_set<int>  forbidden, int a, int b, int x, int start, int count, set<int>& memo){
+  void helper(unordered_set<int>  forbidden, int a, int b, int x, int start, int count, map<int, set<int>>& memo){
     if (start > x){return;}
-    if (start == x){memo.insert(count); return;}
+    if (start == x){memo[start].insert(count); return;}
     if (forbidden.find(start + a) == forbidden.end()){
       helper(forbidden, a, b, x, start + a, count + 1, memo);
     }

@@ -8,15 +8,12 @@ using namespace std;
 class Solution {
 public:
   int maxProfit(vector<int>& prices) {
-  int out(0);
-  for (int i=0; i != prices.size(); i++){
-    for (int j=i; j != prices.size(); j++){
-      if (out < (prices[j] - prices[i])){
-        out = prices[j] - prices[i];
-      }
+    vector<int> memo(prices.size(), 0);
+    int n = prices.size();
+    for (int i=0; i < n; i++){
+      for (int j=)
     }
-  }
-  return out;
+    return out;
   }
 };
 int main()

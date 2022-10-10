@@ -18,6 +18,7 @@ void print(map<int, int> cur){
   for (auto it =cur.begin(); it != cur.end(); it++){cout << it -> first <<", "<< it -> second<<endl;}
   cout << endl;
 }
+
 class SparseVector {
 private:
   map<int, int> hashTable;

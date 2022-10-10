@@ -18,6 +18,7 @@ void print(vector<int> x){
   cout << endl;
   
 }
+
 class Solution {
 public:
   int numSquares(int n) {
@@ -36,7 +37,6 @@ public:
         memo[i] = min(memo[i], 1 + memo[i - pos[j]]);
       }
     }
-    print(memo);
     return memo[n];
   }
 };
