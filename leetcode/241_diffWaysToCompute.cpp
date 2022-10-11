@@ -22,7 +22,6 @@ public:
     vector<int> ans;
     vector<int> leftAns;
     vector<int> rightAns;
-    
     for (auto i=0; i<n; i++){
       if (!isdigit(expression[i])){
         leftAns = diffWaysToCompute(expression.substr(0, i));
@@ -37,7 +36,6 @@ public:
     if (ans.size() == 0){
       ans.push_back(stoi(expression));
     }
-    
     return ans;
   }
 private:
@@ -47,6 +45,7 @@ private:
     else{return x*y;}
   }
 };
+
 int main()
 {
   Solution* sol;
