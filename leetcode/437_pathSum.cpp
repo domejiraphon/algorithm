@@ -30,34 +30,28 @@ public:
     if (!root){return 0;}
     int count(0);
     vector<TreeNode*> cur;
-    set<vector<TreeNode*>> S;
-    DFS(root, targetSum, count, 0, cur, S);
+    DFS(root, targetSum, count, 0);
     
     return count;
   }
 private:
-  void DFS(TreeNode* root, int targetSum, int& count, int sel,
-      vector<TreeNode*>& cur, set<vector<TreeNode*>>& S){
-    if (targetSum == 0 && cur.size() != 0 &&  S.find(cur) == S.end()){
-      count++; 
-      S.insert(cur);
-      return;}
+  void DFS(TreeNode* root, int targetSum, int& count, int sel){
+    
     if (!root){return;}
     
     if (sel == 0){
-      DFS(root -> left, targetSum, count, 0, cur, S);
-      DFS(root -> right, targetSum, count, 0, cur, S);
-      DFS(root, targetSum, count, 1, cur, S);
+      DFS(root -> left, targetSum, count, 0);
+      DFS(root -> right, targetSum, count, 0);
+      DFS(root, targetSum, count, 1);
     }
     else {
-      cur.push_back(root);
-      if (targetSum ==  root ->val){count++;}
+     
+      if (targetSum == root ->val){count++; return;}
       else {
-        DFS(root -> left, targetSum - root -> val, count, 1, cur, S);
-        DFS(root -> right, targetSum - root -> val, count, 1, cur, S);
+        DFS(root -> left, targetSum - root -> val, count, 1);
+        DFS(root -> right, targetSum - root -> val, count, 1);
       }
-      
-      cur.pop_back();
+     
     }
   }
 };
