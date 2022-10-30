@@ -30,23 +30,15 @@ public:
       vector<int> out {};
       return out;
     }
-    vector<int> out;
     
     TreeNode* left = root -> left ? root -> left : nullptr;
     TreeNode* right = root -> right ? root -> right : nullptr;
-    if (left){
-      vector<int> out_left;
-      out_left = inorderTraversal(left);
-      out.insert(out.begin(), out_left.begin(), out_left.end());
-    }
-    out.push_back(root -> val);
-    if (right){
-      vector<int> out_right;
-      out_right = inorderTraversal(right);
-      out.insert(out.end(), out_right.begin(), out_right.end());
-    }
-    
-    return out;
+    vector<int> leftV = inorderTraversal(left);
+    vector<int> rightV = inorderTraversal(right);
+
+    leftV.push_back(root -> val);
+    leftV.insert(leftV.end(), rightV.begin(), rightV.end());
+    return leftV;
   }
 };
 
