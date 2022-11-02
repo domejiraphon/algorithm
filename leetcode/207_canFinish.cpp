@@ -8,68 +8,61 @@
 
 using namespace std;
 
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-void print(vector<string> x){
-  for (auto row: x){
-    cout << row <<", ";
-    
-  }
-  cout << endl;
-}
-
 class Solution {
 public:
   bool canFinish(int numCourses, 
     vector<vector<int>>& prerequisites) {
-    vector<vector<int>> adj(numCourses, vector<int> {});
-    vector<string> state(numCourses, "undiscovered");
-    for (auto ele: prerequisites){
-      adj[ele[0]].push_back(ele[1]);
-    }
-    bool isCycle(false);
-    for (int i=0; i<numCourses; i++){
-      if (state[i] != "visited"){
-        isCycle = DFS(adj, i, state);
-        if (isCycle){return false;}
+    vector<int> adj[numCourses];
+    for(auto edge : prerequisites)
+      adj[edge[1]].push_back(edge[0]);
+    
+    vector<bool> visited(numCourses, false);
+    vector<bool> parents(numCourses);
+    bool out(false);
+    for (int i=0; i < numCourses; i++){
+      if (!visited[i]){
+        out = isCycle(adj, i, visited, parents);
       }
+      if (out){break;}
     }
-    return !isCycle;
+    return !out;
   }
 private:
-  bool DFS(vector<vector<int>> adj, int start, 
-    vector<string>& state){
-    state[start] = "active";
-    bool isCycle(false);
-    for (auto neighbors: adj[start]){
-      if (state[neighbors] == "active"){
-        isCycle = true;
-        break;
+  bool isCycle(vector<int> adj[], int cur,
+          vector<bool>& visited, vector<bool>& parents){
+    if (adj[cur].size() == 0){return false;}
+    visited[cur] = true;
+    bool out(false);
+
+    parents[cur] = true;
+    for (auto next: adj[cur]){
+      if (parents[next]){return true;}
+      if (!visited[next]){
+        out = isCycle(adj, next, visited, parents);
       }
-      if (state[neighbors] == "undiscovered"){
-        isCycle = isCycle || DFS(adj, neighbors, state);
-      }
+      if (out){break;}
     }
-    state[start] = "visited";
-    return isCycle;
+    parents[cur] = false;
+    return out;
+
   }
 };
+
 
 int main()
 { 
   
   Solution* sol;
   vector<vector<int>> prerequisites;
-
+  prerequisites = {};
+  cout << sol -> canFinish(1, prerequisites)<< endl;
+  
   prerequisites = {{1,0}};
   cout << sol -> canFinish(2, prerequisites)<< endl;
 
   prerequisites = {{1,0},{0,1}, {0, 2}};
   cout << sol -> canFinish(3, prerequisites)<< endl;
+  
+  
   return 0;
 }

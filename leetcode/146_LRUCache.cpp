@@ -1,40 +1,40 @@
 #include <iostream>
 #include <iterator>
-#include <map>
-#include <queue>
+#include <unordered_map>
+#include <list>
 #include <vector>
 using namespace std;
 
 class LRUCache {
-  int cap;
-  queue<int> Q;
-  map<int, int> cache;
+  size_t capacity;
+  int curCap;
+  unordered_map<int,  list<pair<int, int>>::iterator> m_map; 
+  list<pair<int, int>> m_list;  
 public:
   LRUCache(int capacity) {
-    cap = capacity;
+    capacity = capacity;
   }
   
   int get(int key) {
-    if (cache.find(key) != cache.end()){
-      Q.push(key);
-      return cache[key];
-    }
-    else {return -1;}
+    auto it = m_map.find(key);
+    if (it == m_map.end()){return -1;}
+    m_list.remove()
+    return it -> second -> second;
   }
   
   void put(int key, int value) {
-    if (cache.size() == cap){
-      cache.erase(Q.front());
-      Q.pop();
+    auto it = m_map.find(key);
+    if (it != m_map.end()){
+      it -> second -> second = value;
+      return;
     }
-    cache[key] = value;
-    Q.push(key);
-  }
-
-  void print(){
-    for (auto it=cache.begin(); it != cache.end(); it++){
-      cout << it -> first << ", "<< it -> second << endl;
+    if (curCap == capacity){
+      m_list.pop_back();
+      int key_to_del = m_list.back().first; 
+      m_map.erase(key_to_del);
     }
+    m_list.emplace_front(key, value);
+    m_map[key] = m_list.begin();
   }
 };
 
