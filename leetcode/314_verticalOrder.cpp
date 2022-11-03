@@ -2,7 +2,7 @@
 #include <iterator>
 #include <map>
 #include <vector>
-#include <tuple>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
@@ -26,42 +26,36 @@ struct TreeNode {
   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
   TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
-
 class Solution {
 public:
   vector<vector<int>> verticalOrder(TreeNode* root) {
     vector<vector<int>> res;
-    getX(root, res, 0, 0);
-  
-    map<int, vector<vector<int>>> hash;
-    for (int i=0; i < res.size(); i++){
-      hash[res[i][0]].push_back(vector<int> {res[i][1], res[i][2]});
-    }
-    res.clear();
-    for (auto it=hash.begin(); it != hash.end(); it++){
-      vector<vector<int>> cur = it -> second;
-      sort(cur.begin(), cur.end());
-      vector<int> x;
-      for (auto ele: cur){
-        x.push_back(ele[1]);
+    if (!root){return res;}
+    queue<pair<TreeNode*, int>> Q;
+    map<int, vector<int>> M;
+
+    Q.push({root, 0});
+    
+    while (!Q.empty()){
+      int n = Q.size();
+      for (int i=0; i< n; i++){
+        pair<TreeNode*, int> nodeCol = Q.front();
+        Q.pop();
+
+        M[nodeCol.second].push_back(nodeCol.first -> val);
+        if (nodeCol.first -> left){
+          Q.push({nodeCol.first -> left, nodeCol.second - 1});
+        }
+        if (nodeCol.first -> right){
+          Q.push({nodeCol.first -> right, nodeCol.second + 1});
+        }
+        
       }
-      res.push_back(x);
+    }
+    for (auto it = M.begin(); it != M.end(); it++){
+      res.push_back(it -> second);
     }
     return res;
-  }
-private:
-  void getX(TreeNode* root, vector<vector<int>>& res, int x, int y){
-    if (!root) {return;}
-    vector<int> cur = {x, y, root -> val};
-    res.push_back(cur);
-    TreeNode* leftChild = root -> left ? root -> left : nullptr;
-    if (leftChild){
-      getX(leftChild, res, x - 1, y + 1);
-    }
-    TreeNode* rightChild = root -> right ? root -> right : nullptr;
-    if (rightChild){
-      getX(rightChild, res, x + 1, y + 1);
-    }
   }
 };
 

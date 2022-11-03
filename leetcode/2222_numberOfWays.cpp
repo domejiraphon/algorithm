@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iterator>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <tuple>
 
@@ -10,34 +10,29 @@ using namespace std;
 class Solution {
 public:
   long long numberOfWays(string s) {
-    int count0(0);
-    for (auto ele: s){
-      count0 += ele == '0';
-    }
-    int count1 = s.size() - count0;
-    long long way(0);
     
-    if (count1 > 1){
-      way += numWay(count1, 2) * numWay(count0, 1);
-    }
-    if (count0 > 1){
-      way += numWay(count0, 2) * numWay(count1, 1);
-    }
-    return way;
+    unordered_map<int, int> hash;
+    int count = backtrack(s, 0, "", hash);
+    return count;
   }
 private:
-  long long factorial(int n){
-    if (n == 0){return 1;}
-    long long out(1);
-    for (int i=1; i <=n; i++){
-      out *= i;
+  int backtrack(string& s, int idx, string cur,
+      unordered_map<int, int>& hash){
+    //if (hash.count(idx)){return hash[idx];}
+    if (cur == "11"|| cur == "00"){return 0;}
+    if (cur == "101" || cur == "010"){
+      return 1;}
+    if (idx == s.size() || cur.size() > 3){return 0;}
+    int count(0);
+    for (int i=idx; i < s.size(); i++){
+      cur += s[i];
+      count += backtrack(s, i + 1, cur, hash);
+      cur.pop_back();
     }
-    return out;
+    cout << idx <<": "<< count << endl;
+    hash[idx] = count;
+    return count;
   }
-  long long numWay(int a, int b) {
-    cout << factorial(a) / (factorial(b) * factorial(a - b)) << endl;
-    
-    return factorial(a) / (factorial(b) * factorial(a - b));}
 };
 
 int main()
