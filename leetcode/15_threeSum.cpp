@@ -24,55 +24,29 @@ void print(vector<int> x){
    cout << endl;
 }
 
-class Solution2 {
-public:
-  vector<vector<int>> threeSum(vector<int>& nums) {
-    set<vector<int>> S;
-    int n = nums.size();
-    for (int i=0; i !=n; i++){
-      map<int, int> hash_table;
-      for (int j=i+1; j <nums.size(); j++){
-        if (hash_table.find(- nums[i] - nums[j]) != hash_table.end()){
-          vector<int> cur;
-          cur.push_back(nums[i]);
-          cur.push_back(nums[j]);
-          cur.push_back(- nums[i] - nums[j]);
-          sort(cur.begin(), cur.end());
-          S.insert(cur);
-          
-          //out.push_back(cur);
-        }
-        else {hash_table[nums[j]] = j;}
-      }
-      //nums.erase(nums.begin());
-    }
-    vector<vector<int>> out={S.begin(), S.end()};
-    return out;
-  }
-};
-
-
 
 class Solution {
 public:
   vector<vector<int>> threeSum(vector<int>& nums) {
     sort(nums.begin(), nums.end());
-    map<vector<int>, bool> hashTable;
+    
     vector<vector<int>> out;
-    //set<vector<int>> S;
-    for (int i=0; i != nums.size() - 1; i++){
-      int low(i+1), high(nums.size() - 1);
+    int n = nums.size() - 1;
+    
+    for (int i=0; i != n; i++){
+      if (i == 0 || nums[i - 1] != nums[i]) {
+      int low(i+1), high(n);
       while (low < high){
-        if (nums[i] + nums[low] + nums[high] == 0){
-          vector<int> cur;
-          cur.push_back(nums[i]); cur.push_back(nums[low]); cur.push_back(nums[high]); 
-          high--;
-          if (hashTable.find(cur) == hashTable.end()){out.push_back(cur); hashTable[cur] = true;}
-          
-          //S.insert(cur); 
+        int cur = nums[i] + nums[low] + nums[high];
+        if (cur == 0){
+          out.push_back(vector<int> {nums[i], nums[low++], nums[high--]});
+          while (low < high && nums[low] == nums[low - 1]){
+            low++;
+          }
         }
-        else if (nums[i] + nums[low] + nums[high] > 0){high--;}
+        else if (cur > 0){high--;}
         else {low++;}
+      }
       }
     }
     return out;

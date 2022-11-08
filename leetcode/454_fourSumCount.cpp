@@ -10,6 +10,7 @@ void print(unordered_map<int, int>& hash){
     cout << it -> first <<": " << it -> second<< endl;
   }
 }
+
 class Solution {
 public:
   int fourSumCount(vector<int>& nums1, 
@@ -19,7 +20,7 @@ public:
     int n3 = nums3.size(), n4 = nums4.size();
     unordered_map<int, int> hash1 = getHash(nums1, nums2);
     unordered_map<int, int> hash2 = getHash(nums3, nums4);
-    
+
     int count(0);
     for (auto it=hash1.begin(); it != hash1.end(); it++){
       if (hash2.count(- it -> first)){
