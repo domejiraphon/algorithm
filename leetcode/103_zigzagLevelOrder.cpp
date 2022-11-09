@@ -29,6 +29,7 @@ void print(deque<TreeNode*> x){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   vector<vector<int>> zigzagLevelOrder(TreeNode* root) {

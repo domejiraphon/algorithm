@@ -23,6 +23,7 @@ void print(unordered_map<int, vector<int>> graph){
   }
   cout << endl;
 }
+
 class Solution {
 public:
   int treeDiameter(vector<vector<int>>& edges) {
@@ -40,8 +41,6 @@ public:
    
     BFS(graph, A, B, distB, n);
     //memset(&visited, false, sizeof(visited)); 
-    cout << A << endl;
-    cout << B << endl; exit(0);
     BFS(graph, B, C, distC, n);
     return distC;
   }
@@ -73,6 +72,7 @@ private:
     distance = count;
   }
 };
+
 int main()
 { 
   

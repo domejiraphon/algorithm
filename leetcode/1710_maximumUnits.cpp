@@ -14,6 +14,7 @@ void print(vector<vector<int>> x){
   }
     
 }
+
 bool sortby (vector<int>& a, vector<int>& b){
   return a[1]> b[1];
 }
@@ -23,7 +24,6 @@ public:
     sort(boxTypes.begin(), boxTypes.end(), sortby);
     int i(0);
     int count(0);
-    print(boxTypes);
     while (truckSize > 0 && i < boxTypes.size()){
       if (truckSize >=boxTypes[i][0]){
         truckSize -= boxTypes[i][0];

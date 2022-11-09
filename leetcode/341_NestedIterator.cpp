@@ -23,9 +23,6 @@ public:
 };
 int main()
 { 
-  Solution* sol;
-  vector<int> preorder = {1,2, 3};
-  vector<int> inorder = {3,2,1};
-  TreeNode* out = sol -> buildTree(preorder, inorder);
+  
   return 0;
 }

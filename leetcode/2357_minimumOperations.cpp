@@ -11,12 +11,11 @@ public:
     size_t n = nums.size();
     unordered_set<int> S;
     int count(0);
-    for (int i=0; i < n; i++){
-      if (!S.count(nums[i])){
-        S.insert(nums[i]);
+    for (auto ele: nums){
+      if (!S.count(ele) && ele != 0){
+        S.insert(ele);
         count++;
       }
-     
     }
     return count;
   }

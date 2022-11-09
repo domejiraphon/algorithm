@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 #include <queue>
-#include <deque>
+#include <stack>
 
 using namespace std;
 void print(vector<vector<int>> x){
@@ -30,10 +30,10 @@ void print(vector<int> x){
   cout << endl;
 }
 
-class BSTIterator {
+class BSTIterator2 {
   vector<int> bst;
   int idx = 0;
-  int size;
+  size_t size;
 private:
   vector<int> inOrder(TreeNode* root){
     vector<int> out;
@@ -59,6 +59,39 @@ public:
     return (idx < (size - 1)) ? true : false;
   }
 };
+
+
+class BSTIterator {
+  TreeNode* head;
+  stack<TreeNode*> S;
+private:
+  void get(TreeNode* root, stack<TreeNode*>& S){
+    head = root;
+    S.push(root);
+    while (root -> left){
+      root = root -> left;
+      S.push(root);
+    }
+  }
+public:
+  BSTIterator(TreeNode* root) {
+    get(root, S);
+  }
+  
+  int next() {
+    TreeNode* top = S.top();
+    S.pop();
+    if (top -> right){
+      get(top -> right, S);
+    }
+    return top -> val;
+  }
+  
+  bool hasNext() {
+    return !S.empty();
+  }
+};
+
 
 int main()
 { 
