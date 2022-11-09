@@ -8,29 +8,25 @@
 #include <set>
 #include <unordered_set>
 using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
-void print(set<vector<int>> x){
-  for(auto it=x.begin(); it != x.end(); it++){
-    for (auto ele: *it){
-      cout << ele << ", ";
-    }
-    cout << endl;
-  }
-}
 class Solution {
-  vector<int> weight;
+private:
+  vector<int> cumulative;
 public:
-    Solution(vector<int>& w) {
-      weight = w;
-    }
-    
-    int pickIndex() {
-        
-    }
+  Solution(vector<int>& w) {
+    int sum(0);
+    for (auto ele: w){
+      sum += ele;
+      cumulative.push_back(sum);
+      }
+  }
+
+  int pickIndex() {
+    float val = (float) rand() / RAND_MAX * cumulative.back();
+    int idx = lower_bound(cumulative.begin(), cumulative.end(), val) - cumulative.begin();
+    return idx;
+  }
 };
+
 
 int main()
 {

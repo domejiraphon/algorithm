@@ -17,35 +17,20 @@ public:
 
 class Solution {
 public:
-  Node* lowestCommonAncestor(Node* p, Node * q){
-    vector<Node*> out_p;
-    lowestCommonAncestorHelper(p, q, out_p);
-    remove(out_p);
-    return out_p[0];
- 
-  }
-  void lowestCommonAncestorHelper(Node* p, Node * q, vector<Node*>& out_p){
-    if (!p || !q) {return ;}
-    if (p == q) {
-      if (find(out_p.begin(), out_p.end(), p) == out_p.end()){
-        out_p.push_back(p);} 
-      return;}
-   
-    lowestCommonAncestorHelper(p -> parent ? p -> parent : nullptr, q, out_p);
-    lowestCommonAncestorHelper(p, q -> parent ? q -> parent : nullptr, out_p);
-
-  }
-
-  void remove(vector<Node*>& out_p){
-    for (int i=0; i != out_p.size(); i++){
-      for (int j=i; j != out_p.size(); j++){
-        if (out_p[i] -> left == out_p[j] || out_p[i] -> right == out_p[j]){
-          out_p.erase(out_p.begin()+i);
-          break;
-        }
-      }
+  Node* lowestCommonAncestor(Node* p, Node * q) {
+    vector<Node*> pathP, pathQ;
+    getPathToRoot(p, pathP); getPathToRoot(q, pathQ);
+    int left(pathP.size() - 1), right(pathQ.size() - 1);
+    while (left >=0 && right >=0 && pathP[left] == pathQ[right]){
+      left--; right--;
     }
-
+    return pathP[++left];
+  }
+private:
+  void getPathToRoot(Node* cur, vector<Node*>& path){
+    if (!cur){return;}
+    path.push_back(cur);
+    getPathToRoot(cur -> parent, path);
   }
 };
 
