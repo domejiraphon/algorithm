@@ -1,40 +1,76 @@
-#include <iostream>
-#include <iterator>
-#include <unordered_map>
-#include <list>
-#include <vector>
-using namespace std;
+/**
+ * Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+ * Implement the LRUCache class:
+ * LRUCache(int capacity) Initialize the LRU cache with positive size capacity.
+ * 
+ * int get(int key) Return the value of the key if the key exists, otherwise return -1.
+ * 
+ * void put(int key, int value) Update the value of the key if the key exists. 
+ * Otherwise, add the key-value pair to the cache. If the number of keys exceeds the capacity 
+ * from this operation, evict the least recently used key. 
+ * The functions get and put must each run in O(1) average time complexity.
+*/
+struct Node {
+  int key;
+  int val;
+  Node* prev;
+  Node* next;
+  Node(int k, int v) {key = k; val = v;}
+};
 
 class LRUCache {
-  size_t capacity;
-  int curCap;
-  unordered_map<int,  list<pair<int, int>>::iterator> m_map; 
-  list<pair<int, int>> m_list;  
+private:
+  int cap;
+  Node* head = new Node(INT_MIN, INT_MIN);
+  Node* tail = new Node(INT_MIN, INT_MIN);
+  unordered_map<int, Node*> cache;
 public:
   LRUCache(int capacity) {
-    capacity = capacity;
+    cap = capacity;
+    head -> next = tail;
+    tail -> prev = head;
   }
-  
+
   int get(int key) {
-    auto it = m_map.find(key);
-    if (it == m_map.end()){return -1;}
-    m_list.remove()
-    return it -> second -> second;
+    if (cache.count(key)){
+      Node* tmp = cache[key];
+      removeNode(tmp);
+      addNode(tmp);
+      return tmp -> val;
+    }
+    else {
+      return -1;
+    }
+  }
+
+  void put(int key, int value) {
+    if(cache.count(key)){
+      removeNode(cache[key]);
+      cache.erase(key);
+    }
+    if (cache.size() == cap){
+      Node* last = tail -> prev;
+      removeNode(last);
+      cache.erase(last -> key);
+    }
+    Node* cur = new Node(key, value);
+    cache[key] = cur;
+    addNode(cur);
+  }
+private:
+  void addNode(Node* newNode){
+    Node* prevTmp = head -> next;
+    head -> next = newNode;
+    newNode -> next = prevTmp;
+    newNode -> prev = head;
+    prevTmp -> prev = newNode;
   }
   
-  void put(int key, int value) {
-    auto it = m_map.find(key);
-    if (it != m_map.end()){
-      it -> second -> second = value;
-      return;
-    }
-    if (curCap == capacity){
-      m_list.pop_back();
-      int key_to_del = m_list.back().first; 
-      m_map.erase(key_to_del);
-    }
-    m_list.emplace_front(key, value);
-    m_map[key] = m_list.begin();
+  void removeNode(Node* delNode){
+    Node* prevTmp = delNode -> prev;
+    Node* nextTmp = delNode -> next;
+    prevTmp -> next = nextTmp;
+    nextTmp -> prev = prevTmp;
   }
 };
 
@@ -44,15 +80,3 @@ public:
  * int param_1 = obj->get(key);
  * obj->put(key,value);
  */
-int main()
-{
-  int capacity = 4;
-  LRUCache* obj = new LRUCache(capacity);
-  cout << obj->get(1)<< endl;
-  obj->put(1, 2); obj->put(2, 3); obj->put(3, 5); obj->put(5, 56); 
-  obj -> print();
-  cout << endl;
-  obj->put(6, 56);
-  obj -> print();
-  return 0;
-}
