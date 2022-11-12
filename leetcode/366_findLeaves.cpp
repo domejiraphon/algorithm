@@ -37,50 +37,49 @@ void print(vector<vector<int>> in){
     
 
 }
-
 class Solution {
 public:
   vector<vector<int>> findLeaves(TreeNode* root) {
-    vector<vector<int>> out;
-    if (!root){return out;}
-    unordered_map<TreeNode*, bool> seen;
-    while (root){
-      vector<int> res;
-      DFS(root, res, seen);
-
-      exit(0);
-      out.push_back(res);
-      bool allSeen=true;
-      for(auto it= seen.begin(); it != seen.end(); it++){
-        if (!it -> first) {continue;}
-        allSeen = allSeen && it -> second;
-      }
-      if (allSeen){break;}
-      
-    }
-    //out.push_back(vector<int> {root -> val});
-    return out;
+    vector<vector<int>> res;
+    getHeight(root, res);
+    
+    return res;
   }
-  
-
-  void DFS(TreeNode* head, vector<int>& res, unordered_map<TreeNode*, bool>& seen){
-    if (!head) {return;}
-    if (head && seen.find(head) == seen.end()){seen[head] = false;}
-    if (seen[head]) {return;}
-    TreeNode* leftChild = head -> left ? head -> left : nullptr;
-    TreeNode* rightChild = head -> right ? head -> right : nullptr;
-    if ((seen[leftChild] && seen[rightChild]) 
-        || (!leftChild && !rightChild)){
-      res.push_back(head -> val);
-      seen[head] = true; return;}
-    DFS(leftChild, res, seen); 
-    DFS(rightChild, res, seen);
-    print(seen); exit(0);
-
-  
+private:
+  int getHeight(TreeNode* root, vector<vector<int>>& res){
+    if (!root){return -1;}
+    int leftHeight = getHeight(root -> left, res);
+    int rightHeight = getHeight(root -> right, res);
+    int out = 1 + max(leftHeight, rightHeight);
+    if (out == res.size()){
+      res.push_back({});
+    }
+    res[out].push_back(root -> val);
+    return out;
   }
 };
 
+class Solution2 {
+public:
+  vector<vector<int>> findLeaves(TreeNode* root) {
+    map<int, vector<int>> res;
+    getHeight(root, res);
+    vector<vector<int>> out;
+    for (auto it=res.begin(); it != res.end(); it++){
+      out.push_back(it -> second);
+    }
+    return out;
+  }
+private:
+  int getHeight(TreeNode* root, map<int, vector<int>>& res){
+    if (!root){return -1;}
+    int leftHeight = getHeight(root -> left, res);
+    int rightHeight = getHeight(root -> right, res);
+    int out = 1 + max(leftHeight, rightHeight);
+    res[out].push_back(root -> val);
+    return out;
+  }
+};
 int main()
 { 
   TreeNode* root = new TreeNode(10);
