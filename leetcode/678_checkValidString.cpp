@@ -1,48 +1,35 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-#include <stack>
-#include <cmath>
-using namespace std;
-void print(vector<int> cur){
-  for (auto it : cur){cout << it<<", ";}
-  cout << endl;
-}
-
 class Solution {
+private:
+  string S;
+  int n;
+  int dp[101][101];
+  
 public:
-  bool checkValidString(string str) {
-    int count(0);
-    int star(0);
-    for (auto i=0; i != str.size(); i++){
-      if (str[i] == '('){count++;}
-      else if (str[i] == ')'){count--;}
-      else if (str[i] == '*'){star++;}
-     
+  bool checkValidString(string s) {
+    S=s;
+    n = s.size();
+    memset(dp, -1, sizeof(dp));
+    return check(0, 0);
+  }
+private:
+  bool check(int idx, int count){
+    if (idx == n){return count == 0;}
+    if (count < 0){return false;}
+    if (dp[idx][count] != -1){return dp[idx][count];}
+    bool out;
+    if (S[idx] == '('){
+      out = check(idx + 1, count + 1);
+    }
+    else if (S[idx] == ')'){
+      out = check(idx + 1, count - 1);
+    }
+    else {
+      out = check(idx + 1, count + 1) ||
+            check(idx + 1, count - 1) ||
+            check(idx + 1, count);
     }
     
-    return (- count < star) ? true : false;
+    return dp[idx][count] = out;
+    
   }
 };
-
-int main()
-{
-  string s = "(*))";
-  
-  Solution sol;
-  cout << sol.checkValidString(s)<<endl;
- 
-  s = "(*)";
-  cout << sol.checkValidString(s)<<endl;
-
-  s = "(((((*(()((((*((**(((()()*)()()()*((((**)())*)*)))))))(())(()))())((*()()(((()((()*(())*(()**)()(())";
-  cout << sol.checkValidString(s)<<endl;
-
-  
-  return 0;
-}

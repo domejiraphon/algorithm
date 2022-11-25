@@ -1,27 +1,14 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-
-using namespace std;
 class Solution {
 public:
   int maxProfit(vector<int>& prices) {
-    vector<int> memo(prices.size(), 0);
-    int n = prices.size();
-    for (int i=0; i < n; i++){
-      for (int j=)
+    int cur=prices[0], curP;
+    int maxPro=0;
+    int n=prices.size();
+    for (int i=1; i<n; i++){
+      curP = prices[i] - cur;
+      if (curP < 0){cur = prices[i];}
+      maxPro = max(maxPro, curP);
     }
-    return out;
+    return maxPro;
   }
 };
-int main()
-{ 
-  
-  Solution sol;
-  vector<int> prices={7,1,5,3,6,4};
-  cout << sol.maxProfit(prices)<< endl;
-
-  return 0;
-}
