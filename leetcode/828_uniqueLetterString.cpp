@@ -1,31 +1,19 @@
 class Solution {
-private:
-  int n;
-  string S;
 public:
   int uniqueLetterString(string s) {
-    n = s.size();
-    S = s;
-    return allSub(0);
-  }
-private:
-  int allSub(int idx){
-    if (idx == n){return 0;}
-    int count(0);
-    for (auto i = idx; i < n; i++){
-      cout << idx << i<<":"<<S.substr(idx, i - idx + 1) << endl;
-      count += unique(S.substr(idx, i - idx + 1));
-      count += allSub(i + 1);
+    int dp[26][2];
+    memset(dp, -1, sizeof(dp));
+    int n=s.size();
+    int res(0);
+    for (int i=0; i<n; i++){
+      int idx = s[i] - 'A';
+      res += (dp[idx][1] - dp[idx][0]) * (i - dp[idx][1]);
+      dp[idx][0] = dp[idx][1];
+      dp[idx][1] = i;
     }
-    return count;
-  }
-  int unique(string s){
-    unordered_map<char, int> freq;
-    for (auto ch: s){freq[ch]++;}
-    int count(0);
-    for (auto it=freq.begin(); it != freq.end(); it++){
-      if (it -> second == 1){count++;}
+    for (int idx=0; idx<26; idx++){
+      res += (dp[idx][1] - dp[idx][0]) * (n - dp[idx][1]);
     }
-    return count;
+    return res;
   }
 };
