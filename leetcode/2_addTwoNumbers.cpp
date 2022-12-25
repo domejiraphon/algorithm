@@ -1,89 +1,44 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <cmath>
-#include <vector>
-#include <list>
+/* 2. Add Two Numbers
+You are given two non-empty linked lists representing two non-negative integers. 
+The digits are stored in reverse order, and each of their nodes contains a single digit. 
+Add the two numbers and return the sum as a linked list.
 
-using namespace std;
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-void print(ListNode* x){
-  while(x){
-    cout << x -> val <<", ";
-    x = x -> next;
-  }
-  cout << endl;
-}
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+*/
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    ListNode* cur1 = l1;
-    ListNode* cur2 = l2;
-    ListNode* head = new ListNode(0);
-    ListNode* cur = head;
-    int carry(0);
-    int val;
-    while (cur1 && cur2){
-      val = carry + cur1 -> val + cur2 -> val;
-      carry = (int) val / 10;
-      val %= 10;
-
-      cur1 = cur1 -> next; cur2 = cur2 -> next;
-      cur -> next = new ListNode(val);
-      cur = cur -> next;
-    }
-    addItself(cur1, cur, carry);
-    addItself(cur2, cur, carry);
-    if (carry == 1){cur -> next = new ListNode(1);}
-    return head -> next;
-  }
-private:
-  void addItself(ListNode* cur1, ListNode*& cur, int& carry){
-    if (!cur1){return;}
-    int val;
-    while (cur1){
-      val = carry + cur1 -> val;
-      cur1 = cur1 -> next;
-      
-      carry = (int) val / 10;
-      val %= 10;
-      
-      cur -> next = new ListNode(val);
-      cur = cur -> next;
-      if (carry == 0){
-        cur -> next = cur1; break;
+    int carry=0;
+    ListNode* out = new ListNode(0);
+    ListNode* head = out;
+   
+    while (l1 || l2 || carry != 0){
+      int cur = 0;
+      if (l1){cur += l1 -> val;}
+      if (l2){cur += l2 -> val;}
+      cur += carry;
+      carry = cur / 10;
+      cur = cur % 10;
+      head -> next = new ListNode(cur);
+      head = head -> next;
+      if (l1){
+        l1 = l1 -> next ? l1 -> next : nullptr;
+      }
+      if (l2){
+        l2 = l2 -> next ? l2 -> next : nullptr;
       }
     }
-    
+    return out -> next;
   }
 };
-
-int main()
-{
-  ListNode* node1 = new ListNode(2);
-  ListNode* node2 = new ListNode(4);
-  ListNode* node3 = new ListNode(3);
-
-  node1 -> next = node2; node2 -> next = node3;
-
-  ListNode* node4 = new ListNode(9);
-  ListNode* node5 = new ListNode(9);
-  ListNode* node6 = new ListNode(1);
-  ListNode* node7 = new ListNode(1);
- 
-
-  node4 -> next = node5; node5 -> next = node6;
-  
-  Solution* sol;
-  ListNode* out;
-  
-  out = sol -> addTwoNumbers(node4, node7);
-  print(out);
-}

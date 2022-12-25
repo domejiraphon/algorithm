@@ -1,63 +1,26 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/*
+3. Longest Substring Without Repeating Characters
 
-using namespace std;
+Given a string s, find the length of the longest 
+substring without repeating characters.
+*/
 class Solution {
 public:
   int lengthOfLongestSubstring(string s) {
+    int left(0), right(0), n(s.size());
+    unordered_map<char, int> hash;
     int out(0);
-    map<char, bool> visited;
-    for (int i=0; i != s.size(); i++)
-    {
-      for (int j=i; j != s.size(); j++)
-      {
-        if (visited.find(s[j]) != visited.end()){break;}
-        else {
-          out = max(out, j - i + 1); 
-          visited[s[j]] = true;
-        
-        }
+    while (right < n){
+      char cur = s[right];
+      hash[cur]++;
+      while (hash[cur] > 1){
+        char l = s[left];
+        hash[l]--;
+        left++;
       }
-      visited.clear();
+      out = max(right - left + 1, out);
+      right++;
     }
     return out;
   }
-
-  void print(map<char, bool> myMap)
-  {
-    cout << "{";
-    for(const auto& elem : myMap)
-      {
-        cout << elem.first << ": " << elem.second <<", ";
-      }
-    cout << "}"<<endl;
-  }
 };
-
-int main()
-{ 
-  string s;
-  Solution sol;
-  s = "aab";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
- 
-  s="abcabcbb";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
-  
-  s="bbbbb";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
-  
-  s = "pwwkew";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
-
-  
-
-  s = "dvdf";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
-  s = "ckilbkd";
-  cout<< sol.lengthOfLongestSubstring(s) << endl;
-  return 0;
-}
