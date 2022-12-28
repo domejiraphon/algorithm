@@ -1,51 +1,26 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <stack>
-#include <algorithm>
-#include <queue>
+/*
+2214. Minimum Health to Beat Game
 
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){
-    cout << row <<", ";
-  }
-  cout << endl;
-}
+You are playing a game that has n levels numbered from 0 to n - 1. 
+You are given a 0-indexed integer array damage where damage[i] 
+is the amount of health you will lose to complete the ith level.
+
+You are also given an integer armor. 
+You may use your armor ability at most once during the game on any level which will protect you from at most armor damage.
+
+You must complete the levels in order and your health must be greater than 0 at all times to beat the game.
+Return the minimum health you need to start with to beat the game.
+*/
 class Solution {
 public:
   long long minimumHealth(vector<int>& damage, int armor) {
-    sort(damage.begin(), damage.end());
-    int n = damage.size();
-    long long out = 0;
-    for (int i=0; i < n; i++){
-      if (damage[i] >= armor){
-        out += damage[i] - armor;
-        armor = INT_MAX;
-      }
-      else {
-        if (i == n - 1 && armor != INT_MAX){
-          continue;
-        }
-        out += damage[i];
-      }
+    int maxDamage=0;
+    int n=damage.size();
+    long long sum=0;
+    for (int i = 0; i < n; i++){
+      sum += damage[i];
+      maxDamage = max(damage[i], maxDamage);
     }
-    return out + 1;
+    return sum - min(maxDamage, armor) + 1;
   }
 };
-int main()
-{ 
-  
-  Solution* sol = new Solution();
-  vector<int> damage = {2,7,4,3};
-  cout << sol -> minimumHealth(damage, 4)<< endl;
-
-  damage = {2,5,3,4};
-  cout << sol -> minimumHealth(damage, 7)<< endl;
-
-  damage = {3,3,3};
-  cout << sol -> minimumHealth(damage, 0)<< endl;
-  return 0;
-}
