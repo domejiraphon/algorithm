@@ -1,48 +1,27 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-using namespace std;
-void print(vector<string> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
+/*
+22. Generate Parentheses
 
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+*/
 class Solution {
+private:
+  vector<string> out;
+  int n;  
 public:
-  vector<string> generateParenthesis(int n) {
-    vector<string> res;
-    backtrack(res, "", 0, 0, n);
-    return res;
+  vector<string> generateParenthesis(int nums) {
+    n = nums;
+    string s="";
+    backtrack(s, 0, 0);
+    return out;
   }
 private:
-  void backtrack(vector<string>& res, string s, 
-    int numOpen, int numClose, int n){
-      if (numOpen == (n) && numClose == (n)){
-        res.push_back(s);
-        return;
-      }  
-      if (numOpen < n){
-        backtrack(res, "("+s, numOpen+1, numClose, n);
-      }     
-      if (numClose < numOpen){
-        backtrack(res, s+ ")", numOpen, numClose+1, n);
-      }    
+  void backtrack(string s, int left, int right){
+    if (left == n && right == n){out.push_back(s); return;}
+    if (left < n){
+      backtrack(s + "(", left + 1, right);
     }
+    if (left > right && right < n){
+      backtrack(s + ")", left, right + 1);
+    }
+  }
 };
-
-int main()
-{
-  
-  Solution sol;
-  vector<string> out;
-  out = sol.generateParenthesis(3);
-  print(out);
-  
-  out = sol.generateParenthesis(1);
-  print(out);
-
-  return 0;
-}

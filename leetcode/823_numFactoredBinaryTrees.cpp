@@ -1,77 +1,35 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <queue>
-#include <stack>
-#include <set>
-#include <unordered_set>
+/*
+823. Binary Trees With Factors
 
-using namespace std;
+Given an array of unique integers, arr, where each integer arr[i] is strictly greater than 1.
 
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
+We make a binary tree using these integers, and each number may be used for any number of times. 
+Each non-leaf node's value should be equal to the product of the values of its children.
 
-void print(map<string, vector<int>> x){
-  for (auto it=x.begin(); it != x.end(); it++){
-    cout << it -> first <<":";
-    for(auto elem: it -> second){
-      cout << elem << ", ";
-    }
-    cout << endl;
-  }
-}
-
+Return the number of binary trees we can make. The answer may be too large so return the answer modulo 109 + 7.
+*/
 class Solution {
 public:
   int numFactoredBinaryTrees(vector<int>& arr) {
-    unordered_set<int> set;
-    for (int i=0; i != arr.size(); i++){
-      set.insert(arr[i]);
-    } 
-    int count(0);
-    for (int i=0; i != arr.size(); i++){
-      count += helper(set, arr[i]);
-    } 
-   
-    count += arr.size();
-    return count;
-  }
-private:
-  int helper(unordered_set<int> set, int head){
-    int count(0);
-    for (auto it=set.begin(); it != set.end(); it++){
-      if (*it == head){continue;}
-      if (head % *it == 0 && 
-        set.find((int) head / *it) != set.end()){
-          count++;
-          //cout << "HEAD:"<<head << ", "<< *it << ", "<< (int) head / *it<< endl;
-          count += helper(set, (int) head / *it);
-          count += helper(set, *it);
-        }
-    }
+    int n=arr.size();
+    sort(arr.begin(), arr.end());
+    unordered_map<int, long> hash;
     
-    return count;
+    int mod = pow(10, 9) + 7;
+    long sum=0;
+    for (int i=0; i<n; i++){
+      hash[arr[i]] = 1;
+      for (int j=0; j<i; j++){
+        if (arr[i] % arr[j] == 0){
+          int comp = arr[i] / arr[j];
+          if (hash.count(comp)){
+            long cur = hash[comp] * hash[arr[j]] % mod;
+            hash[arr[i]] += cur;
+          }
+        }
+      }
+      sum += hash[arr[i]];
+    }
+    return sum % mod;
   }
 };
-
-int main()
-{ 
-  vector<int> arr = {2, 4};
-  Solution* sol;
-  cout << sol -> numFactoredBinaryTrees(arr)<<endl;
-
-  arr = vector<int> {18,3,6,2};
-  cout << sol -> numFactoredBinaryTrees(arr)<<endl;
-
-  arr = vector<int> {2,4,5,10};
-  cout << sol -> numFactoredBinaryTrees(arr)<<endl;
-  
-  return 0;
-}

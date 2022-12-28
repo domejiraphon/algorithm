@@ -1,45 +1,20 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/*
+70. Climbing Stairs
+You are climbing a staircase. It takes n steps to reach the top.
 
-using namespace std;
-template <typename T>
-void print_vector(const std::vector<T> & vec, std::string sep=", ")
-{
-    for(auto elem : vec)
-    {
-        std::cout<<elem<< sep;
-    }
-    std::cout<<std::endl;
-}
-
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+*/
 class Solution {
 public:
   int climbStairs(int n) {
-    if (n == 0)
-      return 0;
-    else if (n==1)
-      return 1;
-    else if (n==2)
-      return 2;
-    
-    vector<int> out {0, 1, 2};
-    for (int i=3; i != n+1; i++){
-      int cur = out[out.size()-1] + out[out.size()-2];
-      out.push_back(cur);
+    int dp[2];
+    dp[0] = 1; dp[1] = 1;
+    int tmp;
+    for (int i=2; i<=n; i++){
+      tmp = dp[1];
+      dp[1] += dp[0];
+      dp[0] = tmp;
     }
-    
-    return out[out.size()-1];
+    return dp[1];
   }
 };
-
-int main()
-{
-  Solution sol;
-  //cout << sol.climbStairs(2) << endl;
-  //cout << sol.climbStairs(3) << endl;
-  cout << sol.climbStairs(4) << endl;
-  return 0;
-}
