@@ -1,59 +1,58 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <cmath>
-#include <vector>
-#include <list>
-#include <algorithm>
-using namespace std;
-void print(vector<vector<bool>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-class Solution2 {
+/*
+10. Regular Expression Matching
+Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
+
+'.' Matches any single character.​​​​
+'*' Matches zero or more of the preceding element.
+The matching should cover the entire input string (not partial).
+*/
+class Solution {
 public:
   bool isMatch(string s, string p) {
+    cout << s << ", "<< p<< endl;
     if (p == ""){return s == "";}
-    bool match = (s != "" && (s[0] == p[0] || p[0] == '.'));
+    bool first = ((s != "" && s[0] == p[0]) || p[0] == '.');
+    
     if (p.size() > 1 && p[1] == '*'){
-      return isMatch(s, p.substr(2)) || (match && isMatch(s.substr(1), p));
+      return (isMatch(s, p.substr(2))) ||
+              first && isMatch(s.substr(1), p);
     }
     else {
-      return match && isMatch(s.substr(1), p.substr(1));
+      return first && isMatch(s.substr(1), p.substr(1));
     }
   }
 };
 
 class Solution {
+  string word, pattern;
+  int nWord, nPattern;
+  vector<vector<int>> dp;
 public:
   bool isMatch(string s, string p) {
-    int n = s.size(), m =p.size();
-    vector<vector<bool>> res(n + 1, vector<bool> (m + 1, false));
-    res[0][0] = true;
-    for (int i=0; i<= n; i++){
-      for (int j = 1; j <= m; j++){
-        bool match; 
-        if (p[j - 1] == '*'){
-          res[i][j] = res[i][j - 2] || 
-              (i && (s[i - 1] == p[j - 2]) || (p[j - 2] == '.') && res[i - 1][j]);
-        }
-        else {
-          res[i][j] = (i && (s[i - 1] == p[j - 1]) || (p[j - 1] == '.') && res[i - 1][j - 1]);
-        }
+    word = s; pattern = p;
+    nWord = word.size();
+    nPattern = pattern.size();
+    dp.resize(nWord+1, vector<int> (nPattern+1, -1));
+    return helper(0, 0);
+  }
+private:
+  bool helper(int i, int j){
+    //if (dp[i][j] != -1){
+    //  return dp[i][j] == 1;
+    //}
+    bool out;
+    if (j == nPattern) {out = i == nWord;}
+    else {
+      bool first = (i < nWord && word[i] == pattern[j]) || (pattern[j] == '.');
+      if (j < nPattern - 1 && pattern[j+1] == '*'){
+        out = helper(i, j + 2) ||
+              (first && helper(i + 1, j));
       }
+      else {
+        out = first && helper(i + 1, j + 1);
+      }
+      //dp[i][j] = out == 1;
     }
-    print(res);
-    return res[n][m];
+    return out;
   }
 };
-
-int main()
-{
-  Solution* sol;
-  //cout << sol -> isMatch("ab", ".*c")<< endl;
-  cout << sol -> isMatch("aa", "a")<< endl;
-
-}

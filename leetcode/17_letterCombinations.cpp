@@ -1,58 +1,36 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-using namespace std;
-void print(vector<string> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
+/* 17. Letter Combinations of a Phone Number
+Given a string containing digits from 2-9 inclusive, 
+return all possible letter combinations that the number could represent. 
+Return the answer in any order.
 
+A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+*/
 class Solution {
-private:
-  map<char,vector<char>> keyPad;
+  unordered_map<int, vector<char>> keyPad;
+    
+  string digit;
+  int n;
+  vector<string> res;
 public:
-  Solution(){
-      keyPad['2'] = vector<char> {'a', 'b', 'c'};
-      keyPad['3'] = vector<char> {'d', 'e', 'f'};
-      keyPad['4'] = vector<char> {'g', 'h', 'i'};
-      keyPad['5'] = vector<char> {'j', 'k', 'l'};
-      keyPad['6'] = vector<char> {'m', 'n', 'o'};
-      keyPad['7'] = vector<char> {'p', 'q', 'r', 's'};
-      keyPad['8'] = vector<char> {'t', 'u', 'v'};
-      keyPad['9'] = vector<char> {'w', 'x', 'y', 'z'};
-    }
   vector<string> letterCombinations(string digits) {
-    vector<string> res{};
-    if (digits.size() == 0) {return res;}
-    backtracking(res, "", digits, 0);
+    if (digits == ""){return res;}
+    keyPad['2'] = vector<char> {'a', 'b', 'c'};
+    keyPad['3'] = vector<char> {'d', 'e', 'f'};
+    keyPad['4'] = vector<char> {'g', 'h', 'i'};
+    keyPad['5'] = vector<char> {'j', 'k', 'l'};
+    keyPad['6'] = vector<char> {'m', 'n', 'o'};
+    keyPad['7'] = vector<char> {'p', 'q', 'r', 's'};
+    keyPad['8'] = vector<char> {'t', 'u', 'v'};
+    keyPad['9'] = vector<char> {'w', 'x', 'y', 'z'};
+    digit = digits; n=digits.size(); 
+    backtrack(0, "");
     return res;
   }
 private:
-  void backtracking(vector<string>& res, string tmp, string digits, int iter) {
-    if (iter == digits.size()) {res.push_back(tmp); return;}
-    for (char elem: keyPad[digits[iter]]){
-      backtracking(res, tmp + string(1, elem), digits, iter+1);
+  void backtrack(int i, string s){
+    if (i == n){res.push_back(s); return;}
+    for (auto ch: keyPad[digit[i]]){
+      backtrack(i + 1, s + ch);
     }
   }
 };
-
-int main()
-{
-  
-  Solution sol;
-  vector<string> out;
- 
-  out = sol.letterCombinations("23");
-  print(out);
-
-  out = sol.letterCombinations("456");
-  print(out);
-
-  out = sol.letterCombinations("2");
-  print(out);
-
-  return 0;
-}
