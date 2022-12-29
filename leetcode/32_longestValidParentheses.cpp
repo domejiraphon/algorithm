@@ -1,3 +1,8 @@
+/* 32. Longest Valid Parentheses
+Given a string containing just the characters '(' and ')', return the length of the longest valid (well-formed) parentheses 
+substring
+.
+*/
 class Solution {
 public:
   int longestValidParentheses(string s) {
@@ -26,5 +31,28 @@ public:
       }
     }
     return res;
+  }
+};
+
+class Solution {
+public:
+  int longestValidParentheses(string s){
+    stack<int> stk;
+    int length=0;
+    int n=s.size();
+    stk.push(-1);
+    for (int i=0; i<n; i++){
+      if (s[i] == '(') stk.push(i);
+      else {
+        stk.pop();
+        if (stk.empty()){
+          stk.push(i);
+        }
+        else {
+          length = max(length, i - stk.top());
+        }
+      }
+    }
+    return length;
   }
 };
