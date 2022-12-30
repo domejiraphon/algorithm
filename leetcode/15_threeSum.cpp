@@ -1,72 +1,33 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <set>
-#include <unordered_set>
-#include <algorithm>
+/*
+15. 3Sum
+Given an integer array nums, 
+return all the triplets [nums[i], nums[j], nums[k]] 
+such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto ele: row){
-      cout << ele <<", ";
-    }
-    cout << endl;
-  }
-}
-
-void print(vector<int> x){
-  for (auto ele: x){
-    cout << ele <<", ";
-  }
-   cout << endl;
-}
-
-
+Notice that the solution set must not contain duplicate triplets.
+*/
 class Solution {
 public:
   vector<vector<int>> threeSum(vector<int>& nums) {
+    int n=nums.size();
     sort(nums.begin(), nums.end());
-    
-    vector<vector<int>> out;
-    int n = nums.size() - 1;
-    
-    for (int i=0; i != n; i++){
-      if (i == 0 || nums[i - 1] != nums[i]) {
-      int low(i+1), high(n);
-      while (low < high){
-        int cur = nums[i] + nums[low] + nums[high];
-        if (cur == 0){
-          out.push_back(vector<int> {nums[i], nums[low++], nums[high--]});
-          while (low < high && nums[low] == nums[low - 1]){
-            low++;
+    vector<vector<int>> res;
+    for (int i=0; i<n; i++){
+      if (i != 0 && nums[i] == nums[i - 1]){continue;}
+      int left = i + 1, right = n -1;
+      while (left < right){
+        int sum = nums[i] + nums[left] + nums[right];
+        if (sum < 0) left++;
+        else if (sum > 0) right--;
+        else {
+          res.push_back(vector<int> {nums[i], nums[left], nums[right]});
+          left++;
+          while (left < right && nums[left] == nums[left - 1]){
+            left++;
           }
         }
-        else if (cur > 0){high--;}
-        else {low++;}
-      }
       }
     }
-    return out;
+    return res;
   }
 };
-
-int main()
-{
-  
-  Solution sol;
-  vector<vector<int>> out;
-  vector<int> nums = {-1,0,1,2,-1,-4};
-  //out = sol.threeSum(nums);
-  
-  vector<int> nums2 = {0,1,1};
-  //out = sol.threeSum(nums2);
-  
-  vector<int> nums3 = {3,0,-2,-1,1,2};
-  out = sol.threeSum(nums3);
-  print(out);
-  
-  return 0;
-}

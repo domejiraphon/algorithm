@@ -1,53 +1,45 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <cmath>
-#include <queue>
-#include <vector>
-#include <list>
-#include <algorithm>
+/*
+838. Push Dominoes
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
+There are n dominoes in a line, and we place each domino vertically upright. 
+In the beginning, we simultaneously push some of the dominoes either to the left or to the right.
+
+After each second, each domino that is falling to the left pushes the adjacent domino on the left. 
+Similarly, the dominoes falling to the right push their adjacent dominoes standing on the right.
+
+When a vertical domino has dominoes falling on it from both sides, it stays still due to the balance of the forces.
+
+For the purposes of this question, we will consider that a falling domino expends no additional force 
+to a falling or already fallen domino.
+
+You are given a string dominoes representing the initial state where:
+
+dominoes[i] = 'L', if the ith domino has been pushed to the left,
+dominoes[i] = 'R', if the ith domino has been pushed to the right, and
+dominoes[i] = '.', if the ith domino has not been pushed.
+Return a string representing the final state.
+*/
 class Solution {
 public:
-  string pushDominoes(string dominoes) {
-    int n = dominoes.size();
-    int left, right;
-    string tmp=dominoes;
-    for (int i=1; i < n; i++){
-      if (dominoes[i] == '.'){
-        left = i -1;
-        right = i+1;
-        while (left >=0 && right < n){
-          if (dominoes[left] != '.' && dominoes[right] != '.'){break;}
-          if (dominoes[left] == '.'){left--;}
-          if (dominoes[right] == '.'){right++;}
-        }
-        cout << left << right; exit(0);
-        if (dominoes[left] == 'L' && dominoes[right] == 'L'){tmp[i] = 'L';}
-        else if (dominoes[left] == 'R' && dominoes[right] == 'R'){tmp[i] = 'R';}
-        else if (dominoes[left] == 'R' && dominoes[right] == 'L'){
-          if (i - left < right - i){tmp[i] = 'R';}
-          else if (i - left == right - i){tmp[i] = '.';}
-          else {tmp[i] = 'L';}
-        }
-        else {tmp[i] = 'R';}
+  string pushDominoes(string d) {
+    d = 'L' + d + 'R';
+    string res = "";
+    int n=d.size();
+    for (int left=0, right=1; right<n; right++){
+      if (d[right] == '.'){continue;}
+      int rep = right - left - 1;
+      if (left > 0){res += d[left];}
+      if (d[left] == d[right]){
+        res += string(rep, d[left]);
       }
+      else if (d[left] == 'L' && d[right] == 'R'){
+        res += string(rep, '.');
+      }
+      else {
+        res += string(rep / 2, 'R') + string(rep % 2, '.') + string(rep / 2, 'L');
+      }
+      left = right;
     }
-    return tmp;
-  }
+    return res;
+    }
 };
-int main()
-{
-  Solution* sol;
-  
-  cout << sol ->pushDominoes("..L.R...LR..L..")<< endl;
-}
