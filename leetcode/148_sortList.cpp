@@ -1,46 +1,35 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <cmath>
-#include <list>
-
-using namespace std;
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-void print(ListNode* ptr){
-  while (ptr){
-    cout << ptr -> val <<", ";
-    ptr =  ptr -> next;
-  }
-  cout << endl;
+/*
+148. Sort List
+Given the head of a linked list, return the list after sorting it in ascending order.
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+bool compare(ListNode* a, ListNode* b){
+  return a -> val < b -> val;
 }
 
-bool sortby(pair<ListNode*, int>& a, pair<ListNode*, int>& b){
-  return a.second < b.second;
-}
-class Solution {
+class Solution2 {
 public:
   ListNode* sortList(ListNode* head) {
-    if (!head){return nullptr;}
-    ListNode* cur = head;
-    vector<pair<ListNode*, int>> vect;
-    while(cur){
-      vect.push_back({cur, cur->val});
-      cur = cur -> next;
-    }
-    sort(vect.begin(), vect.end(), sortby);
+    if (!head){return head;}
+    vector<ListNode*> flatten;
+    while (head){flatten.push_back(head); head = head -> next;}
+    sort(flatten.begin(), flatten.end(), compare);
+    int n =flatten.size();
     
-    head = vect[0].first;
-    cur = head;
-    for (int i=1; i < vect.size(); i++){
-      cur -> next = vect[i].first;
+    head = flatten[0];
+    ListNode* cur=head;
+    
+    for (int i=1; i<n; i++){
+      cur -> next = flatten[i];
       cur = cur -> next;
     }
     cur -> next = nullptr;
@@ -48,22 +37,45 @@ public:
   }
 };
 
-int main()
-{
-  Solution* sol;
-  ListNode* node1 = new ListNode(2);
-  ListNode* node2 = new ListNode(1);
-  ListNode* node3 = new ListNode(3);
-  ListNode* node4 = new ListNode(5);
-  ListNode* node5 = new ListNode(6);
-  ListNode* node6 = new ListNode(4);
-  node1 -> next = node2; node2-> next = node3;
-  node3 -> next = node4; node4 -> next = node5;
-  node5 -> next = node6; 
-  ListNode* out;
-  out = sol -> sortList(node1);
-  print(out);
-  ListNode* node7 = new ListNode(4);
-  out = sol -> sortList(node7);
-  print(out);
-}
+class Solution {
+public:
+  ListNode* sortList(ListNode* head) {
+    if (!head || !head -> next){return head;}
+    ListNode* right = getMid(head);
+    ListNode* sortLeft = sortList(head);
+    ListNode* sortRight = sortList(right);
+    return merge(sortLeft, sortRight);
+  }
+
+private:
+  ListNode* merge(ListNode* left, ListNode* right){
+    ListNode* dummy = new ListNode(0);
+    ListNode* cur = dummy;
+    while (left && right){
+      if (left -> val < right -> val){
+        cur -> next =left;
+        left = left -> next;
+      }
+      else {
+        cur -> next = right;
+        right = right -> next;
+      }
+      cur = cur -> next;
+    }
+    if (left){cur -> next = left;}
+    if (right){cur -> next = right;}
+    return dummy -> next;
+  }
+  
+  
+  ListNode* getMid(ListNode* head) {
+    ListNode* midPrev = nullptr;
+    while (head && head->next) {
+      midPrev = (midPrev == nullptr) ? head : midPrev->next;
+      head = head->next->next;
+    }
+    ListNode* mid = midPrev->next;
+    midPrev->next = nullptr;
+    return mid;
+  }
+};
