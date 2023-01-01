@@ -1,3 +1,11 @@
+/*
+863. All Nodes Distance K in Binary Tree
+
+Given the root of a binary tree, the value of a target node target, and an integer k, 
+return an array of the values of all nodes that have a distance k from the target node.
+
+You can return the answer in any order.
+*/
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -7,40 +15,44 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+ 
 class Solution {
-private:
-  vector<int> res;
   unordered_map<TreeNode*, TreeNode*> parents;
-  unordered_set<TreeNode*> seen;
+  unordered_set<TreeNode*> visited;
+  vector<int> res;
 public:
   vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
-    DFS(root, nullptr);
-    goUp(target, k);
+    getParents(nullptr, root);
+    visited.insert(target);
+    get(target, k);
     return res;
   }
 private:
-  void DFS(TreeNode* node, TreeNode* par){
-    if (!node){return;}
-    parents[node] = par;
-    DFS(node -> left, node);
-    DFS(node -> right, node);
+  void getParents(TreeNode* parent, TreeNode* root){
+    if (!root)
+      return;
+    parents[root] = parent;
+    getParents(root, root -> left);
+    getParents(root, root -> right);
   }
- 
-  void goUp(TreeNode* target, int k){
-    if (k < 0 || !target){return;}
-    if (k == 0){res.push_back(target -> val);}
-    seen.insert(target);
-    if (!seen.count(target -> left)){
-      goUp(target -> left, k - 1);
+  void get(TreeNode* target, int k){
+    if (!target){return;}
+    if (k == 0){
+      res.push_back(target -> val); return;
     }
-    
-    if (!seen.count(target -> right)){
-      goUp(target -> right, k - 1);
-      
+    if (!visited.count(target -> left)){
+      visited.insert(target -> left);
+      get(target -> left, k - 1);
     }
-    if (!seen.count(parents[target])){
-      goUp(parents[target], k - 1);
-      
+
+    if (!visited.count(target -> right)){
+      visited.insert(target -> right);
+      get(target -> right, k - 1);
+    }
+
+    if (!visited.count(parents[target])){
+      visited.insert(parents[target]);
+      get(parents[target], k - 1);
     }
   }
 };
