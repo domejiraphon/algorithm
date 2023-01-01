@@ -1,55 +1,52 @@
-#include <iostream>
-#include <iterator>
-#include <unordered_map>
-#include <map>
-#include <cmath>
-#include <vector>
-#include <algorithm>
+/*
+329. Longest Increasing Path in a Matrix
 
-using namespace std;
+Given an m x n integers matrix, return the length of the longest increasing path in matrix.
 
+From each cell, you can either move in four directions: left, right, up, or down. 
+You may not move diagonally or move outside the boundary (i.e., wrap-around is not allowed).
+*/
 class Solution {
+  vector<vector<bool>> visited;
+  vector<vector<int>> nums;
+  vector<vector<int>> memo;
+  int n, m;
+  int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  int maxVal=0;
 public:
   int longestIncreasingPath(vector<vector<int>>& matrix) {
-    int n=matrix.size(), m=matrix[0].size();
-    vector<vector<int>> memo(n, vector<int> (m, -1));
-    vector<vector<int>> dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    int out(INT_MIN);
-    for (int i=0; i < n; i++){
-      for (int j=0; j < m; j++){
-        out = max(out, DFS(i, j, n, m, matrix, memo, dirs));
+    n=matrix.size();
+    m = matrix[0].size();
+    nums = matrix;
+    visited.resize(n, vector<bool> (m, false));
+    memo.resize(n, vector<int> (m, -1));
+    for (int i=0; i<n; i++){
+      for (int j=0; j<m; j++){
+        visited[i][j] = true;
+        DFS(i, j);
+        visited[i][j] = false;
       }
     }
-    return out;
+    return maxVal + 1;
   }
 private:
-  int DFS(int i, int j, int n, int m,
-      vector<vector<int>>& matrix, vector<vector<int>>& memo,
-      const vector<vector<int>>& dirs){
+  int DFS(int i, int j){
     if (memo[i][j] != -1){
       return memo[i][j];
     }
-    int out(0);
-    
-    for (int idx=0; idx < 4; idx++){
-      int x = i + dirs[idx][0], y = j + dirs[idx][1];
-      if (x >= 0 && x < n && y >= 0 && y < m &&
-        matrix[i][j] < matrix[x][y]){
-          out = max(out, DFS(x, y, n, m, matrix, memo, dirs));
-        }
+    int dist=0;
+    for (auto dir: dirs){
+      int x = i + dir[0];
+      int y = j + dir[1];
+      
+      if (x >= 0 && x <n && y>=0 && y<m 
+          && !visited[x][y] && nums[x][y] > nums[i][j]){
+        visited[x][y] = true;
+        dist = max(dist, 1 + DFS(x, y));
+        visited[x][y] = false;
+        maxVal = max(dist, maxVal);
+      }
     }
-    memo[i][j] = ++out;
-    return out;
+    return memo[i][j] = dist;
   }
 };
-
-int main()
-{
-  Solution* sol;
-  vector<vector<int>> matrix = {{9,9,4},{6,6,8},{2,1,1}};
-  cout << sol -> longestIncreasingPath(matrix)<< endl;
-
-  matrix = {{3,4,5},{3,2,6},{2,2,1}};
-  cout << sol -> longestIncreasingPath(matrix)<< endl;
-
-}
