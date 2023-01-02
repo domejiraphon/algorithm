@@ -1,39 +1,32 @@
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <unordered_map>
-#include <vector>
-#include <queue>
-#include <stack>
+/* 1696. Jump Game VI
+You are given a 0-indexed integer array nums and an integer k.
 
-using namespace std;
-void print(vector<int> path){
-  for (auto ele: path){
-    cout << ele << ", ";
-  }
-  cout << endl;
-}
+You are initially standing at index 0. In one move, 
+you can jump at most k steps forward without going outside the boundaries of the array. 
+That is, you can jump from index i to any index in the range [i + 1, min(n - 1, i + k)] inclusive.
 
+You want to reach the last index of the array (index n - 1). 
+Your score is the sum of all nums[j] for each index j you visited in the array.
+
+Return the maximum score you can get.
+*/
 class Solution2 {
 public:
   int maxResult(vector<int>& nums, int k) {
     int n=nums.size();
-    vector<int> memo(nums.size(), -INT_MAX);
-    int low;
-    memo[0] = nums[0];
-    for (int i=1; i < n; i++){
-      low = (i-k >=0) ? i - k : 0;
-      for (int j = low; j < i; j++){
-        memo[i] = max(memo[i], memo[j] + nums[i]);
+    vector<int> dp(n, INT_MIN /10);
+    dp[0] = nums[0];
+    for (int i=1; i<n; i++){
+      for (int j=0; j<=k && i-j>= 0; j++){
+        dp[i] = max(dp[i], nums[i] + dp[i - j]);
       }
     }
-    return memo[nums.size() - 1];
+    return dp[n - 1];
   }
 };
-
-class Compare{
+class Compare {
 public:
-  bool operator() (pair<int, int> a, pair<int, int> b){
+  bool operator () (pair<int, int> a, pair<int, int> b){
     return a.second < b.second;
   }
 };
@@ -41,35 +34,17 @@ class Solution {
 public:
   int maxResult(vector<int>& nums, int k) {
     int n=nums.size();
-    vector<int> memo(nums.size(), -INT_MAX);
-    priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> priorityQueue;
-    int low;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> maxHeap;
+    maxHeap.push({0, nums[0]});
+    vector<int> memo(n, INT_MIN / 10);
     memo[0] = nums[0];
-    priorityQueue.push({0, memo[0]});
-    for (int i=1; i < n; i++){
-      while(!priorityQueue.empty() && priorityQueue.top().first < i - k){
-        priorityQueue.pop();
+    for (int i=1; i<n; i++){
+      while (i - maxHeap.top().first > k){
+        maxHeap.pop();
       }
-      memo[i] = nums[i] + priorityQueue.top().second;
-      priorityQueue.push({i, memo[i]});
+      memo[i] = nums[i] + maxHeap.top().second;
+      maxHeap.push({i, memo[i]});
     }
-    print(memo);
-    return memo[nums.size() - 1];
+    return memo[n - 1];
   }
 };
-
-int main()
-{ 
-  Solution* sol;
-  vector<int> nums = {1,-1,-2,4,-7,3};
-  cout << sol -> maxResult(nums, 2)<< endl;
-
-  nums = {10,-5,-2,4,0,3};
-  cout << sol -> maxResult(nums, 3) << endl;
-
-  nums = {1,-5,-20,4,-1,3,-6,-3};
-  cout << sol -> maxResult(nums, 2) << endl;
-
-
-  return 0;
-}
