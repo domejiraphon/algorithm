@@ -1,65 +1,62 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <cmath>
-/*
-https://leetcode.com/problems/rotate-image/
+/* 
+46. Permutations
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
 */
-using namespace std;
-void print(const vector<vector<int>> matrix){
-  for (auto row: matrix){
-    for (auto elem: row){
-      cout << elem <<", ";
-    }
-    cout << endl;
-  }
-}
-
-void print_1d(const vector<int> matrix){
-  for (auto elem: matrix){
-    cout << elem <<", ";
-  }
-  cout << endl;
-}
-
-class Solution {
+class Solution2 {
+  vector<int> arr;
+  vector<vector<int>> res;
+  int n;
 public:
   vector<vector<int>> permute(vector<int>& nums) {
-    vector<vector<int>> out{{nums[0]}};
-   
-    int sel;
-    for (int i=1; i != nums.size(); i++){
-      sel = nums[i];
-      int n=out.size();
-      vector<vector<int>> tmp =out;
-      out.clear();
-      for (int j=0; j != n; j++){
-        for (int k=0; k != tmp[j].size()+1; k++){
-          vector<int> first={tmp[j].begin(), tmp[j].begin()+k};
-          vector<int> second={tmp[j].begin()+k, tmp[j].end()};
-          vector<int> tmp2;
-          tmp2.insert(tmp2.end(), first.begin(), first.end());
-          tmp2.push_back(sel);
-          tmp2.insert(tmp2.end(), second.begin(), second.end());
-
-          out.push_back(tmp2);
-        }
+    arr = nums;
+    n = nums.size();
+    unordered_set<int> used;
+    vector<int> cur={};
+    shuffle(used, cur);
+    return res;
+  }
+private:
+  void shuffle(unordered_set<int>& used, vector<int>& cur){
+    if (used.size() == n){
+      res.push_back(cur);
+      return;
+    }
+    for (int i=0; i<n; i++){
+      if (!used.count(i)){
+        used.insert(i);
+        cur.push_back(arr[i]);
+        shuffle(used, cur);
+        used.erase(i); cur.pop_back();
       }
-      
+        
     }
-    return out;
-    }
+
+  }
 };
 
-int main()
-{ 
-  vector<int> nums{1,2,3, 40};
-  Solution sol;
-  vector<vector<int>>out = sol.permute(nums);
-  print(out);
- 
- 
-  return 0;
-}
+class Solution {
+  vector<int> arr;
+  vector<vector<int>> res;
+  int n;
+public:
+  vector<vector<int>> permute(vector<int>& nums) {
+    arr = nums;
+    n = nums.size();
+    vector<int> cur={};
+    shuffle(0, cur);
+    return res;
+  }
+private:
+  void shuffle(int i, vector<int> & cur){
+    if (cur.size() == n){
+      res.push_back(cur); return;
+    }
+    for (int j=i; j<n; j++){
+      cur.push_back(arr[j]);
+      swap(arr[i], arr[j]);
+      shuffle(i + 1, cur);
+      swap(arr[i], arr[j]);
+      cur.pop_back();
+    }
+  }
+};
