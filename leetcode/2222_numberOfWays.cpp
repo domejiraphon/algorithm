@@ -1,45 +1,26 @@
-#include <iostream>
-#include <iterator>
-#include <unordered_map>
-#include <vector>
-#include <tuple>
-
-using namespace std;
-
-
 class Solution {
+  int n;
+  string buildings;
+  vector<vector<long long>> memo;
 public:
   long long numberOfWays(string s) {
-    
-    unordered_map<int, int> hash;
-    int count = backtrack(s, 0, "", hash);
-    return count;
+    buildings = s;
+    n = s.size();
+    memo.resize(n + 1, vector<long long> (3, -1));
+    return numBuildings(-1, 0);
   }
 private:
-  int backtrack(string& s, int idx, string cur,
-      unordered_map<int, int>& hash){
-    //if (hash.count(idx)){return hash[idx];}
-    if (cur == "11"|| cur == "00"){return 0;}
-    if (cur == "101" || cur == "010"){
-      return 1;}
-    if (idx == s.size() || cur.size() > 3){return 0;}
-    int count(0);
-    for (int i=idx; i < s.size(); i++){
-      cur += s[i];
-      count += backtrack(s, i + 1, cur, hash);
-      cur.pop_back();
+  long long numBuildings(int start, int nums){
+    if (nums == 3){return 1;}
+    if (nums > 3 || start >= n){return 0;}
+    if (memo[start + 1][nums] != -1)
+      return memo[start + 1][nums];
+    long long res=0;
+    for (int i=start + 1; i<n; i++){
+      if (start == -1 || buildings[i] != buildings[start])
+        res += numBuildings(i, nums + 1);
     }
-    cout << idx <<": "<< count << endl;
-    hash[idx] = count;
-    return count;
+    
+    return memo[start + 1][nums] = res;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-
-  cout << sol -> numberOfWays("001101")<< endl;
-  return 0;
-}

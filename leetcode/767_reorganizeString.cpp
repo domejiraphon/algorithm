@@ -1,108 +1,42 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*
+767. Reorganize String
+Given a string s, rearrange the characters of s so that any two adjacent characters are not the same.
 
-using namespace std;
-
-class Solution2 {
-public:
-  string reorganizeString(string s) {
-    /*
-    unordered_map<char, int> hashTable;
-    for (auto ele : s){
-      if (hashTable.find(ele) == hashTable.end()){hashTable[ele] = 1;}
-      else {hashTable[ele]++;
-        if (hashTable[ele] > (int) s.size() / 2 + 1) {return "";}}
-    } */
-    for (int i=0; i < s.size() - 1; i++){
-      if (s[i] == s[i+1]){
-        int idxSwap(i); bool found=false;
-        /*
-        while (idxSwap >= 0 && s[idxSwap] == s[i]){
-          idxSwap--;
-          if (s[idxSwap] != s[i]){
-            swap(s[idxSwap], s[i-1]);
-            found = true;
-            break;
-          }
-        }*/
-        if (!found){
-          idxSwap = i+1;
-          while (idxSwap < s.size() && s[idxSwap] == s[i]){
-            idxSwap++;
-            if (s[idxSwap] != s[i]){
-              swap(s[idxSwap], s[i+1]);
-              found = true;
-              break;
-            }
-          }
-        }
-        if (!found){return "";}
-      }
-      }
-    
-    return s;
-  }
-};
-
-
+Return any possible rearrangement of s or return "" if not possible.
+*/
 class Solution {
 public:
   string reorganizeString(string s) {
-    /*
-    unordered_map<char, int> hashTable;
-    for (auto ele : s){
-      if (hashTable.find(ele) == hashTable.end()){hashTable[ele] = 1;}
-      else {hashTable[ele]++;
-        if (hashTable[ele] > (int) s.size() / 2 + 1) {return "";}}
-    } */
-    for (int i=0; i < s.size() - 1; i++){
-      if (s[i] == s[i+1]){
-        int idxSwap(i+1); bool found=false;
-        while (idxSwap < s.size() && s[idxSwap] == s[i]){
-          idxSwap++;
-          if (idxSwap < s.size() && s[idxSwap] != s[i]){
-            swap(s[idxSwap], s[i+1]);
-            found = true;
-            break;
-          }
-        }
-        if (!found){
-          idxSwap = i;
-          while (idxSwap >= 0 && s[idxSwap] == s[i]){
-            idxSwap--;
-            cout << idxSwap << ", "<<i << endl;
-            if (idxSwap >= 0 && s[idxSwap] != s[i]){
-              swap(s[idxSwap], s[i]);
-              
-              found = true;
-              break;
-            }
-            
-          }
-          cout << s << endl;
-        }
-        if (!found){return "";}
+    vector<int> freq(26, 0);
+    int n=s.size();
+    for (int i=0; i<n; i++){
+      freq[s[i] - 'a']++;
+    }
+    int maxFreq=0, maxCh;
+    for (int i=0; i<26; i++){
+      if (freq[i] > maxFreq){
+        maxFreq = freq[i];
+        maxCh = i;
       }
+    }
+    if (maxFreq > (n + 1) / 2)
+      return "";
+    int idx = 0;
+    string out = s;
+    while (freq[maxCh] > 0){
+      out[idx] = maxCh + 'a';
+      idx += 2;
+      freq[maxCh]--;
+    }
+    for (int i=0; i<26; i++){
+      while (freq[i] > 0){
+        if (idx >= n)
+          idx = 1;
+        out[idx] = i + 'a';
+        idx += 2;
+        freq[i]--;
       }
-    return s;
+    }
+    return out;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  //cout << sol -> reorganizeString("aab") << endl;
-  //cout << sol -> reorganizeString("aaab") << endl;
-  //cout << sol -> reorganizeString("abcaad") << endl;
-  //cout << sol -> reorganizeString("aaabcd") << endl;
-  cout << sol -> reorganizeString("bcdaaa") << endl;
-  return 0;
-}
