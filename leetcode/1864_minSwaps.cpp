@@ -1,46 +1,30 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <stack>
-#include <algorithm>
-#include <queue>
+/* 1864. Minimum Number of Swaps to Make the Binary String Alternating
+Given a binary string s, return the minimum number of character swaps to make it alternating, or -1 if it is impossible.
 
-using namespace std;
+The string is called alternating if no two adjacent characters are equal. For example, the strings "010" and "1010" are alternating, while the string "0100" is not.
 
+Any two characters may be swapped, even if they are not adjacent.
+*/
 class Solution {
 public:
   int minSwaps(string s) {
-    if (!possible(s)){return -1;}
-    int n = s.size();
-   
-    int mis0(0), mis1(0);
-
-    for (int i=0; i < n; i+=2){
-     mis0 += s[i] != '0';
-     mis1 += s[i] != '1';
+    int freq[2];
+    memset(freq, 0, sizeof(freq));
+    int n=s.size();
+    for (int i=0; i< n; i++)
+      freq[s[i] - '0']++;
+    
+    if (abs(freq[0] - freq[1]) > 1)
+      return -1;
+    int count[2];
+    memset(count, 0, sizeof(count));
+    for (int i=0; i<n; i+=2){
+      count[0] += s[i] != '0';
+      count[1] += s[i] != '1';
     }
-
-    return min(mis0, mis1);
-  }
-private:
-  bool possible(string& s){
-    int count0(0), count1(0);
-    for (auto ele: s){
-      if (ele == '0'){count0++;}
-      else {count1++;}
-    }
-    return (abs(count0 - count1) > 1) ? false : true;
+    if (freq[0] == freq[1])
+      return min(count[0], count[1]);
+    
+    return freq[0] > freq[1] ? count[0] : count[1];
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol = new Solution();
-  cout << sol -> minSwaps("111000")<< endl;
-  cout << sol -> minSwaps("010")<< endl;
-  cout << sol -> minSwaps("1110")<< endl;
-  return 0;
-}

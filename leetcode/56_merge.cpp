@@ -1,77 +1,30 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <stack>
-#include <queue>
-#include <algorithm>
-
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
+/*
+56. Merge Intervals
+Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and 
+return an array of the non-overlapping intervals that cover all the intervals in the input.
+*/
+bool sortby(vector<int> a, vector<int> b){
+  return (a[0] == b[0]) ? (a[1] < b[1]) : (a[0] < b[0]);
 }
-
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
-
-bool sortby(const tuple<char, int> &a,
-              const tuple<char, int> &b){
-  if (get<1>(a) < get<1>(b)){return true;}
-  else if (get<1>(a) == get<1>(b)) {return get<0>(a) > get<0>(b);}
-  else {return false;}}
-
 class Solution {
 public:
   vector<vector<int>> merge(vector<vector<int>>& intervals) {
-    vector<tuple<char, int>> schedule;
-    for (auto elem: intervals){
-      tuple<char, int> cur={'s', elem[0]};
-      schedule.push_back(cur);
-      cur = tuple<char, int> {'f', elem[1]};
-      schedule.push_back(cur);
-    }
-    sort(schedule.begin(), schedule.end(), sortby);
-    int start(0), end(0);
-    intervals.clear();
-    queue<int> Q;
-    int count(0);
-    for (auto it : schedule){
-      if (get<0>(it) == 's'){
-        count++;
-        Q.push(get<1>(it));
+    vector<vector<int>> res;
+    intervals.push_back(vector<int> {INT_MAX, INT_MAX});
+    sort(intervals.begin(), intervals.end(), sortby);
+    int n=intervals.size();
+    int time[2] = {intervals[0][0], intervals[0][1]};
+    for (int i=1; i<n; i++){
+      if (intervals[i][0] <= time[1]){
+        time[0] = min(time[0], intervals[i][0]);
+        time[1] = max(time[1], intervals[i][1]);
       }
       else {
-        count--;
-      }
-      if (count == 0){
-        vector<int> cur = {Q.front(), get<1>(it)};
-        intervals.push_back(cur);
-        Q = queue<int> {};
+        res.push_back(vector<int> {time[0], time[1]});
+        time[0] = intervals[i][0]; 
+        time[1] = intervals[i][1];
       }
     }
-    return intervals;
+    return res;
   }
 };
-
-int main()
-{
-  vector<vector<int>> intervals = {{1, 3}, {2, 6}, {8, 10}, {15, 18}}, out;
-  Solution sol;
-  out = sol.merge(intervals);
-  print(out);
-  cout <<endl;
-
-  intervals = vector<vector<int>> {{1, 4}, {4, 5}};
-  out = sol.merge(intervals);
-  print(out);
-  
-  
-  return 0;
-}

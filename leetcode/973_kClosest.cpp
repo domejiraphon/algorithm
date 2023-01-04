@@ -1,75 +1,34 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-#include <cmath>
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
+/* 973. K Closest Points to Origin
+Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
 
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem<<", ";
-    }
-    cout << endl;
-  }
-}
+The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
 
-class Point{
+You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
+*/
+class Compare {
 public:
-  int x;
-  int y;
-  int dist;
-  Point(int val_x, int val_y){
-    x = val_x; y = val_y;
-    dist = pow(x, 2)+ pow(y, 2);
-  }
-  int getDist(){
-    return dist;
+  bool operator () (pair<int, int> a, pair<int, int> b){
+    return pow(a.first, 2) + pow(a.second, 2) < pow(b.first, 2) + pow(b.second, 2);
   }
 };
-
-class myComparator{
-public:
-  int operator() (Point& p1, Point& p2){return p1.getDist() > p2.getDist();}
-};
-
 class Solution {
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
-      priority_queue <Point, vector<Point>, myComparator> Heap;
-      for (int i=0; i != points.size(); i++){
-        Heap.push(Point(points[i][0], points[i][1]));
-      }
-      points.clear();
-      int counter(0);
-      while (!Heap.empty()){
-        Point p = Heap.top();
-       
-        points.push_back(vector<int> {p.x, p.y});
-        Heap.pop();
-        counter++;
-        if (counter==k){break;}
-      }
-      
-      return points;
+  vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+    priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> maxHeap;
+    int n=points.size();
+    for (int i=0; i<n; i++){
+      maxHeap.push({points[i][0], points[i][1]});
+      if (maxHeap.size() > k)
+        maxHeap.pop();
     }
+    vector<vector<int>> res(k, vector<int>(2));
+    int i=0;
+    while (i<k){
+      pair<int, int> cur= maxHeap.top();
+      res[i][0] = cur.first;
+      res[i++][1] = cur.second;
+      maxHeap.pop();
+    }
+    return res;
+  }
 };
-
-int main()
-{
-  vector<vector<int>> intervals={{3, 3}, {5, -1}, {-2, 4}};
-  
-  Solution sol;
-  vector<vector<int>> out;
-  out = sol.kClosest(intervals, 2);
-  print(out);
-  return 0;
-}

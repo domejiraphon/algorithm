@@ -1,78 +1,77 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/* 545. Boundary of Binary Tree
+The boundary of a binary tree is the concatenation of the root, the left boundary, the leaves ordered from left-to-right, and the reverse order of the right boundary.
 
-using namespace std;
-void print(vector<int> root){
-  for (auto ele: root){
-    cout << ele << ", ";
-  }
-  cout << endl;
-}
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
+The left boundary is the set of nodes defined by the following:
 
+The root node's left child is in the left boundary. If the root does not have a left child, then the left boundary is empty.
+If a node in the left boundary and has a left child, then the left child is in the left boundary.
+If a node is in the left boundary, has no left child, but has a right child, then the right child is in the left boundary.
+The leftmost leaf is not in the left boundary.
+The right boundary is similar to the left boundary, except it is the right side of the root's right subtree. Again, the leaf is not part of the right boundary, and the right boundary is empty if the root does not have a right child.
+
+The leaves are nodes that do not have any children. For this problem, the root is not a leaf.
+
+Given the root of a binary tree, return the values of its boundary.
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
+  vector<int> res;
 public:
   vector<int> boundaryOfBinaryTree(TreeNode* root) {
-    if (!root){return vector<int> {};}
-    vector<int> cur{root -> val};
-    leftBoundary(root -> left, cur);
-    leavesBoundary(root, cur);
-    rightBoundary(root -> right, cur);
-    print(cur); exit(0);
-    return cur;
+    if (!root)
+      return res;
+    res.push_back(root -> val);
+    getLeft(root -> left);
+    getLeaves(root -> left);
+    getLeaves(root -> right);
+    getRight(root -> right);
+    
+    return res;
   }
 private:
-  void leftBoundary(TreeNode* root, vector<int>& cur){
-    if (!root){return;}
-
-    cur.push_back(root -> val);
-    if (root -> left){leftBoundary(root -> left, cur);}
-    else if (!(root -> left) && root -> right){
-      leftBoundary(root -> right, cur);
+  bool isLeaves(TreeNode* root){
+    return (!root -> left && !root -> right);
+  }
+  void getLeft(TreeNode* root){
+    if (!root)
+      return;
+    if (!isLeaves(root)){
+      res.push_back(root -> val);
+      if (root -> left)
+        getLeft(root -> left);
+      else 
+        getLeft(root -> right);
     }
   }
-  void leavesBoundary(TreeNode* root, vector<int>& cur){
-    if (!root){return;}
-    if (!(root -> left) && !(root -> right)){cur.push_back(root -> val); return;}
-    leavesBoundary(root -> left, cur);
-    leavesBoundary(root -> right, cur);
-  }
-  void rightBoundary(TreeNode* root, vector<int>& cur){
-    if (!root){return;}
-    
-    if (root -> right){rightBoundary(root -> right, cur);}
-    else if (!(root -> right) && root -> left){
-      rightBoundary(root -> left, cur);
+  void getLeaves(TreeNode* root){
+    if (!root)
+      return;
+    if (isLeaves(root))
+      res.push_back(root -> val);
+    else {
+      getLeaves(root -> left);
+      getLeaves(root -> right);
     }
-    if (root -> left && root -> right){cur.push_back(root -> val); return;}
-    
+  }
+  void getRight(TreeNode* root){
+    if (!root)
+      return;
+    if (!isLeaves(root)){
+      if (root -> right)
+        getRight(root -> right);
+      else 
+        getRight(root -> left);
+      res.push_back(root -> val);
+    } 
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-
-  TreeNode* node1 = new TreeNode(1);
-  TreeNode* node2 = new TreeNode(2);
-  TreeNode* node3 = new TreeNode(3);
-  TreeNode* node4 = new TreeNode(4);
-  
-  node1 -> right = node2; node2 -> left = node3;
-  node2 -> right = node4;
-
-  vector<int> out;
-  out = sol -> boundaryOfBinaryTree(node1);
-  return 0;
-}
