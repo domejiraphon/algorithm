@@ -9,16 +9,36 @@ class Solution {
 public:
   int waysToSplit(vector<int>& nums) {
     int n=nums.size();
-    vector<int> sum(n);
-    sum[0] = nums[0];
+    int mod = pow(10, 9) + 7;
     for (int i=1;i<n; i++){
-      sum[i] = nums[i] + sum[i - 1];
+      nums[i] = nums[i] + nums[i - 1];
+    }
+    int count=0;
+    for (int i=0, low=0, high=0; i< n - 2; i++){
+      low = max(i + 1, low);
+      while (low < n - 1 && nums[low] - nums[i] < nums[i])
+        low++;
+      high = max(low, high);
+      while (high < n && nums[high] - nums[i] <= nums[n - 1] - nums[high])
+        high++;
+      count = (count + high - low) % mod;
+    }
+    return count;
+  }
+};
+
+class Solution {
+public:
+  int waysToSplit(vector<int>& nums) {
+    int n=nums.size();
+    for (int i=1;i<n; i++){
+      nums[i] += nums[i - 1];
     }
     int count=0;
     for (int i=0; i<n; i++){
       for (int j=i+1; j<n; j++){
-        int mid = sum[j] - sum[i];
-        if (sum[i] <= mid && mid <= sum[n - 1] - sum[j])
+        int mid = nums[j] - nums[i];
+        if (nums[i] <= mid && mid <= nums[n - 1] - nums[j])
           count++;
       }
     }

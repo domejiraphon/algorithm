@@ -1,38 +1,37 @@
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <unordered_map>
-#include <vector>
-#include <tuple>
+/* 409. Longest Palindrome
+Given a string s which consists of lowercase or uppercase letters, 
+return the length of the longest palindrome that can be built with those letters.
 
-using namespace std;
+Letters are case sensitive, for example, "Aa" is not considered a palindrome here.
 
+*/
 class Solution {
 public:
   int longestPalindrome(string s) {
-    unordered_map<char, int> map;
-    for (auto ele: s){
-      map[ele]++;
-    }
-    int counter(0);
-    for (auto it=map.begin(); it != map.end(); it++){
-      counter += ((int)it -> second / 2) * 2;
-      if (counter % 2==0 && it -> second %2 == 1){
-        counter++;
+    int freq[52];
+    memset(freq, 0, sizeof(freq));
+    
+    for (auto ch: s){
+      int hash = ch - 'a';
+      if (hash < 0){
+        hash += 32 + 26;
       }
+      freq[hash]++;
     }
-    return counter;
+      
+    int res=0;
+    bool firstOdd=true;
+    for (int i=0; i<52; i++){
+      if (freq[i] % 2 == 0)
+        res += freq[i];
+      else{
+        res += freq[i] - 1;
+        if (firstOdd){
+          res += 1;
+          firstOdd = false;
+        }
+      } 
+    }
+    return res;
   }
 };
-
-int main()
-{ 
- 
-  Solution* sol;
-  cout << sol -> longestPalindrome("bananas") << endl;
-  cout << sol -> longestPalindrome("abccccdd") << endl;
-  cout << sol -> longestPalindrome("abcccdd") << endl;
-  cout << sol -> longestPalindrome("a") << endl;
-
-  return 0;
-}

@@ -1,82 +1,69 @@
-#include <iostream>
-#include <iterator>
-#include <unordered_map>
-#include <vector>
-#include <stack>
-#include <tuple>
+/* 71. Simplify Path
+Given a string path, which is an absolute path (starting with a slash '/') to a file or directory in a Unix-style file system, convert it to the simplified canonical path.
 
-using namespace std;
-void print(stack<string> s){
-  while (!s.empty()){
-    cout << s.top()<< endl;
-    s.pop();
-  }
-}
+In a Unix-style file system, a period '.' refers to the current directory, a double period '..' refers to the directory up a level, and any multiple consecutive slashes (i.e. '//') are treated as a single slash '/'. For this problem, any other format of periods such as '...' are treated as file/directory names.
 
+The canonical path should have the following format:
+
+The path starts with a single slash '/'.
+Any two directories are separated by a single slash '/'.
+The path does not end with a trailing '/'.
+The path only contains the directories on the path from the root directory to the target file or directory (i.e., no period '.' or double period '..')
+Return the simplified canonical path.
+*/
 class Solution {
+  int n;
 public:
   string simplifyPath(string path) {
-    stack<string> S;
-    int i(0), n(path.size());
+    
+    stack<string> stk;
+    int i=0;
+    n=path.size();
     while (i < n){
-      if (!S.empty()){
-        string prev = S.top();
-        if (prev[prev.size() - 1] == '/' && path[i] == '/'){
+      if (path[i] == '/'){
+        if (!stk.empty() && stk.top() == "/"){
           i++;
-          continue;}
-        else if (path[i] == '.' && path[i - 1] == '/'){
-          string dot;
-          while (i < n && path[i] == '.'){
-            dot += path[i];
-            i++;
-          }
-          i--;
-          if (dot == ".." && i ==  n -1){S.pop();}
-          else if (dot == ".." && i < n - 1 && path[i+1] == '/'){S.pop();}
-          else if (dot == "." && i < n - 1 && path[i+1] != '/'){S.push(dot);}
-          else if (dot != "."){S.push(dot);}
+          continue;
         }
-        else {
-          if (prev[prev.size() - 1] != '/'){
-            S.pop();
-            S.push(prev + string(1, path[i]));}
-          else {
-            S.push(string(1, path[i]));
-          }
+        else{
+          if (i != n -1)
+            stk.push("/");
+        }  
+      }
+      else if (path[i] == '.'){
+        string cur=getNext(path, i);
+        if (cur == ".."){
+          if (stk.size() != 1)
+            stk.pop(); stk.pop();
         }
+        else if (cur != ".")
+          stk.push(cur);
       }
       else {
-        S.push(string(1, path[i]));
+        string cur=getNext(path, i);
+        stk.push(cur);
       }
       i++;
     }
-    path.clear();
-    while (!S.empty()){
-      path = S.top() + path;
-      S.pop();
+    string res;
+    while (!stk.empty()){
+      res = stk.top() + res;
+      stk.pop();
     }
-   
-    if (path.size() > 0&& path != "/" && path[path.size() - 1] == '/'){path.pop_back();}
-    else if (path.size() == 0){path = "/";}
-    return path;
+    if (res == "")
+      return "/";
+    else if (res.size() > 1 && res[res.size() - 1] == '/')
+      return res.substr(0, res.size() - 1);
+    else
+      return res;
+  }
+private:
+  string getNext(string& path, int& i){
+    string cur="";
+    while (i<n && path[i] != '/'){
+      cur += path[i++];
+    }
+    i--;
+    return cur;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  string path = "/..dome../d";
-  cout << sol -> simplifyPath(path)<< endl;
-  cout << sol -> simplifyPath("/.dome")<< endl;
-
-  path = "/..";
-  cout << sol -> simplifyPath(path)<< endl;
-
-  path = "/../";
-  cout << sol -> simplifyPath(path)<< endl;
-
-  path = "/home//foo/";
-  cout << sol -> simplifyPath(path)<< endl;
-  return 0;
-}
