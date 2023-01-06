@@ -1,46 +1,28 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <stack>
+/* 1762. Buildings With an Ocean View
+There are n buildings in a line. 
+You are given an integer array heights of size n that represents the heights of the buildings in the line.
 
-using namespace std;
-void print(vector<int> x){
-    for (auto elem: x){
-      cout << elem <<", ";}
-  cout << endl;
-}
+The ocean is to the right of the buildings. 
+A building has an ocean view if the building can see the ocean without obstructions. 
+Formally, a building has an ocean view if all the buildings to its right have a smaller height.
 
+Return a list of indices (0-indexed) of buildings that have an ocean view, sorted in increasing order.
+*/
 class Solution {
 public:
   vector<int> findBuildings(vector<int>& heights) {
-    int _max = heights[heights.size() - 1];
-    stack<int> S;
-    S.push(heights.size() - 1);
-    for (int i= heights.size() - 2; i >= 0; i--){
-      if (heights[i] > _max){
-        S.push(i);
-        _max = max(_max, heights[i]);
-      }
+    int n=heights.size();
+    vector<int> res={n - 1};
+    int prev = 0;
+    for (int i=n-2; i >= 0; i--){
+      prev = max(prev, heights[i+1]);
+      if (prev < heights[i])
+        res.push_back(i);
     }
-    heights.clear();
-    while (!S.empty()){
-      heights.push_back(S.top());
-      S.pop();
-    }
-    return heights;
+    int left=0, right = res.size() - 1;
+    while (left < right)
+      swap(res[left++], res[right--]);
+    return res;
+    
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  vector<int> out;
-
-  vector<int> heights = {4,2,3,1};
-  out = sol -> findBuildings(heights);
-  print(out);
-  return 0;
-}

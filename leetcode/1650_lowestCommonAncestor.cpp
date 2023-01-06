@@ -1,10 +1,12 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-using namespace std;
+/* 1650. Lowest Common Ancestor of a Binary Tree III
+Given two nodes of a binary tree p and q, return their lowest common ancestor (LCA).
+
+Each node will have a reference to its parent node. The definition for Node is below:
+
+According to the definition of LCA on Wikipedia: 
+"The lowest common ancestor of two nodes p and q in a tree T is the lowest node that has both p and q as descendants 
+(where we allow a node to be a descendant of itself)."
+*/
 
 class Node {
 public:
@@ -34,37 +36,51 @@ private:
   }
 };
 
-int main()
-{
-  Node* node0_0 = new Node(3);
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* parent;
+};
+*/
 
-  Node* node1_0 = new Node(5);
-  Node* node1_1 = new Node(1);
+class Solution {
+public:
+  Node* lowestCommonAncestor(Node* p, Node * q) {
+    Node* root = findRoot(p);
+    return ancestor(root, p, q);
+  }
+private:
+  Node* findRoot(Node* p){
+    return (p -> parent) ? findRoot(p -> parent) : p;
+  }
+  
+  Node* ancestor(Node* root, Node* p, Node* q){
+    if (!root || root == p || root == q)
+      return root;
+    Node* left = ancestor(root -> left, p, q);
+    Node* right = ancestor(root -> right, p, q);
 
-  Node* node2_0 = new Node(6);
-  Node* node2_1 = new Node(2);
-  Node* node2_2 = new Node(0);
-  Node* node2_3 = new Node(8);
+    if (left && right)
+      return root;
+    else
+      return (left) ? left : right;
+  }
+};
 
-  Node* node3_0 = new Node(7);
-  Node* node3_1 = new Node(4);
-
-  node0_0 -> left = node1_0; node1_0 -> parent = node0_0;
-  node0_0 -> right = node1_1; node1_1 -> parent = node0_0;
-  node1_0 -> left = node2_0; node2_0 -> parent = node1_0;
-  node1_0 -> right = node2_1; node2_1 -> parent = node1_0;
-  node1_1 -> left = node2_2; node2_2 -> parent = node1_1;
-  node1_1 -> right = node2_3; node2_3 -> parent = node1_1;
-  node2_1 -> left = node3_0; node3_0 -> parent = node2_1;
-  node2_1 -> right = node3_1; node3_1 -> parent = node2_1;
- 
-  Solution sol;
-  Node* out;
-
-  //out = sol.lowestCommonAncestor(node1_0, node1_1);
-  //cout << out -> val<<endl;
-
-  out = sol.lowestCommonAncestor(node3_0, node3_1);
-  cout << out -> val<<endl;
-  return 0;
-}
+class Solution {
+public:
+  Node* lowestCommonAncestor(Node* p, Node * q) {
+    Node* a = p;
+    Node* b = q;
+    while (a != b){
+      a = (!a) ? q : a -> parent;
+      b = (!b) ? p : b -> parent;
+    }
+    
+    return a;
+  }
+};
