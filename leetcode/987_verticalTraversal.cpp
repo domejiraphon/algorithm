@@ -19,31 +19,43 @@ Return the vertical order traversal of the binary tree.
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+bool sortby(pair<int, int> a, pair<int, int> b){
+  return (a.first == b.first) ? (a.second < b.second) : (a.first < b.first);
+}
 class Solution {
+  map<int, vector<pair<int, int>>> memo;
 public:
   vector<vector<int>> verticalTraversal(TreeNode* root) {
     vector<vector<int>> res;
-    if (!root){return res;}
-    map<int, vector<int>> hash;
-    queue<pair<TreeNode*, int>> Q;
-    Q.push({root, 0});
-    while (!Q.empty()){
-      int n=Q.size();
-      for (int i=0; i < n; i++){
-        pair<TreeNode*, int> cur = Q.front();
-        hash[cur.second].push_back(cur.first -> val);
-        Q.pop();
-        if (cur.first -> left){
-          Q.push({cur.first -> left, cur.second - 1});
-        }
-        if (cur.first -> right){
-          Q.push({cur.first -> right, cur.second + 1});
-        }
-      }
-    }
-    for (auto it=hash.begin(); it != hash.end(); it++){
-      res.push_back(it -> second);
+    DFS(root, 0, 0);
+    for (auto it=memo.begin(); it != memo.end(); it++){
+      vector<pair<int, int>> tmp = it -> second;
+      sort(tmp.begin(), tmp.end(), sortby);
+      vector<int> cur;
+      for (auto pp: tmp)
+        cur.push_back(pp.second);
+      
+      res.push_back(cur);
     }
     return res;
+  }
+private:
+  void DFS(TreeNode* root, int x, int y){
+    if (!root)
+      return;
+    memo[x].push_back({y, root -> val});
+    DFS(root -> left, x - 1, y + 1);
+    DFS(root -> right, x + 1, y + 1);
   }
 };

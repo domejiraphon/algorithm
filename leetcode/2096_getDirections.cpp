@@ -88,6 +88,40 @@ private:
     getParents(root -> left, root);
     getParents(root -> right, root);
   }
+};
 
-
+class Solution {
+public:
+  string getDirections(TreeNode* root, int startValue, int destValue) {
+    string toStart="", toDest="";
+    find(root, startValue, toStart);
+    find(root, destValue, toDest);
+    while (toStart != "" && toDest != "" && toStart.back() == toDest.back()){
+      toStart.pop_back(); toDest.pop_back();
+    }
+    
+    int n=toStart.size();
+    for (int i=0; i<n; i++){
+      if (toStart[i] == 'L' || toStart[i] == 'R')
+        toStart[i] = 'U';
+    }
+    int left=0, right = toDest.size() - 1;
+    while (left < right)
+      swap(toDest[left++], toDest[right--]);
+    return toStart + toDest;
+  }
+private:
+  bool find(TreeNode* root, int target, string& res){
+    if (!root)
+      return false;
+    if (root -> val == target)
+      return true;
+    else {
+      if (find(root -> left, target, res))
+        res += 'L';
+      else if (find(root -> right, target, res))
+        res += 'R';
+    }
+    return res != "";
+  }
 };

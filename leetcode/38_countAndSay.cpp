@@ -1,53 +1,38 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <unordered_map>
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <algorithm>
-using namespace std;
+/*
+38. Count and Say
+The count-and-say sequence is a sequence of digit strings defined by the recursive formula:
 
+countAndSay(1) = "1"
+countAndSay(n) is the way you would "say" the digit string from countAndSay(n-1), which is then converted into a different digit string.
+To determine how you "say" a digit string, split it into the minimal number of substrings such that each substring contains exactly one unique digit. Then for each substring, say the number of digits, then say the digit. Finally, concatenate every said digit.
 
+For example, the saying and conversion for digit string "3322251":
+*/
 class Solution {
 public:
   string countAndSay(int n) {
-    n--;
-    if (n == 0){return "1";}
-    vector<string> memo;
-    memo.push_back("1");
-    for (int i=1; i <= n; i++){
-      memo.push_back(count(memo[i - 1]));
-    }
-    return memo[n];
-  }
-private:
-  string count(string input){
-    string out;
-    input += "a";
-    int n = input.size();
-    vector<char> same={input[0]};
-    for (int i=1; i < n; i++){
-      if (same[0] != input[i]){
-        out += to_string(same.size()) + string(1, same[0]);
-        same.clear();
+    if (n == 1){return "1";}
+    else if (n == 2){return "11";}
+    string prev = "11";
+    for (int k=2; k<n; k++){
+      int m = prev.size();
+      int count = 1;
+      string res="";
+      
+      for (int i=1; i<=m; i++){
+        if(i != m && prev[i] == prev[i - 1]){
+          count++;
+        }
+        else {
+          res += (char) (count + '0');
+          res += prev[i - 1];
+          count = 1;
+        }
+        
       }
-      same.push_back(input[i]);
+      prev =res;
     }
-    return out;
+    return prev;
+    
   }
 };
-
-int main()
-{
-  Solution* sol;
-  //cout << sol -> countAndSay(1)<< endl;
-  cout << sol -> countAndSay(2)<< endl;
-  cout << sol -> countAndSay(3)<< endl;
-  cout << sol -> countAndSay(4)<< endl;
-  cout << sol -> countAndSay(5)<< endl;
-
-
-  return 0;
-}

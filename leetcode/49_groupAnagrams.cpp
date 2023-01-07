@@ -1,47 +1,26 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*
+49. Group Anagrams
 
-using namespace std;
-void print(vector<vector<string>> strs){
-  for (auto row: strs){
-    for (auto x: row){
-      cout << x<< ", ";
-    }
-    cout << endl;
-  }
-}
+Given an array of strings strs, group the anagrams together. 
+You can return the answer in any order.
 
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, 
+typically using all the original letters exactly once.
+*/
 class Solution {
 public:
   vector<vector<string>> groupAnagrams(vector<string>& strs) {
-    unordered_map<string, vector<string>> hash;
-    int n = strs.size();
-    for (auto ele: strs){
-      string tmp = ele;
+    int n=strs.size();
+    vector<vector<string>> res;
+    unordered_map<string, vector<string>> groups;
+    for (int i=0; i<n; i++){
+      string tmp = strs[i];
       sort(tmp.begin(), tmp.end());
-      hash[tmp].push_back(ele);
+      groups[tmp].push_back(strs[i]);
     }
-    vector<vector<string>> out;
-    for (auto it=hash.begin(); it != hash.end(); it++){
-      out.push_back(it -> second);
+    for (auto it=groups.begin(); it!=groups.end(); it++){
+      res.push_back(it -> second);
     }
-    return out;
+    return res;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  vector<string> strs = {"eat","tea","tan","ate","nat","bat"};
-  vector<vector<string>> out;
-  out = sol -> groupAnagrams(strs);
-  print(out);
- 
-  return 0;
-}
