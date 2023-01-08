@@ -1,68 +1,54 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <stack>
-#include <tuple>
-#include <cmath>
-#include <algorithm>
 
-using namespace std;
+/*
+224. Basic Calculator
+Given a string s representing a valid expression, implement a basic calculator to evaluate it, and return the result of the evaluation.
 
+Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+*/
 class Solution {
 public:
   int calculate(string s) {
-    stack<int> S;
-    int n = s.size();
-    int i(0);
-    int ans(0);
-    int sign(1);
-    while (i < n){
-      if (isdigit(s[i])){
-        string cur;
-        while (isdigit(s[i])){
-          cur += s[i]; 
-          i++;
-        }
-        i--;
-        ans += sign * stoi(cur);
+    int n=s.size();
+    int i=0;
+    int sign=1;
+    int ans=0;
+    stack<int> stk;
+    while (i <n){
+      if (s[i] == ' '){
+        i++; continue;
       }
-      else if(s[i] == '+'){
+      else if (s[i] == '+')
+        sign = 1;
+      else if (s[i] == '-')
+        sign = -1;
+      else if (s[i] == '('){
+        stk.push(ans);
+        stk.push(sign);
+        ans = 0; sign = 1;
+      }
+      else if (s[i] == ')'){
+        ans *= stk.top();
+        stk.pop();
+        ans += stk.top();
+        stk.pop();
+      }
+      else if (isdigit(s[i])){
+        int num = getNumber(s, i);
+        ans += sign * num;
         sign = 1;
       }
-      else if(s[i] == '-'){
-        sign = -1;
-      }
-      else if (s[i] == '('){
-        S.push(ans);
-        S.push(sign);
-        ans = 0; sign = 1;
-      }  
-      else if (s[i] == ')'){
-        ans *= S.top();
-        S.pop();
-        ans += S.top(); 
-        S.pop();
-      }
-      i++;  
+      i++;
     }
+    
     return ans;
   }
-
+private:
+  int getNumber(string& s, int& i){
+    int cur=0;
+    while (isdigit(s[i])){
+      cur = 10 * cur + (s[i++] - '0');
+    }
+    i--;
+    return cur;
+  }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  string s;
-  s = "1 + 1";
-  cout << sol -> calculate(s)<< endl;
-
-  s = " 2-1 + 2 ";
-  cout << sol -> calculate(s)<< endl;
-  s = "(1+(4+5+2)-3)+(6+8)";
-  cout << sol -> calculate(s)<< endl;
-  return 0;
-}

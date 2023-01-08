@@ -1,67 +1,38 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-#include <unordered_set>
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
-void print(set<vector<int>> x){
-  for(auto it=x.begin(); it != x.end(); it++){
-    for (auto ele: *it){
-      cout << ele << ", ";
-    }
-    cout << endl;
-  }
-}
+/*
+31. Next Permutation
 
+A permutation of an array of integers is an arrangement of its members into a sequence or linear order.
+
+For example, for arr = [1,2,3], the following are all the permutations of arr: [1,2,3], [1,3,2], [2, 1, 3], [2, 3, 1], [3,1,2], [3,2,1].
+The next permutation of an array of integers is the next lexicographically greater permutation of its integer. More formally, if all the permutations of the array are sorted in one container according to their lexicographical order, then the next permutation of that array is the permutation that follows it in the sorted container. If such arrangement is not possible, the array must be rearranged as the lowest possible order (i.e., sorted in ascending order).
+
+For example, the next permutation of arr = [1,2,3] is [1,3,2].
+Similarly, the next permutation of arr = [2,3,1] is [3,1,2].
+While the next permutation of arr = [3,2,1] is [1,2,3] because [3,2,1] does not have a lexicographical larger rearrangement.
+Given an array of integers nums, find the next permutation of nums.
+
+The replacement must be in place and use only constant extra memory.
+
+
+*/
 class Solution {
 public:
   void nextPermutation(vector<int>& nums) {
-    set<vector<int>> res;
-    getPermutation(res, nums, 0, nums.size());
-   
-    vector<vector<int>> out = {res.begin(), res.end()};
-    for (int i = 0; i < out.size(); i++){
-      if (i == out.size() - 1){nums = out[0]; break;}
-      if (out[i] == nums){nums = out[i + 1]; break;}
+    int n=nums.size();
+    int i = n - 2;
+    while (i >= 0 && nums[i + 1] <= nums[i]) {
+      i--;
     }
-  }
-private:
-  void getPermutation(set<vector<int>>& res, vector<int> nums, int low, int high){
-    if (low == high){
-      res.insert(nums); return;
+    if (i >= 0) {
+      int j = n - 1;
+      while (nums[j] <= nums[i]) {
+        j--;
+      }
+      swap(nums[i], nums[j]);
     }
-    
-    for (int i=low; i != high; i++){
-      swap(nums[low], nums[i]);
-      getPermutation(res, nums, low+1, high);
-      
-    }
+    int left=i+1;
+    int right = n - 1;
+    while (left < right)
+      swap(nums[left++], nums[right--]);
   }
 };
-
-int main()
-{
-  
-  Solution* sol;
-  vector<int> nums={3, 2, 1};
-  
-  //sol -> nextPermutation(nums);
-  //print(nums);
-  
-  nums = {1, 2, 3};
-  //sol -> nextPermutation(nums);
-  //print(nums);
-
-  nums = {1};
-  sol -> nextPermutation(nums);
-  print(nums);
-  return 0;
-}

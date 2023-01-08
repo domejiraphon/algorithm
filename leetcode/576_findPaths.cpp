@@ -1,59 +1,31 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <unordered_set>
-#include <set>
-#include <tuple>
-#include <algorithm>
+/*
+576. Out of Boundary Paths
 
-using namespace std;
-void print(set<int> x){
-  for (auto it= x.begin(); it != x.end(); it++){
-    cout << *it <<", ";
-    }cout  << endl;
- 
-}
-void print(vector<int> x){
-  for (auto it= x.begin(); it != x.end(); it++){
-    cout << *it <<", ";}
- 
-}
+There is an m x n grid with a ball. The ball is initially at the position [startRow, startColumn]. You are allowed to move the ball to one of the four adjacent cells in the grid (possibly out of the grid crossing the grid boundary). You can apply at most maxMove moves to the ball.
 
-
+Given the five integers m, n, maxMove, startRow, startColumn, return the number of paths to move the ball out of the grid boundary. Since the answer can be very large, return it modulo 109 + 7.
+*/
 class Solution {
+  int mod = pow(10, 9) + 7;
+  int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  int memo[51][51][51]={};
 public:
-  int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-    vector<vector<vector<int>>> memo(m, vector<vector<int>> (n, vector<int> (maxMove + 1, -INT_MAX)));
-    return helper(m, n, maxMove, startRow, startColumn, memo);
-  
+  int findPaths(int m, int n, int maxMove, int startRow, int startColumn){
+    memset(memo, -1, sizeof(memo));
+    return helper(m, n, maxMove, startRow, startColumn);
   }
 private:
-  int helper(int m, int n, int maxMove, int startRow, int startColumn, 
-            vector<vector<vector<int>>>& memo){
-    int mod = pow(10, 9) + 7;
-    if (startRow < 0 || startRow == m || startColumn < 0 || startColumn == n){
+  int helper(int m, int n, int maxMove, int startRow, int startColumn) {
+    if (startRow < 0 || startRow >= m || startColumn <0 || startColumn >= n)
       return 1;
-    }
-    if (maxMove ==0){return 0;}
-    if (memo[startRow][startColumn][maxMove] != -INT_MAX){return memo[startRow][startColumn][maxMove];}
+    if (memo[startRow][startColumn][maxMove] != -1)
+      return memo[startRow][startColumn][maxMove];
+    if (maxMove==0)
+      return 0;
+    int out=0;
+    for (auto dir: dirs)
+      out = (out + helper(m, n, maxMove - 1, startRow + dir[0], startColumn + dir[1])) % mod;
     
-    memo[startRow][startColumn][maxMove] = 
-        helper(m, n, maxMove - 1, startRow - 1, startColumn, memo) % mod + 
-        helper(m, n, maxMove - 1, startRow, startColumn - 1, memo) % mod +
-        helper(m, n, maxMove - 1, startRow + 1, startColumn, memo) % mod +
-        helper(m, n, maxMove - 1, startRow, startColumn + 1, memo) % mod;
-    return memo[startRow][startColumn][maxMove];
+    return memo[startRow][startColumn][maxMove] = out;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  cout << sol -> findPaths(2, 2, 2, 0, 0)<< endl;
-  cout << sol -> findPaths(1, 3, 3, 0, 1)<< endl;
-
-  
-  return 0;
-}
