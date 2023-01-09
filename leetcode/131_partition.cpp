@@ -1,71 +1,49 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <cmath>
-#include <queue>
-#include <vector>
-#include <list>
-#include <algorithm>
-
-using namespace std;
+/*
+131. Palindrome Partitioning
+Given a string s, partition s such that every 
+substring
+ of the partition is a 
+palindrome
+. Return all possible palindrome partitioning of s.
 
 
-void print(vector<vector<string>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-
+*/
 class Solution {
+  int memo[17][17];
+  vector<vector<string>> res;
 public:
   vector<vector<string>> partition(string s) {
-    vector<vector<string>> res;
-    int n = s.size();
+    memset(memo, -1, sizeof(memo));
     vector<string> cur;
-    unordered_map<string, bool> memo;
-    backtrack(s, 0, n, cur, res, memo);
+    helper(s, 0, cur);
     return res;
   }
 private:
-  void backtrack(string s, int i, int n, vector<string> cur, 
-      vector<vector<string>>& res, unordered_map<string, bool>& memo){
-    if (i == n){
-      for (int j=0; j < cur.size(); j++){
-        if (memo.find(cur[j]) != memo.end()){
-          if (memo[cur[j]]){continue;}
-          else {return;}
-        }
-        else if (!isPalindrome(cur[j])){
-          memo[cur[j]] = false;
-          return;}
-        else {memo[cur[j]] = true;}
-      }
-      res.push_back(cur); return;}
-    cur.push_back(string(1, s[i]));
-    backtrack(s, i+1, n, cur, res, memo);
-    if (i > 0){
-      cur.pop_back(); 
-      cur[cur.size() - 1] += s[i];
-      backtrack(s, i+1, n, cur, res, memo);
-      
+  bool check(string& s, int start, int end){
+    if (memo[start][end] != -1){
+      return memo[start][end] == 1;
     }
+    bool out=true;
+    int i = start, j = end;
+    while (start < end && out){
+      if (s[start++] != s[end--])
+        out = false;
+    }
+    memo[i][j] = (out) ? 1: 0;
+    return out;
   }
-  bool isPalindrome(string s){
-    int low(0), high(s.size() - 1);
-    while (low < high){
-      if (s[low++] != s[high--]){return false;}
+  void helper(string& s, int start, vector<string>& cur){
+    if (start == s.size()){
+      res.push_back(cur);
+      return;
     }
-    return true;
+
+    for (int i=start; i<s.size(); i++){
+      if (check(s, start, i)){
+        cur.push_back(s.substr(start, i - start + 1));
+        helper(s, i + 1, cur);
+        cur.pop_back();
+      }
+    }
   }
 };
-
-int main()
-{
-  Solution* sol;
-  vector<vector<string>> out;
-  out = sol -> partition("aabba");
-  print(out);
-}

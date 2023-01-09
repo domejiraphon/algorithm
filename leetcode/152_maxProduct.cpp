@@ -1,51 +1,27 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*
+152. Maximum Product Subarray
+Given an integer array nums, find a 
+subarray
+ that has the largest product, and return the product.
 
-using namespace std;
-
-void print(unordered_map<string, int> hashTable){
-  for (auto it=hashTable.begin(); it != hashTable.end(); it++){
-    cout << it -> first << ", "<< it -> second<< endl;
-  }
-  cout << endl;
-}
-
-void print(vector<vector<int>> nums){
-  for (auto row : nums){
-    for (auto ele: row){
-      cout << ele << ", ";
-    }
-    cout << endl;
-  }
-  
-}
-
+The test cases are generated so that the answer will fit in a 32-bit integer.
+*/
 class Solution {
 public:
   int maxProduct(vector<int>& nums) {
-    int _min(nums[0]), _max(nums[0]), out(nums[0]);
-    for (int i=1; i != nums.size(); i++){
-      int tmp = max(nums[i],  max(_max * nums[i], _min * nums[i]));
-      _min = min(nums[i],  min(_max * nums[i], _min * nums[i]));
-      _max = tmp;
-      out = max(out, max(_max, _min));
+    int n=nums.size();
+    int maxVal=INT_MIN;
+    int curMax=1, curMin=1;
+    for (int i=0; i<n; i++){
+      int tmp = curMax;
+      curMax = max({curMax * nums[i], 
+                    curMin * nums[i],
+                    nums[i]});
+      curMin = min({tmp * nums[i], 
+                    curMin * nums[i],
+                    nums[i]});
+      maxVal = max({maxVal, curMax, curMin});
     }
-    return out;
+    return maxVal;
   }
 };
-
-int main()
-{ 
-  vector<int> nums = {-1, 2, 2, -3, -4};
-  Solution* sol;
-  cout << sol -> maxProduct(nums) << endl;
- 
-  return 0;
-}
