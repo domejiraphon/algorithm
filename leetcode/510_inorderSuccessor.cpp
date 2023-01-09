@@ -31,3 +31,27 @@ public:
     return node -> parent;
   }
 };
+
+
+class Solution {
+public:
+  Node* inorderSuccessor(Node* node) {
+    Node* root = getRoots(node);
+    Node* suc = nullptr;
+    while(root){
+      if (node -> val >= root -> val)
+        root = root -> right;
+      else{
+        suc = root;
+        root = root -> left;
+      }
+    }
+    return suc;
+  }
+private:
+  Node* getRoots(Node* node){
+    while (node -> parent)
+      node = node -> parent;
+    return node;
+  }
+};

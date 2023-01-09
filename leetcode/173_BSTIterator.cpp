@@ -1,110 +1,84 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <queue>
-#include <stack>
+/*
+173. Binary Search Tree Iterator
+Implement the BSTIterator class that represents an iterator over the in-order traversal of a binary search tree (BST):
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
+BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part of the constructor. The pointer should be initialized to a non-existent number smaller than any element in the BST.
+boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false.
+int next() Moves the pointer to the right, then returns the number at the pointer.
+Notice that by initializing the pointer to a non-existent smallest number, the first call to next() will return the smallest element in the BST.
 
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-void print(vector<int> x){
-  for (auto row: x){
-    cout << row <<", ";
-    
-  }
-  cout << endl;
-}
+You may assume that next() calls will always be valid. That is, there will be at least a next number in the in-order traversal when next() is called.
 
-class BSTIterator2 {
-  vector<int> bst;
-  int idx = 0;
-  size_t size;
-private:
-  vector<int> inOrder(TreeNode* root){
-    vector<int> out;
-    if (!root){return out;}
-    vector<int> leftSide = inOrder(root -> left);
-    leftSide.push_back(root -> val);
-    vector<int> rightSide = inOrder(root -> right);
-    leftSide.insert(leftSide.end(), rightSide.begin(), rightSide.end());
-    return leftSide;
-  }
+
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class BSTIterator {
+  stack<TreeNode*> stk;
 public:
   BSTIterator(TreeNode* root) {
-    bst = inOrder(root);
-    size = bst.size();
-    print(bst);
+    inOrder(root);
   }
   
+  void inOrder(TreeNode* root){
+    if (!root)
+      return;
+    stk.push(root);
+    inOrder(root -> left);
+  }
+
   int next() {
-    return bst[idx++];
+    TreeNode* temp = stk.top();
+    stk.pop();
+    if (temp -> right){
+      inOrder(temp -> right);
+    }
+    return temp -> val;
   }
   
   bool hasNext() {
-    return (idx < (size - 1)) ? true : false;
+    return !stk.empty();
   }
 };
 
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator* obj = new BSTIterator(root);
+ * int param_1 = obj->next();
+ * bool param_2 = obj->hasNext();
+ */
 
 class BSTIterator {
-  TreeNode* head;
-  stack<TreeNode*> S;
-private:
-  void get(TreeNode* root, stack<TreeNode*>& S){
-    head = root;
-    S.push(root);
-    while (root -> left){
-      root = root -> left;
-      S.push(root);
-    }
-  }
+  queue<TreeNode*> arr;
 public:
   BSTIterator(TreeNode* root) {
-    get(root, S);
+    inorder(root);
   }
   
+  void inorder(TreeNode* root){
+    if (!root)
+      return;
+    inorder(root -> left);
+    arr.push(root);
+    inorder(root -> right);
+  }
   int next() {
-    TreeNode* top = S.top();
-    S.pop();
-    if (top -> right){
-      get(top -> right, S);
-    }
-    return top -> val;
+    TreeNode* cur = arr.front();
+    arr.pop();
+    return cur -> val;
   }
   
   bool hasNext() {
-    return !S.empty();
+    return !arr.empty();
   }
 };
 
-
-int main()
-{ 
-  TreeNode* root = new TreeNode(7);
-  TreeNode* node2_1 = new TreeNode(3);
-  TreeNode* node2_2 = new TreeNode(15);
-  TreeNode* node3_1 = new TreeNode(9);
-  TreeNode* node3_2 = new TreeNode(20);
-
-  root -> left = node2_1; root -> right = node2_2;
-  node2_2 -> left = node3_1; node2_2 -> right = node3_2;
-
-  BSTIterator* it = new BSTIterator(root);
-
-  return 0;
-}

@@ -43,6 +43,26 @@ public:
     return counter.size() - idx;
   }
 };
+
+class HitCounter {
+  queue<int> Q;
+public:
+  HitCounter() {
+      
+  }
+  
+  void hit(int timestamp) {
+    Q.push(timestamp);
+  }
+  
+  int getHits(int timestamp) {
+    while (!Q.empty() && timestamp - Q.front() >= 300)
+      Q.pop();
+    
+    return Q.size();
+  }
+};
+
 /**
  * Your HitCounter object will be instantiated and called as such:
  * HitCounter* obj = new HitCounter();
