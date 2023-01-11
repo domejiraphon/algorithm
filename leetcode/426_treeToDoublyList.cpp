@@ -10,51 +10,33 @@
  * and the right pointer should point to its successor. 
  * You should return the pointer to the smallest element of the linked list.
 */
-class Node {
-public:
-  int val;
-  Node* left;
-  Node* right;
-
-  Node() {}
-
-  Node(int _val) {
-      val = _val;
-      left = NULL;
-      right = NULL;
-  }
-
-  Node(int _val, Node* _left, Node* _right) {
-      val = _val;
-      left = _left;
-      right = _right;
-  }
-};
 
 class Solution {
-private:
-  Node* first = nullptr;
-  Node* last = nullptr;
 public:
   Node* treeToDoublyList(Node* root) {
-    if (!root){return root;}
-    helper(root);
-    first -> left = last;
-    last -> right = first;
-    return first;
+    if (!root)
+      return root;
+    Node* head={};
+    Node* tail = {};
+    helper(root, head, tail);
+    head -> left = tail;
+    tail -> right = head;
+    return head;
   }
 private:
-  void helper(Node* root){
-    if (!root){return;}
-    helper(root -> left);
-    if (last){
-      last -> right = root;
-      root -> left = last;
+  void helper(Node* root, Node*& head, Node*& tail){
+    if (!root)
+      return;
+    helper(root -> left, head, tail);
+    if (tail){
+      tail -> right = root;
+      root -> left = tail;
+      tail = root;
+      
     }
-    if (!first){
-      first = root;
+    else {
+      head = tail = root;
     }
-    last = root;
-    helper(root -> right);
+    helper(root -> right, head, tail);
   }
 };

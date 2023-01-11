@@ -1,59 +1,30 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <cmath>
-#include <vector>
-#include <list>
-#include <algorithm>
-using namespace std;
-void print(vector<vector<bool>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-class Solution2 {
-public:
-  bool isMatch(string s, string p) {
-    if (p == ""){return s == "";}
-    bool match = (s != "" && (s[0] == p[0] || p[0] == '.'));
-    if (p.size() > 1 && p[1] == '*'){
-      return isMatch(s, p.substr(2)) || (match && isMatch(s.substr(1), p));
-    }
-    else {
-      return match && isMatch(s.substr(1), p.substr(1));
-    }
-  }
-};
-
 class Solution {
 public:
   bool isMatch(string s, string p) {
-    int n = s.size(), m =p.size();
-    vector<vector<bool>> res(n + 1, vector<bool> (m + 1, false));
-    res[0][0] = true;
-    for (int i=0; i<= n; i++){
-      for (int j = 1; j <= m; j++){
-        bool match; 
-        if (p[j - 1] == '*'){
-          res[i][j] = res[i][j - 2] || 
-              (i && (s[i - 1] == p[j - 2]) || (p[j - 2] == '.') && res[i - 1][j]);
-        }
-        else {
-          res[i][j] = (i && (s[i - 1] == p[j - 1]) || (p[j - 1] == '.') && res[i - 1][j - 1]);
-        }
-      }
+    string S = s, P = p;
+    int n=S.size();
+    int m=P.size();
+    vector<vector<int>> memo (n+1, vector<int> (m+1, -1));
+    return check(S, P, 0, 0, n, m, memo);
+  }
+private:
+  bool check(string& s, string& p, int i, int j, int& n, int& m, 
+    vector<vector<int>>& memo){
+    if (j == m)
+      return i == n;
+    if (memo[i][j] != -1)
+      return memo[i][j] == 1;
+    bool first = (i < n) && (s[i] == p[j] || p[j] == '.');
+    
+    bool out;
+    if (j < m - 1 && p[j+1] == '*'){
+      out = check(s, p, i, j + 2, n, m, memo) || 
+            (first && check(s, p, i + 1, j, n, m, memo));
     }
-    print(res);
-    return res[n][m];
+    else
+      out = first && check(s, p, i + 1, j + 1, n, m, memo);
+    memo[i][j] = out ? 1: 0;
+
+    return out;
   }
 };
-
-int main()
-{
-  Solution* sol;
-  //cout << sol -> isMatch("ab", ".*c")<< endl;
-  cout << sol -> isMatch("aa", "a")<< endl;
-
-}
