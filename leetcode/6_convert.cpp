@@ -1,60 +1,41 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <queue>
-using namespace std;
-void print(vector<string> x){
-  for (auto v: x){
-    cout << v<<endl;
-  }
-  cout << endl;
-}
+/*
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
 
+P   A   H   N
+A P L S I I G
+Y   I   R
+And then read line by line: "PAHNAPLSIIGYIR"
+
+Write the code that will take a string and make this conversion given a number of rows:
+
+
+*/
 class Solution {
 public:
   string convert(string s, int numRows) {
-    vector<string> out(numRows);
-    int every=2*numRows - 2;
-    int row_used(0);
-    for (int i = 0; i < s.size(); i+= every){
-      vector<string> tmp(numRows);
-      string sub;
-      if (i+every > s.size()){
-        sub = s.substr(i);
-        row_used = (sub.size() > numRows) ?  numRows : sub.size();
-      }
-      else{
-        sub = s.substr(i, every);
-        row_used = numRows;
-      }
-     
-      for (int j = 0; j < sub.size(); j++){
-        if (j < numRows)
-          tmp[j] = string(1, sub[j]) + string(numRows-1-j, ' '); 
-        else {
-          tmp[every - j] += string(1, sub[j])+ string(every-j-1, ' ');
-        }
-      }
-      tmp[numRows-1] += string(numRows-1, ' ');
-      for (int j=0; j < row_used; j++){out[j] += tmp[j];}
-      tmp.clear();
-     
+    if (numRows == 1) 
+      return s;
+    int n=s.size();
+    int numCols = ceil(n/(2* numRows - 2.0))* (numRows - 1);
+    vector<vector<char>> memo(numRows);
+
+    int curRow=0;
+    int i=0;
+    while (i<n){
+      while (curRow < numRows && i<n)
+        memo[curRow++].push_back(s[i++]);
+
+      curRow -= 2;
+      while (curRow > 0 && i<n)
+        memo[curRow--].push_back(s[i++]);
     }
-    string tmp2;
-    for (auto elem: out){
-      tmp2 += elem + string(1, '\n');
+    string res="";
+    for (int i=0; i<numRows; i++){
+      for (int j=0; j<memo[i].size(); j++){
+        res += memo[i][j];
+      }
     }
-    return tmp2;
+    return res;
+
   }
 };
-
-int main()
-{ 
-  string s="PAYPALISHIRING";
-  Solution sol;
-  cout << sol.convert(s, 4) << endl;
- 
-  return 0;
-}
