@@ -1,77 +1,69 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <set>
-#include <algorithm>
-
-using namespace std;
-
-void print(vector<int> x){
-  
-    for (auto elem: x){
-      cout << elem <<", ";}
-  cout << endl;
-  
-}
-
-int getDigit(int n, int idx=0)
-{
-  int digits = (int)log10(n);
-  n = (int)(n / pow(10, digits -idx));
-  if (idx !=0){
-    return n% 10;
-  }
-  return n;
-}
-
 class Solution {
 public:
   double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
     int n=nums1.size();
     int m=nums2.size();
-    if (n > m){
-      return findMedianSortedArrays(nums2, nums1);
+    int i=0, j=0;
+    vector<int> merge;
+    while(i<n && j<m){
+      if (nums1[i] < nums2[j])
+        merge.push_back(nums1[i++]);
+      else
+        merge.push_back(nums2[j++]);
     }
-    int low = 0, high = n - 1;
-    while (low < high){
-      int med1 = (high + low) / 2;
-      int med2 = (n + m + 1)/2 - med1;
-
-      int l1 = (med1 > 0) ? nums1[med1 - 1] : -INT_MAX;
-      int l2 = (med2 > 0) ? nums2[med2 - 1] : -INT_MAX;
-
-      int r1 = nums1[med1];
-      int r2 = nums2[med2];
-      cout << l1 << ", "<< l2 << ", "<< r1<<", "<< r2 << endl;
-      exit(0);
-      if (l1 <= r2 && l2 <= r1){
-        return (n + m %2 == 0) ? ();
-      }
-      else if (l1 > r2){
-        high = med1 - 1;
-      }
-      else if (l2 > r1){
-        low = med1 + 1;
-      }
-    }
+    while (i<n)
+      merge.push_back(nums1[i++]);
+    while(j<m)
+      merge.push_back(nums2[j++]);
+    
+    int size = n+m;
+    return (size % 2 == 1) ? merge[size/2] : (double)(merge[size/2] + merge[(size/2)-1])/2;
   }
 };
 
-int main()
-{ 
-  
-  Solution* sol;
+class Solution {
+public:
+  double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    int n1=nums1.size();
+    int n2=nums2.size();
+    int n=n1+n2;
+    if (n1 > n2)
+      return findMedianSortedArrays(nums2, nums1);
+    int partition = (n + 1)/2;
 
-  vector<int> nums1 = {1,3};
-  vector<int> nums2 = {2};
-  //cout << sol ->findMedianSortedArrays(nums1, nums2)<<endl;
+    if (n1 == 0)
+      return (n2 % 2) ? nums2[n2/2] : (double) (nums2[n2/2] + nums2[n2/2-1])/2;
+    if (n2 == 0)
+      return (n1 % 2) ? nums1[n1/2] : (double) (nums1[n1/2] + nums1[n1/2-1])/2;
 
-  nums1 = vector<int> {1, 2, 9};
-  nums2 = vector<int> {3, 4, 5, 6, 7};
-  cout << sol ->findMedianSortedArrays(nums1, nums2)<<endl;
+    int left1=0;
+    int right1=n1;
+    int mid1, mid2;
+    int l1,r1,l2,r2;
+    do {
+      
+      mid1 = (left1 + right1) / 2;
+      mid2 = (partition - mid1);
+      l1 = mid1 == 0 ? INT_MIN : nums1[mid1 - 1];
+      l2 = mid2 == 0 ? INT_MIN : nums2[mid2 - 1];
 
-  return 0;
-}
+      r1 = mid1 >= n1 ? INT_MAX : nums1[mid1];
+      r2 = mid2 >= n2 ? INT_MAX : nums2[mid2];
+      if (l1 <= r2 && l2 <= r1){
+        return n %2 ? max(l1, l2) : (double) (max(l1, l2) + min(r1, r2)) /2;
+      }
+      
+      if(l1>r2)
+        right1=mid1-1;
+      else
+        left1=mid1+1;
+      
+            
+        
+      
+    }while (left1 <= right1);
+
+    return 0.0;
+
+  }
+};
