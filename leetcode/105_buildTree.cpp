@@ -1,61 +1,40 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <unordered_set>
-#include <tuple>
+/*
+105. Construct Binary Tree from Preorder and Inorder Traversal
+Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
 
-using namespace std;
-void print(const std::vector<int> & vec, std::string sep=", ")
-{
-    for(auto elem : vec)
-    {
-        std::cout<<elem<< sep;
-    }
-    std::cout<<std::endl;
-}
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
+ 
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
+  unordered_map<int, int> inOrderIdx;
 public:
   TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-    if (preorder.size() == 0 || inorder.size() == 0){return nullptr;}
-    TreeNode* head = new TreeNode(preorder[0]);
-    if (preorder.size() == 1 && inorder.size() == 1){return head;}
-    int n =inorder.size();
-    int idx;
-    for (int i=0; i< n; i++){
-      if (inorder[i] == preorder[0]){
-        idx = i; break;
-      }
-    }
-    
+    int n=inorder.size();
+    for (int i=0; i<n; i++)
+      inOrderIdx[inorder[i]] = i;
+    int idx=0;
+    return helper(preorder, 0, preorder.size() - 1, idx);
+  }
+private:
+  TreeNode* helper(vector<int>& preorder, int left, int right, int& idx){
+    if (left > right)
+      return nullptr;
+    int val = preorder[idx++];
+    TreeNode* root = new TreeNode(val);
+    int indexRoot = inOrderIdx[val];
 
-    vector<int> leftPreOrder = {preorder.begin() + 1, preorder.begin() + idx + 1};
-    vector<int> leftInOrder = {inorder.begin(), inorder.begin() + idx};
-   
-    TreeNode* leftChild = buildTree(leftPreOrder, leftInOrder);
-  
-    vector<int> rightPreOrder = {preorder.begin() + idx + 1, preorder.end()};
-    vector<int> rightInOrder = {inorder.begin() + idx + 1, inorder.end()};
-    TreeNode* rightChild = buildTree(rightPreOrder, rightInOrder);
-    head -> left = leftChild; head -> right = rightChild;
-    return head;
-
+    root -> left = helper(preorder, left, indexRoot - 1, idx);
+    root -> right = helper(preorder, indexRoot + 1, right, idx);
+    return root;
   }
 };
-int main()
-{ 
-  Solution* sol;
-  vector<int> preorder = {1,2, 3};
-  vector<int> inorder = {3,2,1};
-  TreeNode* out = sol -> buildTree(preorder, inorder);
-  return 0;
-}
