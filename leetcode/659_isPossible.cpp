@@ -15,42 +15,38 @@ A subsequence of an array is a new array that is formed from the original array 
 */
 class Compare {
 public:
-  bool operator() (pair<int, int> a, pair<int, int> b){
-    return (a.second == b.second) ? a.second - a.first > b.second - b.first : a.second > b.second;
+  bool operator () (pair<int, int>& a, pair<int, int>& b){
+    return a.second == b.second ? a.second - a.first > b.second - b.first : a.second > b.second;
   }
 };
-
 class Solution {
 public:
   bool isPossible(vector<int>& nums) {
     priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> minHeap;
+    int i=0;
     int n=nums.size();
-    minHeap.push({nums[0], nums[0]});
-    for(int i=1; i <n; i++){
-      
-      while (!minHeap.empty() && nums[i] > minHeap.top().second + 1) {
+    while (i < n){
+      while (!minHeap.empty() && minHeap.top().second + 1 < nums[i]){
+        pair<int, int> prev = minHeap.top();
+        if (prev.second - prev.first < 2)
+          return false;
+        minHeap.pop();
+      }
+      if (minHeap.empty() || minHeap.top().second == nums[i])
+        minHeap.push({nums[i], nums[i]});
+      else if (minHeap.top().second + 1 == nums[i]){
         pair<int, int> prev = minHeap.top();
         minHeap.pop();
-        if (prev.second - prev.first + 1 < 3){return false;}
+        minHeap.push({prev.first, prev.second + 1});
       }
-
-      if (minHeap.empty() || nums[i] == minHeap.top().second){
-        minHeap.push({nums[i], nums[i]});
-      }
-      else {
-        pair<int, int> prev = minHeap.top();
-        prev.second = nums[i];
-        minHeap.pop(); minHeap.push(prev);
-      }
-     
+      i++;
     }
-    bool possible = true;
-    while (!minHeap.empty() && possible){
-      pair<int, int> prev = minHeap.top();
-      cout << prev.first << ", " << prev.second << endl;
+    while (!minHeap.empty()){
+      pair<int, int> cur = minHeap.top();
+      if (cur.second - cur.first < 2)
+        return false;
       minHeap.pop();
-      possible = possible && (prev.second - prev.first + 1 >= 3);
     }
-    return possible;
+    return true;
   }
 };

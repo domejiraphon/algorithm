@@ -26,3 +26,23 @@ public:
     
   }
 };
+
+class Solution {
+public:
+  vector<int> findBuildings(vector<int>& heights) {
+    stack<int> stk;
+    int n=heights.size();
+    for (int i=0; i<n; i++){
+      while (!stk.empty() && heights[stk.top()] < heights[i]){
+        stk.pop();
+      
+      stk.push(i);
+    }
+    vector<int> res(stk.size());
+    int i=stk.size() - 1;
+    while (!stk.empty()){
+      res[i--] = stk.top(); stk.pop();
+    }
+    return res;
+  }
+};
