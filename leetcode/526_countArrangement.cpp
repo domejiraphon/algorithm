@@ -1,61 +1,31 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto ele :row){
-      cout << ele <<", ";
-    }
-    cout << endl;
-  }
-}
+/*
+526. Beautiful Arrangement
+Suppose you have n integers labeled 1 through n. A permutation of those n integers perm (1-indexed) is considered a beautiful arrangement if for every i (1 <= i <= n), either of the following is true:
 
+perm[i] is divisible by i.
+i is divisible by perm[i].
+Given an integer n, return the number of the beautiful arrangements that you can construct.
+*/
 class Solution {
 public:
   int countArrangement(int n) {
-    int count(0);
-    vector<int> nums;
-    for (int i=0; i != n; i++){nums.push_back(i + 1);}
-    nums = {3,1,2};
-    getPermutation(count, nums, 0);
-    return count;
+    vector<int> nums(n+1);
+    for (int i=1; i<=n; i++)
+      nums[i] = i;
+    return beautiful(nums, 1, n);
   }
 private:
-  void getPermutation(int& count, vector<int> nums, int low){
-    if (low == nums.size()){
-     
-      count++; return;
+  int beautiful(vector<int>& nums, int st, int& n){
+    if (st == n+1)
+      return 1;
+    int out=0;
+    for (int i=st; i<= n; i++){
+      if (nums[i] % st == 0 || st % nums[i] == 0){
+        swap(nums[i], nums[st]);
+        out += beautiful(nums, st + 1, n);
+        swap(nums[i], nums[st]);
+      }
     }
-    for (int i=low; i != nums.size(); i++){
-      swap(nums[low], nums[i]);
-      
-      if ((nums[low] % (i+1) ==0 ||(i +1) % nums[low] == 0) &&
-          (nums[i] % (low+1) ==0 ||(low +1) % nums[i] == 0)){
-        print(nums);
-        cout << low <<",  "<< i;
-        exit(0);
-        getPermutation(count, nums, low+1);
-      }  
-    }
+    return out;
   }
 };
-
-int main()
-{
-  
-  Solution* sol;
- 
-  cout << sol -> countArrangement(3)<<endl;
-  cout << sol -> countArrangement(1)<<endl;
-  return 0;
-}

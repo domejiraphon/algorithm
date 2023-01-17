@@ -1,22 +1,30 @@
+/*
+1578. Minimum Time to Make Rope Colorful
+Alice has n balloons arranged on a rope. You are given a 0-indexed string colors where colors[i] is the color of the ith balloon.
+
+Alice wants the rope to be colorful. She does not want two consecutive balloons to be of the same color, so she asks Bob for help. Bob can remove some balloons from the rope to make it colorful. You are given a 0-indexed integer array neededTime where neededTime[i] is the time (in seconds) that Bob needs to remove the ith balloon from the rope.
+
+Return the minimum time Bob needs to make the rope colorful.
+*/
 class Solution {
 public:
   int minCost(string colors, vector<int>& neededTime) {
-    int cost(0);
-    char prev=colors[0];
-    int prev_cost = neededTime[0];
-    int n(colors.size());
-    for (int i=1; i < n; i++){
-      if (colors[i] == prev){
-        if (prev_cost < neededTime[i]){
-          cost += prev_cost; prev_cost = neededTime[i];
-        }
-        else {
-          cost += neededTime[i];
-        }
+    int left=0, right=1;
+    int n=colors.size();
+    int cost=0;
+    while (right < n){
+      if (colors[left] != colors[right]){
+        left = right++; continue;
       }
       else{
-        prev = colors[i];
-        prev_cost = neededTime[i];
+        if (neededTime[left] < neededTime[right]){
+          cost += neededTime[left];
+          left = right++;
+        }
+        else {
+          cost += neededTime[right++];
+        }
+        
       }
     }
     return cost;
