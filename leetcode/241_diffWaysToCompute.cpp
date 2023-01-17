@@ -1,58 +1,51 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <cmath>
-#include <queue>
-#include <vector>
-#include <list>
-#include <algorithm>
+/*
+Given a string expression of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. You may return the answer in any order.
 
-using namespace std;
-void print(vector<int> x){
-    for (auto elem: x){
-      cout << elem <<", ";}
-  cout << endl;
-}
-
+The test cases are generated such that the output values fit in a 32-bit integer and the number of different results does not exceed 104.
+*/
 class Solution {
 public:
   vector<int> diffWaysToCompute(string expression) {
     int n=expression.size();
-    vector<int> ans;
-    vector<int> leftAns;
-    vector<int> rightAns;
-    for (auto i=0; i<n; i++){
-      if (!isdigit(expression[i])){
-        leftAns = diffWaysToCompute(expression.substr(0, i));
-        rightAns = diffWaysToCompute(expression.substr(i + 1));
-        for (auto left: leftAns){
-          for (auto right: rightAns){
-            ans.push_back(evaluate(left, right, expression[i]));
-          }
-        }
-      }
-    }
-    if (ans.size() == 0){
-      ans.push_back(stoi(expression));
-    }
-    return ans;
+    vector<vector<vector<int>>> memo(n+1, vector<vector<int>>(n+1, vector<int>{}));
+    vector<int> res = helper(expression, 0, n, memo);
+    return res;
   }
 private:
-  int evaluate(int x, int y, char oper){
-    if (oper == '+'){return x + y;}
-    else if (oper == '-'){return x - y;}
-    else{return x*y;}
+  int getNumber(string& expression, int st, int end){
+    int cur =0;
+    for (int i=st; i<end; i++)
+      cur = 10 * cur + (expression[i] - '0');
+    return cur;
+  }
+  vector<int> helper(string& expression, int st, int end, vector<vector<vector<int>>>& memo) {
+    vector<int> res;
+    vector<int> left, right;
+    if (memo[st][end].size() > 0)
+      return memo[st][end];
+    for (int i=st; i<end; i++){
+      if (expression[i] == '+' ||
+          expression[i] == '-' ||
+          expression[i] == '*')
+        left = helper(expression, st, i, memo);
+        right = helper(expression, i+1, end, memo);
+      
+        int n = left.size();
+        int m=right.size();
+        
+        for (int j=0; j<n; j++){
+          for (int k=0; k<m; k++){
+            if (expression[i] == '+')
+              res.push_back(left[j] + right[k]);
+            else if (expression[i] == '-')
+              res.push_back(left[j] - right[k]);
+            else if (expression[i] =='*')
+              res.push_back(left[j] * right[k]);
+          }
+        }
+    }
+    if (res.size() == 0)
+      res.push_back(getNumber(expression, st, end));
+    return memo[st][end] = res;
   }
 };
-
-int main()
-{
-  Solution* sol;
-  vector<int> out;
-  out = sol -> diffWaysToCompute("2-11-1");
-  print(out);
-
-  out = sol -> diffWaysToCompute("2*3-4*5");
-  print(out);
-}

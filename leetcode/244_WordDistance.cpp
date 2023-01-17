@@ -1,60 +1,34 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <queue>
-#include <stack>
+/*
+244. Shortest Word Distance II
+Design a data structure that will be initialized with a string array, and then it should answer queries of the shortest distance between two different strings from the array.
 
-using namespace std;
+Implement the WordDistance class:
 
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
-
-void print(map<string, vector<int>> x){
-  for (auto it=x.begin(); it != x.end(); it++){
-    cout << it -> first <<":";
-    for(auto elem: it -> second){
-      cout << elem << ", ";
-    }
-    cout << endl;
-  }
-}
-
+WordDistance(String[] wordsDict) initializes the object with the strings array wordsDict.
+int shortest(String word1, String word2) returns the shortest distance between word1 and word2 in the array wordsDict.
+*/
 class WordDistance {
-private:
-  map<string, vector<int>> hashTable;
+  unordered_map<string, vector<int>> map;
 public:
   WordDistance(vector<string>& wordsDict) {
-    for (int i=0; i != wordsDict.size(); i++){
-      hashTable[wordsDict[i]].push_back(i);
-    }
+    int n=wordsDict.size();
+    for (int i=0; i<n; i++)
+      map[wordsDict[i]].push_back(i);
   }
   
   int shortest(string word1, string word2) {
-    vector<int> idxWord1 = hashTable[word1];
-    vector<int> idxWord2 = hashTable[word2];
-    int dist(INT_MAX);
-    for (int i = 0; i != idxWord1.size(); i++){
-      for (int j=0; j != idxWord2.size(); j++){
-        dist = min(dist, abs(idxWord1[i] - idxWord2[j]));
+    int minDist = INT_MAX;
+    for (int l: map[word1]){
+      for (int r: map[word2]){
+        minDist = min(minDist, abs(l - r));
       }
     }
-    return dist;
+    return minDist;
   }
 };
 
-int main()
-{ 
-  vector<string> wordsDict = {"practice", "makes", "perfect", "coding", "makes"};
-  WordDistance* obj = new WordDistance(wordsDict);
-  cout << obj->shortest("coding", "practice") << endl;
-  cout << obj->shortest("makes", "coding") << endl;
-  
-  return 0;
-}
+/**
+ * Your WordDistance object will be instantiated and called as such:
+ * WordDistance* obj = new WordDistance(wordsDict);
+ * int param_1 = obj->shortest(word1,word2);
+ */

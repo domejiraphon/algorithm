@@ -1,65 +1,38 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <set>
-#include <unordered_set>
-#include <algorithm>
+/*
+16. 3Sum Closest
+Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto ele: row){
-      cout << ele <<", ";
-    }
-    cout << endl;
-  }
-}
+Return the sum of the three integers.
 
-void print(vector<int> x){
-  for (auto ele: x){
-    cout << ele <<", ";
-  }
-   cout << endl;
-}
-
+You may assume that each input would have exactly one solution.
+*/
 class Solution {
 public:
   int threeSumClosest(vector<int>& nums, int target) {
-  sort(nums.begin(), nums.end());
-   int close(INT_MAX-abs(target));
-  for (int i=0; i != nums.size(); i++){
-    int low(i+1), high(nums.size() -1);
-    while(low < high){
-      int diff = nums[i] + nums[low] + nums[high] - target;
-      if (diff == 0){
-        return target;
+    sort(nums.begin(), nums.end());
+    int n=nums.size();
+    int closet=INT_MIN / 2;
+    for (int i=0; i<n && closet != target; i++)
+      twoSum(nums, i, target, closet);
+    return closet;
+
+  }
+private:
+  void twoSum(vector<int>& nums, int st, int target, int& closet){
+    int n=nums.size();
+    int left=st+1, right = n-1;
+    while (left < right){
+      int cur = nums[left] + nums[right] + nums[st];
+      if (cur > target)
+        right--;
+      else if (cur < target)
+        left++;
+      else{
+        closet = target;
+        return;
       }
-      else if (diff > 0){
-        if (diff < abs(close - target)) {close = target+diff;}
-        high--;
-      }
-      else {
-        if (diff < abs(close - target)) {close = target+diff;}
-        low++;
-      }
+      if (abs(cur - target) < abs(closet - target))
+        closet = cur; 
     }
   }
-  return close;
-  }
 };
-
-int main()
-{
-  
-  Solution sol;
-  vector<vector<int>> out;
-  vector<int> nums = {-1, 2, 1, -4};
-  cout << sol.threeSumClosest(nums, 1)<< endl;
-  
-  nums = vector<int> {1, 1, 1, 1};
-  cout << sol.threeSumClosest(nums, -100)<< endl;
-  
-  return 0;
-}

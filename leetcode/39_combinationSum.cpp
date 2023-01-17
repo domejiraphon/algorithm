@@ -1,65 +1,37 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <unordered_map>
-#include <vector>
-#include <algorithm>
-using namespace std;
-template <typename T>
-void print(vector<vector<T>> x){
-  for (auto row: x){
-    for (auto elem: row) {
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
+/*
+39. Combination Sum
 
+Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
+
+The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the 
+frequency
+ of at least one of the chosen numbers is different.
+
+The test cases are generated such that the number of unique combinations that sum up to target is less than 150 combinations for the given input.
+*/
 class Solution {
 public:
   vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+    vector<int> cur;
     vector<vector<int>> res;
-    vector<int> subset;
-    backtracking(res, subset, candidates, target, 0);
+    int n=candidates.size();
+    sum(candidates, 0, target, 0, n, cur, res);
     return res;
   }
-
 private:
-  void backtracking(vector<vector<int>>& res, vector<int> subset,
-        const vector<int>& candidates, int target, int start){
-    if (target == 0){
-      sort(subset.begin(), subset.end());
-      res.push_back(subset);
+  void sum(vector<int>& candidates, int cur, int target, int st, int& n, vector<int> prev, vector<vector<int>>& res){
+    if (cur == target){
+      res.push_back(prev);
       return;
     }
-    else if (target < 0){return;}
-    else {
-      for (int i=start; i < candidates.size(); i++){
-        vector<int> cur{subset};
-        cur.push_back(candidates[i]);
-        backtracking(res, cur, candidates, target - candidates[i], i);
-      }
+    if (st == n)
+      return;
+    sum(candidates, cur, target, st +1, n, prev, res);
+    int curSum = cur;
+    while (curSum < target){
+      curSum += candidates[st];
+      prev.push_back(candidates[st]);
+      sum(candidates, curSum, target, st + 1, n, prev, res);
     }
-
   }
 };
-
-int main()
-{
-  Solution sol;
-
-  vector<int> candidates={2,3,6,7};
-  vector<vector<int>> out;
-  out = sol.combinationSum(candidates, 7);
-  print(out);
-  cout << endl;
-  candidates = vector<int> {2,3,5};
-  out = sol.combinationSum(candidates, 8);
-  print(out);
-
-  candidates = vector<int> {100,200,4,12};
-  out = sol.combinationSum(candidates, 400);
-  print(out);
-  return 0;
-}
