@@ -1,49 +1,51 @@
 /*
 1152. Analyze User Website Visit Pattern
-*/
-struct user {
-  string username;
-  string website;
-  int time;
-  user (string a, string b, int t){username = a; website = b; time = t;}
-};
-bool Cmp(user* &a, user* &b){return a -> time < b ->time;}
+You are given two string arrays username and website and an integer array timestamp. All the given arrays are of the same length and the tuple [username[i], website[i], timestamp[i]] indicates that the user username[i] visited the website website[i] at time timestamp[i].
 
+A pattern is a list of three websites (not necessarily distinct).
+
+For example, ["home", "away", "love"], ["leetcode", "love", "leetcode"], and ["luffy", "luffy", "luffy"] are all patterns.
+The score of a pattern is the number of users that visited all the websites in the pattern in the same order they appeared in the pattern.
+
+For example, if the pattern is ["home", "away", "love"], the score is the number of users x such that x visited "home" then visited "away" and visited "love" after that.
+Similarly, if the pattern is ["leetcode", "love", "leetcode"], the score is the number of users x such that x visited "leetcode" then visited "love" and visited "leetcode" one more time after that.
+Also, if the pattern is ["luffy", "luffy", "luffy"], the score is the number of users x such that x visited "luffy" three different times at different timestamps.
+Return the pattern with the largest score. If there is more than one pattern with the same largest score, return the lexicographically smallest such pattern.
+
+*/
 class Solution {
 public:
   vector<string> mostVisitedPattern(vector<string>& username, vector<int>& timestamp, vector<string>& website) {
-    vector<user*> users;
+    unordered_map<string, map<int, string>> users;
     int n=username.size();
-    for (int i=0; i<n; i++){
-      users.push_back(new user(username[i], 
-                              website[i],
-                              timestamp[i]));
-    }
-    sort(users.begin(), users.end(), Cmp);
-    for (int i=0; i<n; i++){
-      username[i] = users[i] -> username;
-      website[i] = users[i] -> website;
-      timestamp[i] = users[i] -> time;
-    }
-    map<string, int> invertedIndex;
-    string pattern;
-    for (int i=0; i<n; i++){
-      for (int j=i+1; j<n; j++){
-        for (int k=j+1; k<n; k++){
-          if (users[i] == users[j] && users[j] == users[k]){
-            pattern = website[i]+","+website[j] +","+ website[k];
-            invertedIndex[pattern]++;
+    for (int i=0; i<n; i++)
+      users[username[i]][timestamp[i]] = website[i];
+
+    unordered_map<string, int> pattern;
+    for (auto it=users.begin(); it != users.end(); it++){
+      map<int, string> cur = it -> second;
+      unordered_set<string> ts;
+      for (auto it1 = cur.begin(); it1 != cur.end(); it1++){
+        for (auto it2 = next(it1); it2 != cur.end(); it2++){
+          for (auto it3 = next(it2); it3 != cur.end(); it3++){
+            ts.insert(it1 -> second +'/'+ it2 -> second +'&'+ it3 -> second);
           }
         }
       }
+      for (auto t: ts)
+        pattern[t]++;
     }
-    map<int, vector<string>> index;
-    for (auto it=invertedIndex.begin(); it != invertedIndex.end(); it++){
-      index[it -> second].push_back(it -> first);
+    string maxPattern="";
+    int score=0;
+    for (auto it=pattern.begin(); it != pattern.end(); it++){
+      if (score <= it -> second){
+        maxPattern = score < it -> second ? it -> first : min(maxPattern, it -> first);
+        score = it -> second;
+      }
     }
-    vector<string> out=index.end() -> second;
-    sort(out.begin(), out.end());
-    cout << out[0]<< endl;
-    return out;
+    
+    int p1 = maxPattern.find("/");
+    int p2 = maxPattern.find("&");
+    return {maxPattern.substr(0, p1), maxPattern.substr(p1+1, p2 - p1 - 1), maxPattern.substr(p2+1)};
   }
 };
