@@ -1,66 +1,45 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-using namespace std;
-template <typename T>
-void print(vector<T> x){
-  for (auto elem: x) {
-    cout << elem <<", ";
-  }
-  cout << endl;
-}
+/*
+811. Subdomain Visit Count
+A website domain "discuss.leetcode.com" consists of various subdomains. At the top level, we have "com", at the next level, we have "leetcode.com" and at the lowest level, "discuss.leetcode.com". When we visit a domain like "discuss.leetcode.com", we will also visit the parent domains "leetcode.com" and "com" implicitly.
 
+A count-paired domain is a domain that has one of the two formats "rep d1.d2.d3" or "rep d1.d2" where rep is the number of visits to the domain and d1.d2.d3 is the domain itself.
+
+For example, "9001 discuss.leetcode.com" is a count-paired domain that indicates that discuss.leetcode.com was visited 9001 times.
+Given an array of count-paired domains cpdomains, return an array of the count-paired domains of each subdomain in the input. You may return the answer in any order.
+*/
 class Solution {
 public:
   vector<string> subdomainVisits(vector<string>& cpdomains) {
+    unordered_map<string, int> map;
+    for (string domain: cpdomains)
+      splitDomains(domain, map);
     vector<string> res;
-    map<string, int> countDomain;
-    for (auto website: cpdomains){helper(countDomain, website);}
-    for (auto it = countDomain.begin(); it != countDomain.end(); it++){
-      res.push_back(to_string(it -> second) +" "+ it -> first);
-    } 
+
+    for (auto it=map.begin(); it != map.end(); it++){
+      string cur = to_string(it -> second) + ' ' + it -> first;
+      res.push_back(cur);
+    }
     return res;
   }
-
 private:
-  void helper(map<string, int>& countDomain, string word){
-    string domain=word.substr(word.find(' ')+1, word.size());
-    vector<string> splitDomain; string tmp;
-    for (int i=0; i != domain.size(); i++){
+  void splitDomains(string& domain, unordered_map<string, int>& map){
+    int n=domain.size();
+    int i=0;
+    int num=getNumber(domain, i);
+    i=n-1;
+    string cur="";
+    while (domain[i] != ' '){
       if (domain[i] == '.'){
-        splitDomain.push_back(tmp); tmp.clear(); continue;}
-      else{
-        tmp += domain[i];
+        map[cur] += num;
       }
+      cur = domain[i--] + cur;
     }
-    splitDomain.push_back(tmp);
-    int rep = stoi(word.substr(0, word.find(' ')));
-
-    tmp= splitDomain[splitDomain.size()-1];
-    if (countDomain.find(tmp) == countDomain.end()){countDomain[tmp] = rep;}
-    else {countDomain[tmp] += rep;}
-    for (int i=splitDomain.size()-2; i != -1; i--){
-      tmp = splitDomain[i] + "." + tmp;
-      if (countDomain.find(tmp) == countDomain.end()){countDomain[tmp] = rep;}
-      else {countDomain[tmp] += rep;}
-    }
+    map[cur] += num;
+  }
+  int getNumber(string& domain, int& i){
+    int cur=0;
+    while (isdigit(domain[i]))
+      cur = 10 * cur +(domain[i++] - '0');
+    return cur;
   }
 };
-
-int main()
-{
-  vector<string> cpdomains={"900 google.mail.com", 
-                      "50 yahoo.com", 
-                      "1 intel.mail.com",
-                      "5 wiki.org"};
-  Solution sol;
-  vector<string> out;
-  out = sol.subdomainVisits(cpdomains);
-  print(out);
-
-  return 0;
-}

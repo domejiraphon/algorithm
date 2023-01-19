@@ -1,68 +1,44 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <stack>
+/*
+394. Decode String
+Given an encoded string, return its decoded string.
 
-using namespace std;
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
 
+You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there will not be input like 3a or 2[4].
+
+The test cases are generated so that the length of the output will never exceed 105.
+*/
 class Solution {
 public:
-  string decodeString(string s) {
-    stack<string> S;
-    string out;
-    
-    for (int i=0; i < s.size(); i++){
-      if (s[i] != ']'){
-        S.push(string(1, s[i]));
-      }
-      else {
-        string cur;
-        while (S.top() != "["){
-          cur = S.top() + cur;
-          S.pop();
+    string decodeString(string s) {
+        stack<int> countStack;
+        stack<string> stringStack;
+        string currentString;
+        int k = 0;
+        for (auto ch : s) {
+            if (isdigit(ch)) {
+                k = k * 10 + ch - '0';
+            } else if (ch == '[') {
+                // push the number k to countStack
+                countStack.push(k);
+                // push the currentString to stringStack
+                stringStack.push(currentString);
+                // reset currentString and k
+                currentString = "";
+                k = 0;
+            } else if (ch == ']') {
+                string decodedString = stringStack.top();
+                stringStack.pop();
+                // decode currentK[currentString] by appending currentString k times
+                for (int currentK = countStack.top(); currentK > 0; currentK--) {
+                    decodedString = decodedString + currentString;
+                }
+                countStack.pop();
+                currentString = decodedString;
+            } else {
+                currentString = currentString + ch;
+            }
         }
-
-        S.pop();
-        int base=1;
-        int rep = 0;
-        // get the number k
-        while (!S.empty() && isdigit(S.top()[0])) {
-            rep += (S.top()[0] - '0') * base;
-            S.pop();
-            base *= 10;
-        }
-       
-
-        string repeat;
-        for (int j=0; j < rep; j++){
-          repeat += cur;
-        }
-        if (S.empty()){
-          out += repeat;
-        }
-        else {
-          S.push(repeat);
-        }
-      }
+        return currentString;
     }
-    string res="";
-    while (!S.empty()){
-      res = S.top() + res;
-      S.pop();
-    }
-    return out + res;
-  }
 };
-
-int main()
-{ 
-  Solution sol;
-  cout<< sol.decodeString("3[ac]")<<endl;
-  cout<< sol.decodeString("3[a]2[bc]")<< endl;
-  cout<< sol.decodeString("3[a2[c]]")<< endl;
-  cout<< sol.decodeString("ef10[leetcode]")<< endl;
- 
-  return 0;
-}

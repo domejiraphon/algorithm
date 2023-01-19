@@ -1,50 +1,40 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*718. Maximum Length of Repeated Subarray
+Given two integer arrays nums1 and nums2, return the maximum length of a subarray that appears in both arrays.
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-
+ 
+*/
 class Solution {
 public:
   int findLength(vector<int>& nums1, vector<int>& nums2) {
-    vector<vector<int>> memo(nums1.size() + 1, vector<int> (nums2.size() + 1, 0));
-    int out(0);
-    for (int i=0; i < nums1.size(); i++){
-      for (int j=0;j < nums2.size(); j++){
-        if (nums1[i] == nums2[j]){
-          memo[i + 1][j + 1] = 1 + memo[i][j];
-          out = max(out, memo[i + 1][j + 1]);
-        }
-      }
-    }
-    print(memo); 
-    return out;
+    int n=nums1.size();
+    int m=nums2.size();
+    vector<vector<vector<int>>> memo(n, vector<vector<int>>(m, vector<int>(2, -1)));
+    bool prev=false;
+    return length(nums1, nums2, 0, 0, prev, n, m, memo);
   }
-
+private:
+  int length(vector<int>& nums1, vector<int>& nums2, int i, int j, bool prev, int& n, int& m, 
+      vector<vector<vector<int>>>& memo){
+    if (i==n || j == m)
+      return 0;
+    if (memo[i][j][prev] != -1)
+      return memo[i][j][prev];
+    int out=0;
+    
+    if (prev){
+      if (nums1[i] == nums2[j])
+        out = max(out, 1 + length(nums1, nums2, i+1, j+1, prev, n, m, memo));
+      else
+        out = 0;
+    }
+    else {
+      out = max({out, length(nums1, nums2, i, j+1, false, n, m, memo),
+                length(nums1, nums2, i+1, j, false, n, m, memo)});
+      if (nums1[i] == nums2[j])
+        out = max(out, 1 + length(nums1, nums2, i+1, j+1, true, n, m, memo));
+     
+    }
+    
+    return memo[i][j][prev] = out;
+  }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  vector<int> nums1 = {3,2,1};
-  vector<int> nums2 = {3,2,1,4,7};
-
-  cout << sol -> findLength(nums1, nums2)<< endl;
-
-  nums1 = {0,0,0,0,0,0,1,0,0,0};
-  nums2 = {0,0,0,0,0,0,0,1,0,0};
-
-  cout << sol -> findLength(nums1, nums2)<< endl;
-  return 0;
-}

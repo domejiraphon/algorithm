@@ -3,6 +3,34 @@
 Given an integer n, return the count of all numbers with unique digits, x, where 0 <= x < 10n.
 */
 class Solution {
+public:
+  int minSessions(vector<int>& tasks, int sessionTime) {
+    int n=tasks.size();
+    vector<vector<int>> memo (1<<n, vector<int> (sessionTime+1, -1));
+    return dp(tasks, 0, 0, sessionTime, n, sessionTime, memo);
+  }
+private:
+  int dp(vector<int>& tasks, int i, int mask, int left, int& n, int& sessionTime, vector<vector<int>>& memo ){
+    if (i == n)
+      return 1;
+    if (memo[mask][left] != -1)
+      return memo[mask][left];
+    int out=n;
+    for (auto it=0; it < n; it++){
+      if (mask & (1 << it))
+        continue;
+      int newMask = mask | (1 << it);
+      if (left >= tasks[it])
+        out = min(out, dp(tasks, i+1, newMask, left - tasks[it], n, sessionTime, memo));
+      else 
+        out = min(out, 1 + dp(tasks, i+1, newMask, sessionTime - tasks[it], n, sessionTime, memo));
+      
+    }
+    return memo[mask][left] = out;
+  }
+};
+
+class Solution {
   int m;
   int memo[9][1024];
 public:
