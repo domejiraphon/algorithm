@@ -1,49 +1,28 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
+/*
+167. Two Sum II - Input Array Is Sorted
+Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
 
+Return the indices of the two numbers, index1 and index2, added by one as an integer array [index1, index2] of length 2.
+
+The tests are generated such that there is exactly one solution. You may not use the same element twice.
+
+Your solution must use only constant extra space.
+*/
 class Solution {
 public:
-  vector<int> twoSum(vector<int>& nums, int target) {
-    vector<int> out;
-    int low(0), high(nums.size()-1);
-    while(low < high){
-      if(target == nums[low] + nums[high]){
-        out.push_back(low+1); out.push_back(high+1); return out;
-      }
-      else if (target > nums[low] + nums[high]){
-        low++;
-      }
-      else {
-        high--;
-      }
+  vector<int> twoSum(vector<int>& numbers, int target) {
+    
+    int left=0;
+    int right = numbers.size() - 1;
+    while (left < right){
+      int cur = numbers[left] + numbers[right];
+      if (cur == target)
+        return vector<int> {left+1, right+1};
+      else if (cur < target)
+        left++;
+      else
+        right--;
     }
+    return vector<int> {};
   }
 };
-
-int main()
-{
-  
-  Solution sol;
-  vector<int> out;
-  vector<int> nums = {2,7,11,15};
-  out = sol.twoSum(nums, 9);
-  print(out);
-
-  vector<int> nums2 = {2,3,4};
-  out = sol.twoSum(nums2, 6);
-  print(out);
-
-  vector<int> nums3 = {-1, 0};
-  out = sol.twoSum(nums3, -1);
-  print(out);
-  
-  return 0;
-}
