@@ -1,40 +1,32 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <tuple>
-#include <queue>
-using namespace std;
+/*
+74. Search a 2D Matrix
+You are given an m x n integer matrix matrix with the following two properties:
+
+Each row is sorted in non-decreasing order.
+The first integer of each row is greater than the last integer of the previous row.
+Given an integer target, return true if target is in matrix or false otherwise.
+
+You must write a solution in O(log(m * n)) time complexity.
+*/
 class Solution {
 public:
   bool searchMatrix(vector<vector<int>>& matrix, int target) {
-    int n=matrix[0].size(), m=matrix.size();
-    
-    int left(0), right(n*m - 1);
-    int idx, mid;
+    int n=matrix.size();
+    int m=matrix[0].size();
+    int left=0;
+    int right = m*n-1;
     while (left <= right){
-      idx = (int) (left + right) / 2;
-      mid = matrix[idx / n][idx % n];
-      if (target == mid){
+      int mid = (left + right) / 2;
+      int row = mid / m;
+      int col = mid % m;
+      
+      if (matrix[row][col] < target)
+        left = mid + 1;
+      else if (matrix[row][col] > target)
+        right = mid -1;
+      else
         return true;
-      }
-      else if (target < mid){
-        right = idx - 1;
-        
-      }
-      else {
-        left = idx + 1;
-      }
     }
     return false;
   }
 };
-int main()
-{
-  Solution* sol;
-  vector<vector<int>> matrix = {{1,3,5,7}, {10,11,16,20}, {23,30,34,60}};
-
-  cout << sol -> searchMatrix(matrix, 13) << endl;
-}
