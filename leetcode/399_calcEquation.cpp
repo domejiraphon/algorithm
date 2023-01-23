@@ -1,87 +1,44 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*
+399. Evaluate Division
+You are given an array of variable pairs equations and an array of real numbers values, where equations[i] = [Ai, Bi] and values[i] represent the equation Ai / Bi = values[i]. Each Ai or Bi is a string that represents a single variable.
 
-using namespace std;
+You are also given some queries, where queries[j] = [Cj, Dj] represents the jth query where you must find the answer for Cj / Dj = ?.
 
-void print(unordered_map<string, double> hashTable){
-  for (auto it = hashTable.begin(); it != hashTable.end(); it++){
-    cout<< it -> first<< ", "<< it -> second<< endl;
-  }
-}
+Return the answers to all queries. If a single answer cannot be determined, return -1.0.
 
-void print(vector<double> vect){
-  for (auto it : vect){
-    cout<< it << ", ";
-  }
-  cout << endl;
-}
-
-void print(vector<vector<string>> vect){
-  for (auto it : vect){
-    for (auto ele: it){
-      cout << ele << ", ";
-    }
-    cout << endl;
-  }
-  
-}
-
+Note: The input is always valid. You may assume that evaluating the queries will not result in division by zero and that there is no contradiction.
+*/
 class Solution {
 public:
-  vector<double> calcEquation(vector<vector<string>>& equations, 
-                        vector<double>& values, 
-                        vector<vector<string>>& queries) {
-    vector<double> out;
-    sort(equations.begin(), equations.end());
-    
-    unordered_map<string, double> hashTable;
-    for (int i=0; i != equations.size(); i++){
-      if (hashTable.find(equations[i][0]) == hashTable.end()){
-        if (hashTable.find(equations[i][1]) == hashTable.end()){
-          hashTable[equations[i][0]] = values[i];
-          hashTable[equations[i][1]] = 1.0;
-        }
-        else {hashTable[equations[i][0]] = values[i] * hashTable[equations[i][1]];}
-      }
-      else {hashTable[equations[i][1]] = hashTable[equations[i][0]]/ values[i];}
+  vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+    unordered_map<string, vector<pair<string, double>>> var;
+    int n=equations.size();
+    for (int i=0; i<n; i++){
+      var[equations[i][0]].push_back({equations[i][1], values[i]});
+      var[equations[i][1]].push_back({equations[i][0], 1 / values[i]});
     }
-    print(hashTable);
-    exit(0);
-    for (int i=0; i != queries.size(); i++){
-      if (hashTable.find(queries[i][0]) != hashTable.end() &&
-          hashTable.find(queries[i][1]) != hashTable.end()){
-            out.push_back(hashTable[queries[i][0]] / hashTable[queries[i][1]]);
-          }
-      else { out.push_back(-1.0);}
+    vector<double> res;
+    for (auto query: queries){
+      unordered_set<string> visited={};
+      res.push_back(dfs(query[0], query[1], visited, var));
+    }
+    return res;
+  }
+private:
+  double dfs(string& a, string& b, unordered_set<string>& visited, unordered_map<string, vector<pair<string, double>>> var){
+    if (!var.count(a))
+      return -1;
+    if (a ==b)
+      return 1;
+    double out=-1;
+    for (auto neigh: var[a]){
+      if (visited.count(neigh.first))
+        continue;
+      visited.insert(neigh.first);
+      out = dfs(neigh.first, b, visited, var);
+      if (out != -1)
+        return out * neigh.second;
     }
     return out;
-      
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-  vector<vector<string>> equations = {{"a", "b"}, {"b", "c"}};
-  vector<double> values = {2.0, 3.0};
-  vector<vector<string>> queries = {{"a", "c"}, {"b", "a"}, {"a", "e"}, {"a", "a"}, {"x", "x"}};
-  vector<double> out; 
-  //out = sol -> calcEquation(equations, values, queries);
-  //print(out);
-
-  equations = vector<vector<string>> {{"a", "b"}, {"e", "f"}, {"b", "e"}};
-  values = vector<double> {3.4, 1.4, 2.3};
-  queries = vector<vector<string>> {{"b", "a"}, {"a", "f"}, {"f", "f"}, {"e", "e"}, {"c", "c"}, {"a", "c"}, {"f", "e"}};
-  out = sol -> calcEquation(equations, values, queries);
-  print(out);
-
-  
-  
-  return 0;
-}
