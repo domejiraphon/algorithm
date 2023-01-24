@@ -1,100 +1,53 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <tuple>
+/*
+994. Rotting Oranges
+You are given an m x n grid where each cell can have one of three values:
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-    cout << endl;
-  }
-}
-void print(queue<pair<int, int>> Q){
-  while (!Q.empty()){
-    pair<int, int> ele = Q.front();
-    cout << ele.first << ", "<< ele.second << endl;
-    Q.pop();
-  }
-}
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
 
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+*/
 class Solution {
 public:
   int orangesRotting(vector<vector<int>>& grid) {
+    int n=grid.size();
+    int m=grid[0].size();
     queue<pair<int, int>> Q;
-    int n = grid.size();
-    int m = grid[0].size();
-    int freshOrange(0);
-    for (int i=0; i < n; i++){
-      for (int j=0; j < m ; j++){
-        if (grid[i][j] == 2){
+    for (int i=0; i<n; i++){
+      for (int j=0; j<m; j++){
+        if (grid[i][j] == 2)
           Q.push({i, j});
-        }
-        else if (grid[i][j] == 1){
-          freshOrange++;
-        }
       }
     }
-    int count = BFS(grid, Q, n, m, freshOrange);
-    return (freshOrange == 0) ? count : -1;
-  }
-private:
-  int BFS(vector<vector<int>>& grid, queue<pair<int, int>> Q, 
-      int n, int m, int& freshOrange){
-    if (Q.empty()){return 0;}
-    int count(-1);
+    int steps = 0;
+    vector<vector<bool>> visited(n, vector<bool>(m, false));
+    int dirs[4][2] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
     while (!Q.empty()){
-      int queueSize = Q.size();
-      count++;
-      for (int i=0; i < queueSize; i++){
+      int len = Q.size();
+      for (int i=0; i<len; i++){
         pair<int, int> cur = Q.front();
-        int row = cur.first; 
-        int col = cur.second;
-        grid[row][col] = 0;
+        grid[cur.first][cur.second] = 2;
         Q.pop();
-        if (row > 0 && row < n && col >= 0 && col < m && 
-          (grid[row - 1][col] == 1)){
-            Q.push({row - 1, col}); grid[row - 1][col] = 0; freshOrange--;
-        }
-        if (row >= 0 && row < (n -1) && col >= 0 && col < m && 
-          (grid[row + 1][col] == 1)){
-            Q.push({row + 1, col}); grid[row + 1][col] = 0;freshOrange--;
-        }
-        if (row >= 0 && row < n && col > 0 && col < m && 
-          (grid[row][col - 1] == 1)){
-            Q.push({row, col - 1}); grid[row][col - 1] = 0;freshOrange--;
-        }
-        if (row >= 0 && row < n && col >= 0 && col < (m - 1) && 
-          (grid[row][col + 1] == 1)){
-            Q.push({row, col + 1}); grid[row][col + 1] = 0;freshOrange--;
+        for (auto dir: dirs){
+          int x = cur.first + dir[0];
+          int y = cur.second + dir[1];
+          if (0<=x && x<n && y>=0 && y<m && ! visited[x][y] && grid[x][y] == 1){
+            visited[x][y] = true;
+            Q.push({x, y});
+          }
         }
       }
+
+      steps += (!Q.empty());
     }
-    return count;
+    for (int i=0; i<n; i++){
+      for (int j=0; j<m; j++){
+        if (grid[i][j] == 1)
+          return -1;
+      }
+    }
+    return steps;
   }
 };
-
-
-int main()
-{ 
-  vector<vector<int>> grid;
-  Solution* sol;
-  
-  grid = {{2,1,1}, {1,1,0}, {0,1,1}};
-  
-  cout << sol -> orangesRotting(grid)<< endl;
-
-  grid = {{0}};
-  cout << sol -> orangesRotting(grid)<< endl;
-
-  grid = {{1}};
-  cout << sol -> orangesRotting(grid)<< endl;
-  grid = {{2,1,1}, {1,1,1}, {0,1,2}};
-  cout << sol -> orangesRotting(grid)<< endl;
-  grid = {{2,2}, {1,1}, {0,0}, {2, 0}};
-  cout << sol -> orangesRotting(grid)<< endl;
-  return 0;
-}
