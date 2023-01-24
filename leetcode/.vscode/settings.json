@@ -12,6 +12,9 @@
     "initializer_list": "cpp",
     "utility": "cpp",
     "functional": "cpp",
-    "climits": "cpp"
+    "climits": "cpp",
+    "*.tcc": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp"
   }
 }
