@@ -32,3 +32,17 @@ public:
     return res;
   }
 };
+
+class Solution {
+public:
+  string customSortString(string order, string s) {
+    vector<int> rank(26, INT_MAX);
+    int n=order.size();
+    for (int i=0; i<n; i++)
+      rank[order[i] - 'a'] = i;
+    sort(s.begin(), s.end(), [&rank](char& a, char& b){
+      return rank[a - 'a'] < rank[b - 'a'];
+    });
+    return s;
+  }
+};

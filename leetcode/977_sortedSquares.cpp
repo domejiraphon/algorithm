@@ -28,3 +28,16 @@ public:
   }
 
 };
+
+class Solution {
+public:
+  vector<int> sortedSquares(vector<int>& nums) {
+    sort(nums.begin(), nums.end(), [](int& a, int& b){
+        return pow(a, 2) < pow(b, 2);
+      });
+    int n=nums.size();
+    for (int i=0; i<n; i++)
+      nums[i] *= nums[i];
+    return nums;
+  }
+};

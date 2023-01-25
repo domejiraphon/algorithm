@@ -7,10 +7,11 @@ You may return the answer in any order. The answer is guaranteed to be unique (e
 */
 class Compare {
 public:
-  bool operator () (pair<int, int> a, pair<int, int> b){
+  bool operator () (const pair<int, int>& a, const pair<int, int>& b)const {
     return pow(a.first, 2) + pow(a.second, 2) < pow(b.first, 2) + pow(b.second, 2);
   }
 };
+
 class Solution {
 public:
   vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
@@ -21,12 +22,10 @@ public:
       if (maxHeap.size() > k)
         maxHeap.pop();
     }
-    vector<vector<int>> res(k, vector<int>(2));
-    int i=0;
-    while (i<k){
-      pair<int, int> cur= maxHeap.top();
-      res[i][0] = cur.first;
-      res[i++][1] = cur.second;
+    vector<vector<int>> res;
+    while (!maxHeap.empty()){
+      pair<int, int> cur = maxHeap.top();
+      res.push_back({cur.first, cur.second});
       maxHeap.pop();
     }
     return res;

@@ -3,41 +3,35 @@ Given a string s, return the longest
 palindromic substring in s.
 */
 class Solution {
-private:
-  map<pair<int, int>, bool> dp;
-  string S;
 public:
   string longestPalindrome(string s) {
-    S = s;
+    int length=0;
     int n=s.size();
-    string out="";
-    for (int i=0; i< n; i++){
-      for (int j=i+1; j<= n; j++){
-        string cur = S.substr(i, j - i + 1);
-       
-        if (check(i, j) && out.size() < cur.size()){
-          out = cur;
+    vector<vector<int>> memo(n, vector<int>(n, -1));
+    
+    string out;
+    for (int i=0; i<n; i++){
+      for (int j=i; j<n; j++){
+        if (checkPalindrome(s, i, j, memo)){
+          if (length < j - i + 1){
+            length = j - i +1;
+            out = s.substr(i, j - i + 1);
+          }
         }
       }
     }
     return out;
   }
 private:
-  bool check(int i, int j){
-    if (i < j){
-      if (dp.count({i, j})){
-        return dp[{i, j}];
-      }
-      bool out;
-      
-      if (S[i] == S[j]){
-        out = check(i+1, j-1);
-      }
-      else {
-        out = false;
-      }
-      return dp[{i, j}] = out;
-    }
-    return true;
+  bool checkPalindrome(string& s, int st, int end, vector<vector<int>>& memo){
+    if (st > end)
+      return true;
+    if (memo[st][end] != -1)
+      return memo[st][end] == 1;
+    bool out=false;
+    if (s[st] == s[end])
+      out = checkPalindrome(s, st + 1, end -1, memo);
+    memo[st][end] = out ? 1 : 0;
+    return out;
   }
 };
