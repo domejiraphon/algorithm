@@ -11,28 +11,21 @@ For example, the saying and conversion for digit string "3322251":
 class Solution {
 public:
   string countAndSay(int n) {
-    if (n == 1){return "1";}
-    else if (n == 2){return "11";}
-    string prev = "11";
-    for (int k=2; k<n; k++){
+    if (n == 1)
+      return "1";
+    string prev = "1";
+    for (int i=1; i<n; i++){
+      int left=0, right=0;
       int m = prev.size();
-      int count = 1;
-      string res="";
-      
-      for (int i=1; i<=m; i++){
-        if(i != m && prev[i] == prev[i - 1]){
-          count++;
-        }
-        else {
-          res += (char) (count + '0');
-          res += prev[i - 1];
-          count = 1;
-        }
-        
+      string cur="";
+      while (right < m){
+        while (right < m - 1 && prev[right] == prev[right+1])
+          right++;
+        cur += to_string(right - left + 1) + prev[left];
+        right++; left = right;
       }
-      prev =res;
+      prev = cur;
     }
     return prev;
-    
   }
 };
