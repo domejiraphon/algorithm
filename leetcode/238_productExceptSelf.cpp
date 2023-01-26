@@ -1,58 +1,38 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <unordered_set>
-#include <stack>
-#include <tuple>
+/*
+238. Product of Array Except Self
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
 
-using namespace std;
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
 
-void print(vector<int> x){
-  for (auto elem: x){
-    cout << elem <<", ";}
-  cout << endl;
-}
-
+You must write an algorithm that runs in O(n) time and without using the division operation.
+*/
 class Solution {
 public:
   vector<int> productExceptSelf(vector<int>& nums) {
-    int n = nums.size();
-    vector<int> leftSide(n);
-    vector<int> rightSide(n);
-    leftSide[0] = nums[0];
-    rightSide[n - 1] = nums[n - 1];
-    for (int i=1; i < n; i++){
-      leftSide[i] = nums[i] * leftSide[i - 1];
+    int n=nums.size();
+    vector<int> res(n);
+    vector<int> pos;
+    int prod=1;
+    for (int i=0; i<n; i++){
+      if (nums[i] != 0)
+        prod *= nums[i];
+      else
+        pos.push_back(i);
+      if (pos.size() > 1){
+        res.resize(n, 0);
+        return res;
+      }
     }
-    for (int i=n - 1; i >= 1; i--){
-      rightSide[i - 1] = nums[i-1] * rightSide[i];
+    if (pos.size() == 0){
+      for (int i=0; i<n; i++){
+        res[i] = prod / nums[i];
+      }
     }
-    vector<int> out(n);
-    out[0] = rightSide[1];
-    for (int i=1; i < n - 1; i++){
-      out[i] = leftSide[i -1] * rightSide[i + 1];
+    else {
+      res.resize(n, 0);
+      res[pos[0]] = prod;
     }
-    out[n - 1] = leftSide[n - 2];
-    return out;
+   
+    return res;
   }
 };
-
-int main()
-{ 
-  vector<int> nums;
-  Solution* sol;
-  nums = {1,2,3,4, 5};
-  vector<int> out;
-  out = sol -> productExceptSelf(nums);
-  print(out);
-
-  nums = {3,2};
-  out = sol -> productExceptSelf(nums);
-  print(out);
-
-  nums = {1};
-  out = sol -> productExceptSelf(nums);
-  print(out);
-  return 0;
-}
