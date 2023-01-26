@@ -1,94 +1,47 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <tuple>
+/*
+547. Number of Provinces
+There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c.
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto ele :row){
-      cout << ele <<", ";
-    }
-    cout << endl;
-  }
-}
+A province is a group of directly or indirectly connected cities and no other cities outside of the group.
 
+You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are directly connected, and isConnected[i][j] = 0 otherwise.
+
+Return the total number of provinces.
+
+ 
+*/
 class Solution {
 public:
   int findCircleNum(vector<vector<int>>& isConnected) {
-    int n = isConnected.size();
-    int count(0);
-    vector<bool> visited(n, false);
-    for (int i=0; i < n; i++){
+    int n=isConnected.size();
+    vector<vector<int>> adj(n+1);
+    for (int i=0; i<n; i++){
+      for (int j=0; j<n; j++){
+        if (i == j)
+          continue;
+        if (isConnected[i][j])
+          adj[i+1].push_back(j+1);
+      }
+    }
+    vector<bool> visited(n+1, false);
+    int res=0;
+    for (int i=1; i<=n; i++){
       if (!visited[i]){
-        DFS(isConnected, visited, i, n);
-        count++;
+        visited[i] = true;
+        dfs(adj, i, visited);
+        res++;
       }
     }
-    return count;
+    return res;
   }
 private:
-  void DFS(vector<vector<int>>& isConnected, vector<bool>& visited, int i, int n){
-    visited[i] = true;
-    for (int j=0; j < n; j++){
-      if (i == j){continue;}
-      if (!visited[j] && isConnected[i][j] == 1){
-        DFS(isConnected, visited, j, n);
+  void dfs(vector<vector<int>>& adj, int i, vector<bool>& visited){
+    for (auto neigh: adj[i]){
+      if (!visited[neigh]){
+        visited[neigh] = true;
+        dfs(adj, neigh, visited);
       }
     }
-    return;
+    
   }
 };
-
-
-class SolutionUnion {
-public:
-  int findCircleNum(vector<vector<int>>& isConnected) {
-    int n = isConnected.size();
-    int m = isConnected[0].size();
-    vector<int> parents(n, -1);
-    for (int i=0; i < n; i++){
-      for (int j=0; j < m; j++){
-        if (i !=j && isConnected[i][j] == 1){
-          unionFind(isConnected, parents, i, j);
-        }
-      }
-    }
-    int count = 0;
-    for (int i = 0; i < parents.size(); i++) {
-      if (parents[i] == -1)
-        count++;
-    }
-    return count;
-  }
-private:
-  void unionFind(vector<vector<int>>& isConnected, 
-      vector<int>& parents, int i, int j){
-    int parentI = find(parents, i);
-    int parentJ = find(parents, j);
-    if (parentI != parentJ){
-      parents[i] = j;
-    }
-  }
-  int find(vector<int> parents, int i){
-    if (parents[i] == -1){
-      return i;
-    }
-    return find(parents, parents[i]);
-  }
-};
-
-int main()
-{ 
-  vector<vector<int>> isConnected;
-  SolutionUnion* sol;
-  
-  isConnected = {{1,1,0}, {1,1,0}, {0,0,1}};
-  cout << sol -> findCircleNum(isConnected)<< endl;
-
-  isConnected = {{1,0,0,1}, {0,1,1,0}, {0,1,1,1}, {1,0,1,1}};
-  cout << sol -> findCircleNum(isConnected)<< endl;
-  return 0;
-}

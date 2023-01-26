@@ -19,26 +19,26 @@ You may assume the two numbers do not contain any leading zero, except the numbe
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    ListNode* head = new ListNode(0);
+    ListNode* cur = head;
     int carry=0;
-    ListNode* out = new ListNode(0);
-    ListNode* head = out;
-   
-    while (l1 || l2 || carry != 0){
-      int cur = 0;
-      if (l1){cur += l1 -> val;}
-      if (l2){cur += l2 -> val;}
-      cur += carry;
-      carry = cur / 10;
-      cur = cur % 10;
-      head -> next = new ListNode(cur);
-      head = head -> next;
-      if (l1){
-        l1 = l1 -> next ? l1 -> next : nullptr;
-      }
-      if (l2){
-        l2 = l2 -> next ? l2 -> next : nullptr;
-      }
+    while(l1 || l2 || carry != 0){
+      int curVal = 0;
+      if (l1)
+        curVal += l1 -> val;
+      if (l2)
+        curVal += l2 -> val;
+      curVal += carry;
+      carry = curVal / 10;
+      curVal %= 10;
+      ListNode* next = new ListNode(curVal);
+      cur -> next = next;
+      cur = cur -> next;
+      if (l1)
+        l1 = l1 -> next;
+      if (l2)
+        l2 = l2 -> next;
     }
-    return out -> next;
+    return head -> next;
   }
 };

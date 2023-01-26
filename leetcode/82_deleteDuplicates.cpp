@@ -1,3 +1,7 @@
+/*
+82. Remove Duplicates from Sorted List II
+Given the head of a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list. Return the linked list sorted as well.
+*/
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -11,21 +15,31 @@
 class Solution {
 public:
   ListNode* deleteDuplicates(ListNode* head) {
-    ListNode* prev = new ListNode(INT_MAX);
-    ListNode* newHead = prev;
-    while (head){
-      if (head -> next && head -> val == head -> next -> val){
-        while (head -> next && head -> val == head -> next -> val){
-          head = head -> next;
+    if (!head)
+      return head;
+    ListNode* dummy = new ListNode(INT_MAX);
+    ListNode* left = head;
+    if (!head -> next)
+      return head;
+    ListNode* cur = dummy;
+    ListNode* right = head -> next;
+    while (right){
+      if (left -> val == right -> val){
+        while(right && left -> val == right -> val){
+          right = right -> next;
         }
-        prev -> next = head -> next;
+        cur -> next = right;
+        
       }
       else {
-        prev -> next = head;
-        prev = prev -> next;
+        cur -> next = left;
+        cur = cur -> next;
+        
       }
-      head = head -> next;
+      left = right;
+        if (right)
+          right = right -> next;
     }
-    return newHead -> next;
+    return dummy -> next;
   }
 };
