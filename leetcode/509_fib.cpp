@@ -1,32 +1,23 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <sstream>  // for string streams
-#include <string> 
-using namespace std;
+/*
+509. Fibonacci Number
+The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is the sum of the two preceding ones, starting from 0 and 1. That is,
+
+F(0) = 0, F(1) = 1
+F(n) = F(n - 1) + F(n - 2), for n > 1.
+Given n, calculate F(n).
+*/
 class Solution {
 public:
   int fib(int n) {
-    if (n==0){ return 0;}
-    else if (n==1){return 1;}
-    vector<int> out {0, 1};
-    for (int i =2; i != n+1; i++){
-      int tmp = out[1];
-      out[1] += out[0];
-      out[0] = tmp;
+    if (n==0)
+      return 0;
+    int first=0;
+    int second = 1;
+    for (int i=1; i<n; i++){
+      int tmp = second;
+      second += first;
+      first = tmp;
     }
-    return out[1];
+    return second;
   }
 };
-
-int main()
-{ 
- 
-  Solution sol;
- 
-  cout<< sol.fib(5)<< endl;
-  
-  return 0;
-}

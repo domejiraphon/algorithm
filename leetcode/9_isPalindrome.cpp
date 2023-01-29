@@ -1,32 +1,20 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <list>
-#include <string> 
-#include <sstream>  
-#include <iostream>  
-using namespace std;
-
+/*
+9. Palindrome Number
+Given an integer x, return true if x is a 
+palindrome
+, and false otherwise.
+*/
 class Solution {
 public:
   bool isPalindrome(int x) {
-    if (x < 0) {
+    if (x < 0)
       return false;
-    }
-    string s = to_string(x);
-    for (int i=0; i != s.length(); i++){
-      if (s[i] != s[s.length() - i - 1]){
+    string temp = to_string(x);
+    int left=0, right = temp.size() - 1;
+    while (left < right){
+      if (temp[left++] != temp[right--])
         return false;
-      }
     }
     return true;
   }
 };
-
-int main()
-{
-  Solution sol;
-  cout << sol.isPalindrome(101);
-  return 0;
-}

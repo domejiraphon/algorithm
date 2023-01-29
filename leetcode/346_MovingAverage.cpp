@@ -1,33 +1,40 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <queue>
-#include <stack>
+/*
+346. Moving Average from Data Stream
+Given a stream of integers and a window size, calculate the moving average of all integers in the sliding window.
 
-using namespace std;
+Implement the MovingAverage class:
 
+MovingAverage(int size) Initializes the object with the size of the window size.
+double next(int val) Returns the moving average of the last size values of the stream.
+*/
 class MovingAverage {
-  int cur = 0, num;
-  deque<int> Q;
+  deque<pair<int, int>> res;
+  int n;
 public:
-    MovingAverage(int size) {
-      num = size;
+  MovingAverage(int size) {
+    n = size;
+  }
+
+  double next(int val) {
+    if (res.size() == 0){
+      res.push_back({val, val});
+      return val;
+    }
+    int front =0;
+    if (res.size() == n){
+      front = res.front().second;
+  
+      res.pop_front();
     }
     
-    double next(int val) {
-      if (Q.size() >= num){
-        cur -= Q.front();
-        Q.pop_front();
-      }
-      Q.push_back(val);
-      cur += val;
-      return (double) cur / Q.size(); 
-    }
+    res.push_back({val, res.back().second + val});
+    return (double)(res.back().second - front)/ res.size();
+
+  }
 };
-int main()
-{ 
-  Solution* sol = new Solution();
-  cout << sol -> validWordAbbreviation("internationalization", "i12iz4n");
-  return 0;
-}
+
+/**
+ * Your MovingAverage object will be instantiated and called as such:
+ * MovingAverage* obj = new MovingAverage(size);
+ * double param_1 = obj->next(val);
+ */

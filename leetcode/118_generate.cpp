@@ -1,54 +1,27 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/*
+118. Pascal's Triangle
+Given an integer numRows, return the first numRows of Pascal's triangle.
 
-using namespace std;
-template <typename T>
-void print_vector(const std::vector<T> & vec, std::string sep=", ")
-{
-    for(auto elem : vec)
-    { 
-      cout << "{";
-      for(auto in_elem : elem) {
-        cout<<in_elem<< sep;
-      }
-      cout << "}, ";
-    }
-    cout<<endl;
-}
-
+In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:
+*/
 class Solution {
 public:
   vector<vector<int>> generate(int numRows) {
-    if (numRows == 1) {
-      vector<vector<int>> out {{1}};
-      return out;
+    vector<vector<int>> res;
+    vector<int> prev = {1};
+    res.push_back(prev);
+    if (numRows == 1){
+      return res;
     }
-    else if (numRows == 2) {
-      vector<vector<int>> out {{1}, {1, 1}};
-      return out;
-    }
-    vector<vector<int>> out {{1}, {1, 1}};
-    vector<int> cur {};
-    for (int i=3; i != numRows+1; i++){
-      cur.push_back(1);
-      for (int j=0; j != out[out.size() - 1].size()-1; j++){
-        cur.push_back(out[out.size() - 1][j] + out[out.size() - 1][j+1]);
+    for (int i=1; i<numRows; i++){
+      vector<int> cur = {1};
+      for (int j=0; j<prev.size()-1; j++){
+        cur.push_back(prev[j] + prev[j+1]);
       }
       cur.push_back(1);
-      out.push_back(cur);
-      cur.clear();
+      res.push_back(cur);
+      prev = cur;
     }
-    return out;
+    return res;
   }
 };
-
-int main()
-{ 
-  Solution sol;
-  vector<vector<int>> out = sol.generate(5);
-  print_vector(out);
-  return 0;
-}

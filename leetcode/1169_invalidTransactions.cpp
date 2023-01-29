@@ -1,92 +1,62 @@
+/*
+1169. Invalid Transactions
+A transaction is possibly invalid if:
+
+the amount exceeds $1000, or;
+if it occurs within (and including) 60 minutes of another transaction with the same name in a different city.
+You are given an array of strings transaction where transactions[i] consists of comma-separated values representing the name, time (in minutes), amount, and city of the transaction.
+
+Return a list of transactions that are possibly invalid. You may return the answer in any order.
+*/
 class Solution {
 public:
   vector<string> invalidTransactions(vector<string>& transactions) {
-    vector<string> name, cur;
-    unordered_map<string, vector<tuple<int, int, string>>> timeCity;
-    vector<int> time;
+    unordered_map<string, vector<tuple<int, int, string>>> trans;
     int n=transactions.size();
-    vector<bool> S(n, false);
-    for (int i=0; i < n; i++){
-      cur = split(transactions[i]);
-      timeCity[cur[0]].push_back({i, stoi(cur[1]), cur[3]});
-      name.push_back(cur[0]);
-      if (stoi(cur[2]) > 1000){S[i] = true;}
+    vector<bool> invalid(n, false);
+    for (int i=0; i<n; i++){
+      vector<string> out = split(transactions[i]);
+      int amount = stoi(out[2]);
+      
+      trans[out[0]].push_back({i, stoi(out[1]), out[3]});
+      if (amount > 1000)
+        invalid[i] = true;
     }
-  
-    for (auto it=timeCity.begin(); it != timeCity.end(); it++){
+    for (auto it=trans.begin(); it != trans.end(); it++){
       vector<tuple<int, int, string>> cur = it -> second;
-      n=cur.size();
-      for (int i=0; i<n; i++){
-        for (int j=i+1; j<n; j++){
+      int m=cur.size();
+      
+      for (int i=0; i<m; i++){
+        for (int j=i+1; j<m; j++){
           if (abs(get<1>(cur[i]) -get<1>(cur[j])) <= 60 && get<2>(cur[i]) != get<2>(cur[j])){
-            S[i] = true; S[j] = true;
+            invalid[get<0>(cur[i])] = true;
+            invalid[get<0>(cur[j])] = true;
+            //invalid[i] = true;
+            //invalid[j] = true;
           }
         }
       }
     }
-    n = transactions.size();
-    name.clear();
-    for (int i=0; i<n; i++){
-      if (S[i]){
-        name.push_back(transactions[i]);
-      }
-      
-    }
-    return name;
-  }
-private:
-  vector<string> split(string transaction){
-    size_t pos;
     vector<string> out;
-    while ((pos = transaction.find(',')) != string::npos){
-      string sub = transaction.substr(0, pos);
-      out.push_back(sub);
-      transaction.erase(0, pos+1);
+    for (int i=0; i<n; i++){
+      if (invalid[i])
+        out.push_back(transactions[i]);
     }
-    out.push_back(transaction);
     return out;
   }
-};
-
-class Solution2 {
-public:
-  vector<string> invalidTransactions(vector<string>& transactions) {
-    vector<string> name;
-    vector<string> cur;
-    vector<string> city;
-    vector<int> time;
-    unordered_set<int> S;
-    int n=transactions.size();
-    for (int i=0; i < n; i++){
-      cur = split(transactions[i]);
-      name.push_back(cur[0]);
-      city.push_back(cur[3]);
-      time.push_back(stoi(cur[1]));
-      if (stoi(cur[2]) > 1000){S.insert(i);}
-    }
-    for (int i=0; i<n; i++){
-      for (int j=i+1; j<n; j++){
-        if (name[i] == name[j] && city[i] != city[j] && abs(time[i] - time[j]) <= 60){
-          S.insert(i); S.insert(j);
-        }
-      }
-    }
-    name.clear();
-    for (auto it=S.begin(); it != S.end(); it++){
-      name.push_back(transactions[*it]);
-    }
-    return name;
-  }
 private:
-  vector<string> split(string transaction){
-    size_t pos;
+  vector<string> split(string& transaction){
     vector<string> out;
-    while ((pos = transaction.find(',')) != string::npos){
-      string sub = transaction.substr(0, pos);
-      out.push_back(sub);
-      transaction.erase(0, pos+1);
+    int n=transaction.size();
+    string cur="";
+    for (int i=0; i<=n; i++){
+      if (i==n || transaction[i] == ','){
+        out.push_back(cur);
+        cur = "";
+      }
+      else
+        cur += transaction[i];
     }
-    out.push_back(transaction);
     return out;
   }
 };

@@ -8,17 +8,22 @@ The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both lower an
 class Solution {
 public:
   string reverseVowels(string s) {
-    vector<int> res;
     int n=s.size();
+    int left=0;
+    int right = n - 1;
     unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
-    for (int i=0; i<n; i++){
-      if (vowels.count(s[i]))
-        res.push_back(i);
-    }
-    int left=0, right = res.size() - 1;
-    while (left < right){
-      swap(s[res[left++]], s[res[right--]]);
+    while (left <= right){
+      while (left <= right && !vowels.count(s[left]))
+        left++;
+      while (left <= right && !vowels.count(s[right]))
+        right--;
+      if (left > right)
+        break;
+    
+      swap(s[left++], s[right--]);
+      
     }
     return s;
+    
   }
 };

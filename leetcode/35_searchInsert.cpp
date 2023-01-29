@@ -4,7 +4,13 @@
 #include <vector>
 #include <tuple>
 using namespace std;
-
+class Solution {
+public:
+  int searchInsert(vector<int>& nums, int target) {
+    int id = lower_bound(nums.begin(), nums.end(), target) - nums.begin();
+    return id;
+  }
+};
 class Solution {
 public:
   int searchInsert(vector<int>& nums, int target) {
