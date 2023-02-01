@@ -63,6 +63,34 @@ public:
     }
   }
 };
+class CustomStack {
+  vector<int> stk;
+  int n;
+public:
+  CustomStack(int maxSize) {
+    n = maxSize;
+  }
+
+  void push(int x) {
+    if (stk.size() == n)
+      return;
+    stk.push_back(x);
+  }
+
+  int pop() {
+    if (stk.empty())
+      return -1;
+    int temp = stk.back();
+    stk.pop_back();
+    return temp;
+  }
+
+  void increment(int k, int val) {
+    int m=stk.size();
+    for (int i=0; i<min(k, m); i++)
+      stk[i] += val;
+  }
+};
 
 /**
  * Your CustomStack object will be instantiated and called as such:

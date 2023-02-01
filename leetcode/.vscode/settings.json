@@ -17,6 +17,8 @@
     "unordered_map": "cpp",
     "unordered_set": "cpp",
     "chrono": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp"
   }
 }

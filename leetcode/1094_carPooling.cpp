@@ -1,22 +1,28 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-#include <cmath>
-using namespace std;
-void print(vector<int> x){
-  for (auto row: x){cout << row <<", ";}
-  cout << endl;
-}
+/*
+1094. Car Pooling
+There is a car with capacity empty seats. The vehicle only drives east (i.e., it cannot turn around and drive west).
 
-void print(vector<tuple<char, int, int>> x){
-  for (auto row: x){
-    cout << get<0>(row) <<",cap: "<< get<1>(row)<<"," << get<2>(row)<<endl;}
+You are given the integer capacity and an array trips where trips[i] = [numPassengersi, fromi, toi] indicates that the ith trip has numPassengersi passengers and the locations to pick them up and drop them off are fromi and toi respectively. The locations are given as the number of kilometers due east from the car's initial location.
+
+Return true if it is possible to pick up and drop off all passengers for all the given trips, or false otherwise.
+*/
+class Solution {
+public:
+  bool carPooling(vector<vector<int>>& trips, int capacity) {
+    map<int, int> map;
+    for (auto trip: trips){
+      map[trip[1]] += trip[0];
+      map[trip[2]] += -trip[0];
+    }
+    int cur=0;
+    for (auto it: map){
+      cur += it.second;
+      if (cur > capacity)
+        return false;
+    }
+    return true;
   }
+};
 
 bool sortby(const tuple<char, int, int> &a,
               const tuple<char, int, int> &b){
@@ -45,15 +51,3 @@ public:
   }
   
 };
-
-int main()
-{
-  vector<vector<int>> trips={{2, 1, 5}, {3, 3, 7}};
-  
-  Solution sol;
-
-  cout<< sol.carPooling(trips, 4)<<endl;
- 
-  cout<< sol.carPooling(trips, 5)<<endl;
-  return 0;
-}

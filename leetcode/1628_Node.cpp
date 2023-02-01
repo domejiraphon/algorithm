@@ -18,84 +18,83 @@ Follow up: Could you design the expression tree such that it is more modular? Fo
  * This is the interface for the expression tree Node.
  * You should not remove it, and you can define some classes to implement it.
  */
+/**
+ * This is the interface for the expression tree Node.
+ * You should not remove it, and you can define some classes to implement it.
+ */
 
 class Node {
 public:
   virtual ~Node () {};
   virtual int evaluate() const = 0;
+protected:
+    // define your fields here
 };
 
-class NumNode: public Node {
-private:
-  int val;
-  int evaluate () const {
-    return val;
-  }
-public:
-  NumNode(int v){
-    val = v;
-  }
-};
-
-class OpNode: public Node {
-private:
-  char sign;
-  Node* left=nullptr;
-  Node* right=nullptr;
-public:
-  OpNode(char s, Node* l, Node* r){
-    sign = s;
-    left = l;
-    right = r;
-  }
-  int evaluate () const {
-    int num1 = left -> evaluate();
-    int num2 = right -> evaluate();
-    switch (sign) {
-      case '+':
-        return num1 + num2;
-      case '-':
-        return num1 - num2;
-      case '*':
-        return num1 * num2;
-      case '/':
-        return num1 / num2;
-      default:
-        return 0;
-    } 
-  }
-};
 
 /**
  * This is the TreeBuilder class.
  * You can treat it as the driver code that takes the postinfix input 
  * and returns the expression tree represnting it as a Node.
  */
+class NumNode: public Node {
+private:
+  int num;
+public:
+  NumNode(string n){
+    num = stoi(n);
+  }
+
+  int evaluate () const {
+    return num;
+  }
+};
+
+
+
+class OpNode: public Node {
+private:
+  char op;
+  Node* left;
+  Node* right;
+public:
+  OpNode(char o, Node* l, Node* r){
+    op=o;
+    left = l;
+    right = r;
+  }
+  int evaluate () const {
+    if (op == '+')
+      return left -> evaluate() + right -> evaluate();
+    else if (op == '-')
+      return left -> evaluate() - right -> evaluate();
+    else if (op == '*')
+      return left -> evaluate() * right -> evaluate();
+    else
+      return left -> evaluate() / right -> evaluate();
+  }
+};
 
 class TreeBuilder {
 public:
   Node* buildTree(vector<string>& postfix) {
     stack<Node*> stk;
-    for (auto token: postfix){
-      if (isdigit(token[0]))  
-        stk.push(new NumNode(getNumber(token)));
+    int n=postfix.size();
+    for (int i=0; i<n; i++){
+      if (isdigit(postfix[i][0])){
+        NumNode* cur = new NumNode(postfix[i]);
+        stk.push(cur);
+      }
       else{
-        auto right = stk.top(); stk.pop();
-        auto left = stk.top(); stk.pop();
-        stk.push(new OpNode(token[0], left, right));
+        Node* right = stk.top();
+        stk.pop();
+        Node* left = stk.top();
+        stk.pop();
+        Node* cur  = new OpNode(postfix[i][0], left, right);
+        stk.push(cur);
       }
     }
     return stk.top();
-  }
-private:
-  int getNumber(string s){
-    int n=s.size();
-    int i=0;
-    int cur=0;
-    while (i<n && isdigit(s[i])){
-      cur = 10 * cur + (s[i++] - '0');
-    }
-    return cur;
   }
 };
 
