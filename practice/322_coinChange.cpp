@@ -24,3 +24,25 @@ public:
     return memo[amount] == INT_MAX / 10 ? -1 : memo[amount];
   }
 };
+
+class Solution {
+public:
+  int coinChange(vector<int>& coins, int amount) {
+    vector<int> memo(amount+1, -1);
+    int out = minCoin(coins, amount, memo);
+    return out >= INT_MAX/10 ? -1 : out;
+  }
+private:
+  int minCoin(vector<int>& coins, int amount, vector<int>& memo){
+    if (amount == 0)
+      return 0;
+    if (memo[amount] != -1)
+      return memo[amount];
+    int minNum=INT_MAX/10;
+    for (auto val: coins){
+      if (amount >= val)
+        minNum = min(minNum, 1 + minCoin(coins, amount - val, memo));
+    }
+    return memo[amount] = minNum;
+  }
+};
