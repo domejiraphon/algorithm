@@ -11,42 +11,40 @@ public:
   vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
     int n=board.size();
     int m=board[0].size();
-    vector<vector<bool>> visited (n, vector<bool> (m, false));
+    vector<vector<bool>> visited(n, vector<bool>(m, false));
     vector<string> res;
-    for(auto ch: words){
+    for (auto word: words){
       bool found=false;
-      for (int i=0; i<n; i++){
-        for (int j=0; j<m; j++){
-          string cur = ch;
-          visited[i][j] = true;
-          if (board[i][j] == cur[0] && dfs(i, j, n, m, board, visited, 1, cur)){
-            res.push_back(cur);
-            found = true; break;
+      for (int i=0; i<n && !found; i++){
+        for (int j=0; j<m && !found; j++){
+          if (board[i][j] == word[0]){
+            visited = vector<vector<bool>>(n, vector<bool>(m, false));
+            visited[i][j] = true;
+            found = dfs(board, i, j, n, m, 1, word, visited);
           }
-          visited[i][j] = false;
         }
-        if (found)
-          break;
       }
+      if (found)
+        res.push_back(word);
     }
     return res;
+    
   }
 private:
-  bool dfs(int i, int j, int&n, int& m, vector<vector<char>>& board, 
-    vector<vector<bool>>& visited, int idx, string& word){
-    if (idx == word.size())
+  bool dfs(vector<vector<char>>& board, int i, int j, int& n, int& m, int cur, string& word, vector<vector<bool>> & visited){
+    if (cur == word.size())
       return true;
-    bool out=false;
     for (auto dir: dirs){
-      int x = i + dir[0];
-      int y = j + dir[1];
-      if (0 <= x && x < n && 0 <= y && y < m && !visited[x][y]
-          && board[x][y] == word[idx]){
-        visited[x][y] = true;
-        out = dfs(x, y, n, m, board, visited, idx + 1, word);
-        visited[x][y] = false;
+      int newI = i + dir[0];
+      int newJ = j + dir[1];
+      if (newI >= 0&& newI < n && newJ >=0 && newJ<m && !visited[newI][newJ] && board[newI][newJ] == word[cur]){
+        
+        visited[newI][newJ] = true;
+        if (dfs(board, newI, newJ, n, m, cur + 1, word, visited))
+          return true;
+        visited[newI][newJ] = false;
       }
     }
-    return out;
+    return false;
   }
 };
