@@ -1,27 +1,15 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <cmath>
-#include <queue>
-#include <algorithm>
-
-using namespace std;
+/*
+171. Excel Sheet Column Number
+Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.
+*/
 class Solution {
 public:
-    int titleToNumber(string columnTitle) {
-      int n(0);
-      for (auto ele: columnTitle){
-        n *= 26;
-        n += (int) ele - 'A' + 1;
-      }
-      return n;
-    }
+  int titleToNumber(string columnTitle) {
+    int n=columnTitle.size();
+    int out=0;
+    for (int i=0; i<n; i++)
+      out = 26 * out + (columnTitle[i] - 'A' + 1);
+    
+    return out;
+  }
 };
-
-int main()
-{ 
-  Solution* sol;
-  
-  cout << sol -> titleToNumber("AB") << endl;
-  return 0;
-}

@@ -1,68 +1,66 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <tuple>
-#include <queue>
-using namespace std;
+/*
+133. Clone Graph
+Given a reference of a node in a connected undirected graph.
+
+Return a deep copy (clone) of the graph.
+
+Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
 
 class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+ 
+
+Test case format:
+
+For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
+
+An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
+
+The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+*/
+/*
+// Definition for a Node.
+class Node {
 public:
-  int val;
-  vector<Node*> neighbors;
-  Node() {
-    val = 0;
-    neighbors = vector<Node*>();
-  }
-  Node(int _val) {
-    val = _val;
-    neighbors = vector<Node*>();
-  }
-  Node(int _val, vector<Node*> _neighbors) {
-    val = _val;
-    neighbors = _neighbors;
-  }
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
 };
-
-
+*/
 
 class Solution {
-private:
-  unordered_map<Node*, Node*> visited;
 public:
   Node* cloneGraph(Node* node) {
-    if(!node){return node;}
-    if (visited.find(node) != visited.end()){
-      return visited[node];
-    }
-    Node* cloneNode = new Node(node -> val);
-    visited[node] = cloneNode;
-    for (auto ele: node -> neighbors){
-      (cloneNode -> neighbors).push_back(cloneGraph(ele));
-    }
-    return cloneNode;
+    if (!node)
+      return nullptr;
+    unordered_map<Node*, Node*> memo;
+    return dfs(node, memo);
   }
-};
-
-int main()
-{ 
-  Node* node1 = new Node(1);
-  Node* node2 = new Node(2);
-  Node* node3 = new Node(3);
-  Node* node4 = new Node(4);
+private:
+  Node* dfs(Node* node, unordered_map<Node*, Node*>& memo){
+    if (!node)
+      return node;
+    if (memo.count(node))
+      return memo[node];
+    
+    Node* root = new Node(node -> val);
+    memo[node] = root;
+    for (auto neigh: node -> neighbors)
+      root -> neighbors.push_back(dfs(neigh, memo));
+    return root;
+  }
   
-  node1 -> neighbors = vector<Node*> {node2, node4};
-  node2 -> neighbors = vector<Node*> {node1, node3};
-  node3 -> neighbors = vector<Node*> {node2, node4};
-  node4 -> neighbors = vector<Node*> {node1, node3};
-
-
-  Solution sol;
-  Node* out = sol.cloneGraph(node1);
-  cout << out -> val << endl;
-  cout << out -> neighbors[0] -> val << endl;
-  cout << out -> neighbors[1] -> val << endl;
-  return 0;
-}
+};
