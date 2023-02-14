@@ -10,36 +10,29 @@ Given an array of count-paired domains cpdomains, return an array of the count-p
 class Solution {
 public:
   vector<string> subdomainVisits(vector<string>& cpdomains) {
-    unordered_map<string, int> map;
-    for (string domain: cpdomains)
-      splitDomains(domain, map);
+    unordered_map<string, int> countPaired;
+    for (auto domain: cpdomains)
+      split(countPaired, domain);
     vector<string> res;
-
-    for (auto it=map.begin(); it != map.end(); it++){
-      string cur = to_string(it -> second) + ' ' + it -> first;
-      res.push_back(cur);
+    for (auto it:countPaired){
+      res.push_back(to_string(it.second) + " " + it.first);
     }
     return res;
   }
 private:
-  void splitDomains(string& domain, unordered_map<string, int>& map){
+  void split(unordered_map<string, int>& num, string& domain){
     int n=domain.size();
-    int i=0;
-    int num=getNumber(domain, i);
-    i=n-1;
-    string cur="";
-    while (domain[i] != ' '){
-      if (domain[i] == '.'){
-        map[cur] += num;
-      }
-      cur = domain[i--] + cur;
+    string cur = "";
+    int rep=0;
+    for (int i=0; isdigit(domain[i]); i++){
+      rep = 10 * rep + (domain[i] - '0');
     }
-    map[cur] += num;
-  }
-  int getNumber(string& domain, int& i){
-    int cur=0;
-    while (isdigit(domain[i]))
-      cur = 10 * cur +(domain[i++] - '0');
-    return cur;
+    for (int i=n-1; domain[i] != ' '; i--){
+      if (domain[i] == '.'){
+        num[cur] += rep;
+      }
+      cur = domain[i] + cur;
+    }
+    num[cur] += rep;
   }
 };
