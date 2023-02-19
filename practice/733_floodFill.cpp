@@ -1,56 +1,37 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <unordered_map>
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <algorithm>
-using namespace std;
+/*
+733. Flood Fill
+An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image.
 
-template <typename T>
-void print(vector<vector<T>> x){
-  for (auto row: x){
-    for (auto elem: row) {
-      cout << elem <<", ";}
-    cout << endl;
-  }
-  
-}
+You are also given three integers sr, sc, and color. You should perform a flood fill on the image starting from the pixel image[sr][sc].
+
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with color.
+
+Return the modified image after performing the flood fill.
+
+
+*/
 class Solution {
+  int dirs[4][2] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 public:
   vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-    vector<vector<int>> visited(image.size(), vector<int>(image[0].size(), false));
-    BFS(image, sr, sc, color, visited);
+    int n=image.size();
+    int m=image[0].size();
+    vector<vector<bool>> visited(n, vector<bool>(m, false));
+    visited[sr][sc] = true;
+    dfs(image, sr, sc, image[sr][sc], color, n, m, visited);
+    image[sr][sc] = color;
     return image;
   }
 private:
-  void BFS(vector<vector<int>>& image, int sr, int sc, int color, vector<vector<int>>& visited){
-    int n = image.size();
-    int m = image[0].size();
-    if (sr < 0 || sr == n ||
-        sc < 0 || sc == m){return;}
-    int cur = image[sr][sc];
-    image[sr][sc] = color;
-    visited[sr][sc] = true;
-    if (sr >= 1 && !visited[sr - 1][sc] && image[sr - 1][sc] == cur){BFS(image, sr - 1, sc, color, visited);}
-    if (sr < n - 1 && !visited[sr + 1][sc] && image[sr + 1][sc] == cur){BFS(image, sr + 1, sc, color, visited);}
-    if (sc >= 1 && !visited[sr][sc - 1] && image[sr][sc - 1] == cur){BFS(image, sr, sc - 1, color, visited);}
-    if (sc < m - 1&& !visited[sr][sc + 1] && image[sr][sc + 1] == cur){BFS(image, sr, sc + 1, color, visited);}
+  void dfs(vector<vector<int>>& image, int sr, int sc, int starting, int color, int& n, int& m, vector<vector<bool>>& visited){
+    for (auto dir: dirs){
+      int newSr = sr + dir[0];
+      int newSc = sc + dir[1];
+      if (newSr >= 0 && newSr < n && newSc>=0 && newSc < m && image[newSr][newSc] == starting && !visited[newSr][newSc]){
+        image[newSr][newSc] = color;
+        visited[newSr][newSc] = true;
+        dfs(image, newSr, newSc, starting, color, n, m, visited);
+      }
+    }
   }
 };
-
-int main()
-{
-  Solution* sol;
-  vector<vector<int>> image ={{1,1,1}, {1,1,0}, {1,0,1}};
-  vector<vector<int>> out;
-  out = sol -> floodFill(image, 1, 1, 2);
-  print(out);
-
-  image = {{0, 0, 0}, {0, 0, 0}};
-  out = sol -> floodFill(image, 0, 0, 1);
-  print(out);
-  return 0;
-}
