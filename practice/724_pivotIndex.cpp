@@ -1,49 +1,27 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <tuple>
+/*
+724. Find Pivot Index
+Given an array of integers nums, calculate the pivot index of this array.
 
-using namespace std;
-void print(vector<int> x){
-  for (auto vec: x){
-  cout << vec << ", ";
-  
-  }
-  cout << endl;
-}
+The pivot index is the index where the sum of all the numbers strictly to the left of the index is equal to the sum of all the numbers strictly to the index's right.
 
+If the index is on the left edge of the array, then the left sum is 0 because there are no elements to the left. This also applies to the right edge of the array.
+
+Return the leftmost pivot index. If no such index exists, return -1.
+*/
 class Solution {
 public:
   int pivotIndex(vector<int>& nums) {
     int n=nums.size();
-    if (n ==  1){return 0;}
-    int sum(0);
-    for (int i=0; i < n; i++){
-      sum += nums[i];
-    }
-    nums.insert(nums.begin(), 0);
-    for (int i=1; i < (n+1); i++){
-      if (nums[i - 1] == (sum - nums[i] - nums[i-1])){
-        return i - 1;
-      }
-      nums[i] += nums[i - 1];
+    vector<int> prefixSum(n, 0);
+    prefixSum[0] = nums[0];
+    for (int i=1; i<n; i++)
+      prefixSum[i] = prefixSum[i - 1] + nums[i];
+    for (int i=0; i<n; i++){
+      int left = prefixSum[i] - nums[i];
+      int right = prefixSum[n-1] - prefixSum[i];
+      if (left == right)
+        return i;
     }
     return -1;
   }
 };
-int main()
-{ 
-  Solution* sol;
-  
-  vector<int> nums = {1,7,3,6,5,6};
-  cout << sol -> pivotIndex(nums) << endl;
-
-  nums ={1, 0};
-  cout << sol -> pivotIndex(nums) << endl;
-  
-  return 0;
-}
