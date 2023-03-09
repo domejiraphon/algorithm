@@ -1,45 +1,19 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/*
+169. Majority Element
+Given an array nums of size n, return the majority element.
 
-using namespace std;
-
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+*/
 class Solution {
 public:
   int majorityElement(vector<int>& nums) {
-    map<int, int> count;
-    for (int i=0; i != nums.size(); i++){
-      if (count.find(nums[i]) == count.end()) 
-      {
-        count[nums[i]] = 1;
-      }
-      else 
-      {
-        count[nums[i]] += 1;
-      }
+    unordered_map<int, int> freq;
+    int n=nums.size();
+    for (int i=0; i<n; i++){
+      freq[nums[i]]++;
+      if (freq[nums[i]] > n / 2)
+        return nums[i];
     }
-    int out=0, major;
-    for (auto it = count.begin(); it != count.end(); it++)
-    { 
-      if (out < (it -> second)) 
-      {
-        out = it -> second;
-        major = it -> first;
-      }
-    }
-    return major;
+    return -1;
   }
 };
-
-int main()
-{ 
-  vector<int> nums={2,2,1,1,1,2,2};
-  Solution sol;
-  
-  cout<< sol.majorityElement(nums) << endl;
-  vector<int> nums2={1};
-  cout<< sol.majorityElement(nums2) << endl;
-  return 0;
-}
