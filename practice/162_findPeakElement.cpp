@@ -1,39 +1,33 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <stack>
-#include <tuple>
+/*
+162. Find Peak Element
+A peak element is an element that is strictly greater than its neighbors.
 
-using namespace std;
+Given a 0-indexed integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks.
 
+You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly greater than a neighbor that is outside the array.
+
+You must write an algorithm that runs in O(log n) time.
+*/
 class Solution {
 public:
   int findPeakElement(vector<int>& nums) {
-    cout << INT_MIN << endl;
-    int mid = (int) nums.size() / 2;
-    int left = (mid > 0) ? nums[mid - 1] : INT_MIN;
-    int right = (mid < nums.size() - 1) ? nums[mid + 1] : INT_MIN;
-    if (nums[mid] > left && nums[mid] > right){
-      return mid;
+    int n = nums.size();
+    int left=0, right = n - 1;
+    while (left < right){
+      int mid = (left + right) / 2;
+      int leftVal = INT_MIN;
+      int rightVal = INT_MIN;
+      if (mid > left)
+        leftVal = nums[mid - 1];
+      if (mid < right)
+        rightVal = nums[mid + 1];
+      if (leftVal < nums[mid] && nums[mid] > rightVal)
+        return mid;
+      else if (nums[mid] < rightVal)
+        left = mid + 1;
+      else
+        right = mid - 1;
     }
-    else if (nums[mid] <= right){
-      vector<int> cur = {nums.begin() + mid, nums.end()};
-      return mid + findPeakElement(cur);
-    }
-    else {
-      vector<int> cur = {nums.begin(), nums.begin() + mid};
-      return findPeakElement(cur);
-    }
+    return left;
   }
 };
-int main()
-{ 
-  vector<int> nums = {1,2,1,3,5,6,4};
-  Solution* sol;
-
-  cout << sol -> findPeakElement(nums);
-  nums = {-2147483648};
-  cout << sol -> findPeakElement(nums);
-  return 0;
-}
