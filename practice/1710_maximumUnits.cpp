@@ -1,53 +1,34 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+/*
+1710. Maximum Units on a Truck
+You are assigned to put some amount of boxes onto one truck. You are given a 2D array boxTypes, where boxTypes[i] = [numberOfBoxesi, numberOfUnitsPerBoxi]:
 
-using namespace std;
-void print(vector<vector<int>> x){
-  for (auto row: x){
-    for (auto elem: row){
-      cout << elem <<", ";}
-  cout << endl;
-  }
-    
-}
+numberOfBoxesi is the number of boxes of type i.
+numberOfUnitsPerBoxi is the number of units in each box of the type i.
+You are also given an integer truckSize, which is the maximum number of boxes that can be put on the truck. You can choose any boxes to put on the truck as long as the number of boxes does not exceed truckSize.
 
-bool sortby (vector<int>& a, vector<int>& b){
-  return a[1]> b[1];
+Return the maximum total number of units that can be put on the truck.
+*/
+bool sortby(vector<int>& a, vector<int>& b){
+  return a[1] > b[1];
 }
 class Solution {
 public:
   int maximumUnits(vector<vector<int>>& boxTypes, int truckSize) {
     sort(boxTypes.begin(), boxTypes.end(), sortby);
-    int i(0);
-    int count(0);
-    while (truckSize > 0 && i < boxTypes.size()){
-      if (truckSize >=boxTypes[i][0]){
-        truckSize -= boxTypes[i][0];
-        
-        count += boxTypes[i][0] * boxTypes[i][1];
+    int ans=0;
+    int i=0;
+    int n=boxTypes.size();
+    while (truckSize > 0 && i< n){
+      if (truckSize >= boxTypes[i][0]){
+        truckSize -=boxTypes[i][0];
+        ans += boxTypes[i][0] * boxTypes[i][1];
         i++;
       }
       else {
-        count += boxTypes[i][1] * truckSize;
-        break;
+        ans += truckSize * boxTypes[i][1];
+        truckSize = 0;
       }
-      cout << count << endl;
-
     }
-    return count;
+    return ans;
   }
 };
-
-int main()
-{ 
-  Solution* sol;
-  vector<vector<int>> boxTypes = {{1,3},{2,2},{3,1}};
-  //cout << sol -> maximumUnits(boxTypes, 4)<< endl;
-  boxTypes = {{5,10},{2,5},{4,7},{3,9}};
-  cout << sol -> maximumUnits(boxTypes, 10)<< endl;
-  return 0;
-}
