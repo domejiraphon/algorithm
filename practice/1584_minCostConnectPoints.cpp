@@ -36,3 +36,66 @@ public:
     return cost;
   }
 };
+
+class UnionFind {
+public:
+  vector<int> group;
+  vector<int> rank;
+  UnionFind(int n){
+    group.resize(n);
+    rank.resize(n);
+    for (int i=0; i<n; i++)
+      group[i] = i;
+  }
+  int find(int n){
+    if (group[n] != n)
+      group[n] = find(group[n]);
+    return group[n];
+  }
+
+  bool join(int n1, int n2){
+    int group1 = find(n1);
+    int group2 = find(n2);
+    if (group1 == group2)
+      return false;
+    group[group2] = group1;
+    if (rank[group1] > rank[group2])
+      group[group2] = group1;
+    else if (rank[group1] < rank[group2])
+      group[group1] = group2;
+    else{
+      group[group1] = group2;
+      rank[group2] += 1;
+    }
+    return true;
+  }
+};
+
+class Solution {
+public:
+  int minCostConnectPoints(vector<vector<int>>& points) {
+    int n = points.size();
+    vector<pair<int, pair<int, int>>> allEdges;
+    for (int i=0; i<n; i++){
+      for (int j=i+1; j<n; j++){
+        int dist = abs(points[i][0] - points[j][0]) +
+                   abs(points[i][1] - points[j][1]);
+        allEdges.push_back({dist, {i, j}});
+      }
+    }
+    sort(allEdges.begin(), allEdges.end());
+    UnionFind uf(n);
+    int cost=0;
+    int edge=0;
+    for (int i=0; i<allEdges.size() && edge < n - 1; i++){
+      int n1 = allEdges[i].second.first;
+      int n2 = allEdges[i].second.second;
+      if (uf.join(n1, n2)){
+        cost += allEdges[i].first;
+        edge++;
+      }
+    }
+    
+    return cost;
+  }
+};
