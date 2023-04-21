@@ -1,53 +1,36 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <cmath>
 /*
-https://leetcode.com/problems/rotate-image/
+29. Divide Two Integers
+Given two integers dividend and divisor, divide two integers without using multiplication, division, and mod operator.
+
+The integer division should truncate toward zero, which means losing its fractional part. For example, 8.345 would be truncated to 8, and -2.7335 would be truncated to -2.
+
+Return the quotient after dividing dividend by divisor.
+
+Note: Assume we are dealing with an environment that could only store integers within the 32-bit signed integer range: [−231, 231 − 1]. For this problem, if the quotient is strictly greater than 231 - 1, then return 231 - 1, and if the quotient is strictly less than -231, then return -231.
 */
-using namespace std;
-void print(const vector<vector<int>> matrix){
-  for (auto row: matrix){
-    for (auto elem: row){
-      cout << elem <<", ";
-    }
-    cout << endl;
-  }
-}
 class Solution {
+  int HALF_INT_MIN = -1073741824;
 public:
   int divide(int dividend, int divisor) {
-    int count(0);
-    bool neg_dividend(false);
-    bool neg_divisor(false);
-    if (dividend < 0){
+    if (dividend == INT_MIN && divisor == -1) 
+        return INT_MAX;
+    
+    bool neg = (dividend > 0) ^ (divisor > 0);
+    if (dividend > 0)
       dividend = - dividend;
-      neg_dividend = true;
-    }
-    if (divisor < 0){
+    if (divisor > 0)
       divisor = - divisor;
-      neg_divisor = true;
+    int count=0;
+    while (dividend <= divisor){
+      int value = divisor;
+      int num=-1;
+      while (value >= HALF_INT_MIN && value + value >= dividend){
+        value += value;
+        num+=num;
+      }
+      count += num;
+      dividend -= value;
     }
-    while (dividend > divisor){
-      count++; dividend -= divisor;
-    } 
-    if ((neg_dividend && !neg_divisor) || (!neg_dividend && neg_divisor) ){
-      count = - count;
-    }
-    return  count;
+    return (neg) ? count : - count;
   }
 };
-
-int main()
-{ 
-  vector<vector<int>> matrix{{1,2,3}, {4,5,6}, {7,8,9}};
-
-  Solution sol;
-  cout << sol.divide(7, -3) << endl;
-  cout << sol.divide(-7, -3) << endl;
-  cout << sol.divide(-7, 3) << endl;
- 
-  return 0;
-}
