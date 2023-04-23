@@ -8,21 +8,21 @@ If there is no common prefix, return an empty string "".
 class Solution {
 public:
   string longestCommonPrefix(vector<string>& strs) {
-    string res="";
     int n=strs.size();
-    int k=0;
-    while (true){
-      bool same=true;
-      char first = strs[0][k];
-      for (auto str: strs){
-        if (k < str.size()) {same = same && (first == str[k]);}
-        else {same = false; break;}
-        if (!same){break;}
-      }
-      if (same){res += first;}
-      else {break;}
-      k++;
+    string prefix = strs[0];
+    for (int i=1; i<n && prefix.size() > 0; i++){
+      int idx = findPrefix(prefix, strs[i]);
+      prefix = prefix.substr(0, idx);
     }
-    return res;
+    return prefix;
+  }
+private:
+  int findPrefix(string& str1, string& str2){
+    int left=0;
+    int right=0;
+    int n=str1.size(), m=str2.size();
+    for (; left < n && right < m && str1[left] == str2[right]; left++, right++)
+      ;
+    return left;
   }
 };
