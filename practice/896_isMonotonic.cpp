@@ -1,36 +1,23 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <vector>
-#include <tuple>
+/*
+896. Monotonic Array
 
-using namespace std;
+An array is monotonic if it is either monotone increasing or monotone decreasing.
 
+An array nums is monotone increasing if for all i <= j, nums[i] <= nums[j]. An array nums is monotone decreasing if for all i <= j, nums[i] >= nums[j].
 
+Given an integer array nums, return true if the given array is monotonic, or false otherwise.
+*/
 class Solution {
 public:
   bool isMonotonic(vector<int>& nums) {
-    int i(0), n(nums.size());
-    int up, monotone(false);
-    int prev;
-    for (int i=0; i < n - 1; i++){
-      up = (nums[i] < nums[i+1]) ? 1 : (nums[i] > nums[i+1]) ? -1 : 0;
-      if (i == 0){prev = up;}
-      if  (prev >= 0 && up < 0){
+    int n=nums.size();
+    bool increase = (nums[0] <= nums[n-1]);
+    for (int i=1; i<n; i++){
+      if (increase && nums[i] < nums[i-1])
         return false;
-      }
-      else if (prev <= 0 && up > 0){
+      if (!increase && nums[i] > nums[i-1])
         return false;
-      }
     }
     return true;
   }
 };
-
-int main()
-{ 
-  
-  Solution* sol;
-
-  return 0;
-}

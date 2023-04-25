@@ -17,34 +17,27 @@ Given a string s containing only digits, return the number of ways to decode it.
 The test cases are generated so that the answer fits in a 32-bit integer.
 */
 class Solution {
-  int n;
-  string S;
-  vector<int> memo;
-  unordered_set<string> pre={"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"};
 public:
   int numDecodings(string s) {
-    S = s;
-    n = s.size();
-    memo.resize(n, -1);
-    return num(0);
+    int memo[s.size()];
+    memset(memo, -1, sizeof(memo));
+    return dp(s, 0, memo);
   }
 private:
-  int num(int i){
-    if (i == n){return 1;}
-    if (memo[i] != -1){
-      return memo[i];
+  int dp(string& s, int idx, int *memo){
+    if (idx == s.size())
+      return 1;
+    if (memo[idx] != -1)
+      return memo[idx];
+    int ans = 0;
+    if (s[idx] != '0')
+      ans += dp(s, idx+1, memo);
+    if (idx < s.size() - 1){
+      if ((s[idx] == '1') ||
+          (s[idx] == '2' && s[idx+1] >= '0' && s[idx+1] <='6'))
+        ans += dp(s, idx + 2, memo);
     }
-    int res=0;
-    if (S[i] != '0'){
-      res = num(i + 1);
-      if (i < n - 1){
-        string cur = S.substr(i, 2);
-        if (pre.count(cur)){
-          res += num(i + 2);
-        }
-      }
-    }
-    return memo[i] = res;
     
+    return memo[idx] = ans;
   }
 };
