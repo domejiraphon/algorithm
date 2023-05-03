@@ -1,72 +1,34 @@
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-#include <cmath>
-using namespace std;
+/*
+Given an array of characters chars, compress it using the following algorithm:
 
-void print(vector<char> x){
-  for (auto row: x){
-      cout << row<<", ";
-    
-  }
-  cout << endl;
-}
-void print(vector<tuple<char, int>> x){
-  for (auto row: x){
-      cout << get<0>(row)<<", "<< get<1>(row)<<endl;
-  }
-  cout << endl;
-}
+Begin with an empty string s. For each group of consecutive repeating characters in chars:
 
+If the group's length is 1, append the character to s.
+Otherwise, append the character followed by the group's length.
+The compressed string s should not be returned separately, but instead, be stored in the input character array chars. Note that group lengths that are 10 or longer will be split into multiple characters in chars.
+
+After you are done modifying the input array, return the new length of the array.
+
+You must write an algorithm that uses only constant extra space.
+
+ 
+*/
 class Solution {
 public:
   int compress(vector<char>& chars) {
-    vector<tuple<char, int>> memo;
-    int start(0), end(0), count(0);
-    char prev_chars;
-    while (end < chars.size()){
-      if (chars[start] == chars[end]){
-        count++; end++;
+    int i = 0, res = 0;
+    int n=chars.size();
+    while (i < n){
+      int group = 1;
+      while (i+ group < n && chars[i + group] == chars[i])
+        group++;
+      chars[res++] = chars[i];
+      if (group > 1){
+        for (auto ch: to_string(group))
+          chars[res++] = ch;
       }
-      else{
-        tuple<char, int> prev = {prev_chars, count};
-        memo.push_back(prev);
-        start=end;
-        count=0;
-      }
-      prev_chars = chars[start];
+      i += group;
     }
-    tuple<char, int> prev = {prev_chars, count};
-    memo.push_back(prev);
-    
-    
-    count = 0;
-    chars.clear();
-    for (auto it=0; it != memo.size(); it++){
-      count++;
-      chars.push_back(get<0>(memo[it]));
-      if (get<1>(memo[it]) == 1){continue;}
-      string cur = to_string(get<1>(memo[it]));
-      count += cur.size();
-      
-      for(int i=0; i != cur.size(); i++){chars.push_back(cur[i]);}
-    }
-    return count;
- 
+    return res;
   }
 };
-
-int main()
-{
-  vector<char> chars = {'a'};
-  
-  Solution sol;
-  cout << sol.compress(chars)<<endl;
-  print(chars);
-  return 0;
-}
